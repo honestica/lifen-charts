@@ -1,0 +1,53 @@
+version: 2
+jobs:
+  test:
+    docker:
+      - image: circleci/python:3
+    steps:
+      - checkout
+      - run:
+          name: Install helm
+          command: |
+            curl -SL https://storage.googleapis.com/kubernetes-helm/helm-v2.13.1-linux-amd64.tar.gz | tar xvz -C /tmp && sudo mv /tmp/linux-amd64/helm /usr/local/bin/helm && sudo chmod +x /usr/local/bin/helm
+      - run:
+          name: Lint chart
+          command: |
+            helm lint kube-iptables-tailer
+  release:
+    docker:
+      - image: circleci/python:3
+    steps:
+      - checkout
+      - run:
+          name: Install helm
+          command: |
+            curl -SL https://storage.googleapis.com/kubernetes-helm/helm-v2.13.1-linux-amd64.tar.gz | tar xvz -C /tmp && sudo mv /tmp/linux-amd64/helm /usr/local/bin/helm && sudo chmod +x /usr/local/bin/helm
+      - run:
+          name: Package and index doc
+          command: |
+            helm init --client-only
+            helm package kube-iptables-tailer -d packages
+            helm repo index packages --url https://honestica.github.io/lifen-charts/packages
+            mv packages/index.yaml index.yaml
+      - add_ssh_keys:
+          fingerprints:
+            - "31:d4:50:ae:e8:c3:3b:3e:f4:66:48:47:7d:a0:18:a8"
+      - run:
+          name: Push to repo
+          command: |
+            git config user.email "ops@lifen.fr"
+            git config user.name "Lifen"
+            git add packages index.yaml
+            git commit -m "relase version"
+            git checkout -b gh-pages
+            git push origin gh-pages -f
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - test
+      - release:
+          filters:
+            branches:
+              only: master

@@ -7,6 +7,12 @@
 -   Logs of iptable should be written to a specific file
 -   Logs of iptable must be written using rfc3339 for the timestamp
 
+## Add the repo
+
+```
+$ helm repo add lifen-charts http://honestica.github.io/lifen-charts/
+```
+
 ## Customization
 The following options are supported.  See [values.yaml](values.yaml) for more detailed documentation and examples:
 

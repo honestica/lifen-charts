@@ -57,6 +57,10 @@ jobs:
           name: Test awx installation
           command: |
             helm upgrade awx ./awx/ --install  --timeout 500 --wait -f examples/awx/values.yaml --kube-context minikube --namespace awx
+      - run:
+          name: Test kube-iptables-tailer installation
+          command: |
+            helm upgrade kube-iptables-tailer ./kube-iptables-tailer/ --install  --timeout 500 --wait --kube-context minikube --namespace kube-iptables-tailer
 
   release:
     docker:
@@ -72,6 +76,7 @@ jobs:
           command: |
             helm init --client-only
             helm package kube-iptables-tailer -d packages
+            helm package awx -d packages
             helm repo index packages --url https://honestica.github.io/lifen-charts/packages
             mv packages/index.yaml index.yaml
       - add_ssh_keys:

@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: awx
+  labels:
+    name: awx
+    heritage: lifen-auto

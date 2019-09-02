@@ -1,4 +1,15 @@
 apiVersion: v1
+appVersion: "v0.1.0"
 description: A Helm chart for Kubernetes
 name: awx
 version: 0.3.0
+home: https://github.com/honestica/lifen-charts
+keywords:
+- awx
+- ansible
+- tower
+maintainers:
+- email: matthieu.paret@lifen.fr
+  name: mtparet
+sources:
+- https://github.com/ansible/awx

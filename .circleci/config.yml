@@ -60,7 +60,7 @@ jobs:
       - run:
           name: Test kube-iptables-tailer installation
           command: |
-            helm upgrade kube-iptables-tailer ./kube-iptables-tailer/ --install  --timeout 500 --wait --kube-context minikube --namespace kube-iptables-tailer
+            helm upgrade kube-iptables-tailer ./kube-iptables-tailer/ --install  --timeout 500 --wait -f examples/kube-iptables-tailer/values.yaml --kube-context minikube --namespace kube-iptables-tailer
 
   release:
     docker:

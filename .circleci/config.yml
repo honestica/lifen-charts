@@ -81,6 +81,7 @@ jobs:
             helm init --client-only
             helm package kube-iptables-tailer -d packages
             helm package awx -d packages
+            helm package squid -d packages
             helm repo index packages --url https://honestica.github.io/lifen-charts/packages
             mv packages/index.yaml index.yaml
       - add_ssh_keys:

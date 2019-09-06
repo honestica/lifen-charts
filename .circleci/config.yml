@@ -28,6 +28,7 @@ jobs:
           command: |
             helm lint ./awx -f examples/awx/values.yaml
             helm lint ./kube-iptables-tailer
+            helm lint ./neuvector
       - run:
           name: start minikube
           command: |
@@ -65,6 +66,13 @@ jobs:
           name: Test squid installation
           command: |
             helm upgrade squid ./squid/ --install  --timeout 500 --wait --kube-context minikube --namespace squid
+      - run:
+          name: Test neuvector installation
+          command: |
+            kubectl create secret docker-registry dockerhub -n neuvector --docker-username=$DOCKERHUB_USERNAME --docker-password=$DOCKERHUB_PASSWORD
+            helm upgrade neuvector ./neuvector/ --install  --timeout 200 --wait --kube-context minikube --namespace neuvector -f ./examples/neuvector/values.yaml
+            helm delete --purge neuvector
+            helm upgrade neuvector ./neuvector/ --install  --timeout 200 --wait --kube-context minikube --namespace neuvector -f ./examples/neuvector/values-custom.yaml
 
   release:
     docker:
@@ -82,6 +90,7 @@ jobs:
             helm package kube-iptables-tailer -d packages
             helm package awx -d packages
             helm package squid -d packages
+            helm package neuvector -d packages
             helm repo index packages --url https://honestica.github.io/lifen-charts/packages
             mv packages/index.yaml index.yaml
       - add_ssh_keys:
@@ -101,7 +110,8 @@ workflows:
   version: 2
   build:
     jobs:
-      - test
+      - test:
+          context: org-global
       - release:
           filters:
             branches:

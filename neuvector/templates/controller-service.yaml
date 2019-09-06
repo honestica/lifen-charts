@@ -1,0 +1,34 @@
+{{- if .Values.controller.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: neuvector-svc-controller
+  namespace: {{ .Release.Namespace }}
+  labels:
+    chart: {{ template "neuvector.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+{{- if .Values.controller.ingress.enabled }}
+  type: ClusterIP
+{{- else }}
+  clusterIP: None
+{{- end }}
+  ports:
+    - port: 18300
+      protocol: "TCP"
+      name: "cluster-tcp-18300"
+    - port: 18301
+      protocol: "TCP"
+      name: "cluster-tcp-18301"
+    - port: 18301
+      protocol: "UDP"
+      name: "cluster-udp-18301"
+  {{- if .Values.controller.ingress.enabled }}
+    - port: 10443
+      name: controller
+      protocol: TCP
+  {{- end }}
+  selector:
+    app: neuvector-controller-pod
+{{- end }}

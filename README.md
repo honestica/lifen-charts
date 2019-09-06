@@ -61,3 +61,12 @@ Add in /etc/hosts
 ```
 {{ external ip for private ingress }} http://awx.minikube
 ```
+
+# Neuvector Chart
+
+
+Use your credentials before installing
+
+```
+kubectl create secret docker-registry dockerhub -n neuvector --docker-username=<your_user_name> --docker-password=<your-pword> 
+```

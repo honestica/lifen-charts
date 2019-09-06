@@ -5,3 +5,11 @@ metadata:
   labels:
     name: awx
     heritage: lifen-auto
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: neuvector
+  labels:
+    name: neuvector
+    heritage: lifen-auto

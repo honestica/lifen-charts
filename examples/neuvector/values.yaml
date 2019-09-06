@@ -85,10 +85,11 @@ cve:
 
 exporter:
   # If false, exporter will not be installed
-  enabled: false
+  enabled: true
+  scrapping: true
   image:
     repository: honestica/neuvector-exporter
-    tag: 3e2f07c1e0b4d5ef225f2cc402ae68f91d45e1c919 
+    tag: 3e2f07c1e0b4d5ef225f2cc402ae68f91d45e1c9 
 
 docker:
   path: /var/run/docker.sock

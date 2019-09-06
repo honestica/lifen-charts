@@ -68,5 +68,5 @@ Add in /etc/hosts
 Use your credentials before installing
 
 ```
-kubectl create secret docker-registry dockerhub -n neuvector --docker-username=<your_user_name>--docker-password=<your-pword> --docker-email=<your-email>
+kubectl create secret docker-registry dockerhub -n neuvector --docker-username=<your_user_name> --docker-password=<your-pword> 
 ```

@@ -30,10 +30,6 @@ jobs:
             helm lint ./kube-iptables-tailer
             helm lint ./neuvector
       - run:
-          name: Login with docker for neuvector credentials
-          command: |
-            docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
-      - run:
           name: start minikube
           command: |
             sudo minikube start --vm-driver=none --cpus 2 --memory 4096 --kubernetes-version=${K8S_VERSION} &> $HOME/minikube.log 2>&1 < /dev/null
@@ -73,8 +69,8 @@ jobs:
       - run:
           name: Test neuvector installation
           command: |
-            helm upgrade neuvector ./neuvector/ --install  --timeout 200 --wait --kube-context minikube --namespace neuvector
-
+            kubectl create secret docker-registry dockerhub -n neuvector --docker-username=$DOCKERHUB_USERNAME --docker-password=$DOCKERHUB_PASSWORD
+            helm upgrade neuvector ./neuvector/ --install  --timeout 200 --wait --kube-context minikube --namespace neuvector -f ./examples/neuvector/values.yaml
   release:
     docker:
       - image: circleci/python:3

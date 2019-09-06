@@ -11,7 +11,7 @@ maintainers:
     name: mtparet
 engine: gotpl
 sources:
-- https://github.com/box/kube-iptables-tailer
+- https://github.com/honestica/neuvector-exporter
 keywords:
 - neuvector
 - security

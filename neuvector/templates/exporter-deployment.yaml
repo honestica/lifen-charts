@@ -32,12 +32,11 @@ spec:
           imagePullPolicy: Always
           env:
             - name: CTRL_API_SERVICE
-              value: neuvector-svc-controller.neuvector:10443
-            - name: CTRL_USERNAME
-              value: admin
-            - name: CTRL_PASSWORD
-              value: admin
+              value: neuvector-svc-controller:10443
             - name: EXPORTER_PORT
               value: "8068"
+          envFrom:
+            - secretRef:
+                name: neuvector-prometheus-exporter-pod-secret
       restartPolicy: Always
 {{- end }}

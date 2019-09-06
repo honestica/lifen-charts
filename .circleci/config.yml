@@ -71,6 +71,9 @@ jobs:
           command: |
             kubectl create secret docker-registry dockerhub -n neuvector --docker-username=$DOCKERHUB_USERNAME --docker-password=$DOCKERHUB_PASSWORD
             helm upgrade neuvector ./neuvector/ --install  --timeout 200 --wait --kube-context minikube --namespace neuvector -f ./examples/neuvector/values.yaml
+            helm delete --purge neuvector
+            helm upgrade neuvector ./neuvector/ --install  --timeout 200 --wait --kube-context minikube --namespace neuvector -f ./examples/neuvector/values-custom.yaml
+
   release:
     docker:
       - image: circleci/python:3

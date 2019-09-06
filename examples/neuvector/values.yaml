@@ -6,7 +6,7 @@ openshift: false
 
 registry: docker.io
 tag: latest
-imagePullSecrets: {}
+imagePullSecrets: dockerhub
 
 controller:
   # If false, controller will not be installed

@@ -54,18 +54,18 @@ jobs:
           name: Setup Cluster
           command: |
             ./scripts/setup_cluster.sh
-      # - run:
-      #     name: Test awx installation
-      #     command: |
-      #       helm upgrade awx ./awx/ --install  --timeout 500 --wait -f examples/awx/values.yaml --kube-context minikube --namespace awx
-      # - run:
-      #     name: Test kube-iptables-tailer installation
-      #     command: |
-      #       helm upgrade kube-iptables-tailer ./kube-iptables-tailer/ --install  --timeout 500 --wait -f examples/kube-iptables-tailer/values.yaml --kube-context minikube --namespace kube-iptables-tailer
-      # - run:
-      #     name: Test squid installation
-      #     command: |
-      #       helm upgrade squid ./squid/ --install  --timeout 500 --wait --kube-context minikube --namespace squid
+      - run:
+          name: Test awx installation
+          command: |
+            helm upgrade awx ./awx/ --install  --timeout 500 --wait -f examples/awx/values.yaml --kube-context minikube --namespace awx
+      - run:
+          name: Test kube-iptables-tailer installation
+          command: |
+            helm upgrade kube-iptables-tailer ./kube-iptables-tailer/ --install  --timeout 500 --wait -f examples/kube-iptables-tailer/values.yaml --kube-context minikube --namespace kube-iptables-tailer
+      - run:
+          name: Test squid installation
+          command: |
+            helm upgrade squid ./squid/ --install  --timeout 500 --wait --kube-context minikube --namespace squid
       - run:
           name: Test neuvector installation
           command: |

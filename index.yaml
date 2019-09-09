@@ -1,0 +1,88 @@
+apiVersion: v1
+entries:
+  awx:
+  - apiVersion: v1
+    appVersion: v7.0.0
+    created: 2019-09-09T10:38:31.658416738Z
+    description: A Helm chart for Kubernetes
+    digest: 456ae3683bc9c6e1e950773b1c16395d9c107da70b835ff22765041e24206630
+    home: https://github.com/honestica/lifen-charts
+    keywords:
+    - awx
+    - ansible
+    - tower
+    maintainers:
+    - email: matthieu.paret@lifen.fr
+      name: mtparet
+    name: awx
+    sources:
+    - https://github.com/ansible/awx
+    urls:
+    - https://honestica.github.io/lifen-charts/packages/awx-0.4.0.tgz
+    version: 0.4.0
+  kube-iptables-tailer:
+  - apiVersion: v1
+    appVersion: v0.1.0
+    created: 2019-09-09T10:38:31.658913499Z
+    description: A Helm chart for Kubernetes
+    digest: a520102f8ead9cd1cb14cfa43cc6f1a00837ba0b329756d4200f67abf01d36b5
+    home: https://github.com/honestica/lifen-charts
+    keywords:
+    - kube-iptables-tailer
+    - iptables
+    - calico
+    - networkpolicy
+    maintainers:
+    - email: matthieu.paret@lifen.fr
+      name: mtparet
+    - email: dali@lifen.fr
+      name: dadicool
+    name: kube-iptables-tailer
+    sources:
+    - https://github.com/box/kube-iptables-tailer
+    urls:
+    - https://honestica.github.io/lifen-charts/packages/kube-iptables-tailer-0.1.0.tgz
+    version: 0.1.0
+  neuvector:
+  - apiVersion: v1
+    appVersion: 2.5.2
+    created: 2019-09-09T10:38:31.65972668Z
+    description: NeuVector Container Security Platform includes layer 7 container
+      firewall, end-to-end vulnerability scanning, and container process/file monitoring.
+    digest: 444ec0c137934a691881197f5ef5690bd15e02adaf67aedc357bc09ed43e7b42
+    home: https://neuvector.com
+    keywords:
+    - neuvector
+    - security
+    - scanning
+    maintainers:
+    - email: xfsun@neuvector.com
+      name: Sun
+    - email: matthieu.paret@lifen.fr
+      name: mtparet
+    name: neuvector
+    sources:
+    - https://github.com/honestica/neuvector-exporter
+    urls:
+    - https://honestica.github.io/lifen-charts/packages/neuvector-1.3.3.tgz
+    version: 1.3.3
+  squid:
+  - apiVersion: v1
+    appVersion: v0.1.0
+    created: 2019-09-09T10:38:31.660132654Z
+    description: A Helm chart for Kubernetes
+    digest: 812ed446b2f753a2ebc1efb33d75e917e7db1fbc4334e9fdb001dfbe47bcbc0a
+    home: https://github.com/honestica/lifen-charts
+    keywords:
+    - squid
+    - proxy
+    maintainers:
+    - email: matthieu.paret@lifen.fr
+      name: mtparet
+    name: squid
+    sources:
+    - https://github.com/squid-cache/squid
+    urls:
+    - https://honestica.github.io/lifen-charts/packages/squid-0.1.0.tgz
+    version: 0.1.0
+generated: 2019-09-09T10:38:31.655181441Z

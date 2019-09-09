@@ -5,7 +5,7 @@
 openshift: false
 
 registry: docker.io
-tag: latest
+tag: 2.5.2
 imagePullSecrets: {}
 
 controller:

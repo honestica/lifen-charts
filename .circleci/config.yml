@@ -101,10 +101,13 @@ jobs:
           command: |
             git config user.email "ops@lifen.fr"
             git config user.name "Lifen"
+            git fetch origin
+            git checkout -b release
             git add packages index.yaml
             git commit -m "relase version"
-            git checkout -b gh-pages
-            git push origin gh-pages -f
+            git checkout gh-pages
+            git merge release
+            git push origin gh-pages 
 
 workflows:
   version: 2

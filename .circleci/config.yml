@@ -94,7 +94,7 @@ jobs:
             git fetch origin
             git checkout -b release
             git checkout gh-pages
-            git merge release
+            git merge release  --no-edit
             helm init --client-only
             helm package kube-iptables-tailer -d packages
             helm package awx -d packages
@@ -114,6 +114,9 @@ workflows:
   build:
     jobs:
       - test:
+          filters:
+            branches:
+              only: gh-pages
           context: org-global
       - release:
           filters:

@@ -3,9 +3,9 @@ entries:
   awx:
   - apiVersion: v1
     appVersion: v7.0.0
-    created: 2019-09-09T10:38:31.658416738Z
+    created: "2019-09-10T10:16:34.220499227Z"
     description: A Helm chart for Kubernetes
-    digest: 456ae3683bc9c6e1e950773b1c16395d9c107da70b835ff22765041e24206630
+    digest: a4bf1319e2b3ca29ec7a439b16ef7dec20978f37cff6410e0952c7654c95f348
     home: https://github.com/honestica/lifen-charts
     keywords:
     - awx
@@ -23,9 +23,9 @@ entries:
   kube-iptables-tailer:
   - apiVersion: v1
     appVersion: v0.1.0
-    created: 2019-09-09T10:38:31.658913499Z
+    created: "2019-09-10T10:16:34.22146909Z"
     description: A Helm chart for Kubernetes
-    digest: a520102f8ead9cd1cb14cfa43cc6f1a00837ba0b329756d4200f67abf01d36b5
+    digest: 8ede215c28a2defdbf79f27f49cd168553daa7b214e080c9174db9293f357610
     home: https://github.com/honestica/lifen-charts
     keywords:
     - kube-iptables-tailer
@@ -46,10 +46,10 @@ entries:
   neuvector:
   - apiVersion: v1
     appVersion: 2.5.2
-    created: 2019-09-09T10:38:31.65972668Z
+    created: "2019-09-10T10:16:34.222116956Z"
     description: NeuVector Container Security Platform includes layer 7 container
       firewall, end-to-end vulnerability scanning, and container process/file monitoring.
-    digest: 444ec0c137934a691881197f5ef5690bd15e02adaf67aedc357bc09ed43e7b42
+    digest: ace7d094132cd0e7c03b1d62a910975b90a0268318d0aa57441b226aa61d8527
     home: https://neuvector.com
     keywords:
     - neuvector
@@ -69,9 +69,9 @@ entries:
   squid:
   - apiVersion: v1
     appVersion: v0.1.0
-    created: 2019-09-09T10:38:31.660132654Z
+    created: "2019-09-10T10:16:34.222393906Z"
     description: A Helm chart for Kubernetes
-    digest: 812ed446b2f753a2ebc1efb33d75e917e7db1fbc4334e9fdb001dfbe47bcbc0a
+    digest: 64a5ba6f0ad6316231359c60e8db1acfff5175335c69b942532484ba584d8048
     home: https://github.com/honestica/lifen-charts
     keywords:
     - squid
@@ -85,4 +85,4 @@ entries:
     urls:
     - https://honestica.github.io/lifen-charts/packages/squid-0.1.0.tgz
     version: 0.1.0
-generated: 2019-09-09T10:38:31.655181441Z
+generated: "2019-09-10T10:16:34.217987168Z"

@@ -116,11 +116,12 @@ workflows:
       - test:
           filters:
             branches:
-              only: gh-pages
+              ignore: gh-pages
           context: org-global
       - release:
           filters:
             branches:
               only: master
+              ignore: gh-pages
           requires:
               - test

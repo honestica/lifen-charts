@@ -82,10 +82,19 @@ jobs:
       - run:
           name: Install helm
           command: |
-            curl -SL https://storage.googleapis.com/kubernetes-helm/helm-v2.13.1-linux-amd64.tar.gz | tar xvz -C /tmp && sudo mv /tmp/linux-amd64/helm /usr/local/bin/helm && sudo chmod +x /usr/local/bin/helm
+            curl -SL https://storage.googleapis.com/kubernetes-helm/helm-v2.14.3-linux-amd64.tar.gz | tar xvz -C /tmp && sudo mv /tmp/linux-amd64/helm /usr/local/bin/helm && sudo chmod +x /usr/local/bin/helm
+      - add_ssh_keys:
+          fingerprints:
+            - "31:d4:50:ae:e8:c3:3b:3e:f4:66:48:47:7d:a0:18:a8"
       - run:
           name: Package and index doc
           command: |
+            git config user.email "ops@lifen.fr"
+            git config user.name "Lifen"
+            git fetch origin
+            git checkout -b release
+            git checkout gh-pages
+            git merge release  --no-edit
             helm init --client-only
             helm package kube-iptables-tailer -d packages
             helm package awx -d packages
@@ -93,24 +102,21 @@ jobs:
             helm package neuvector -d packages
             helm repo index packages --url https://honestica.github.io/lifen-charts/packages
             mv packages/index.yaml index.yaml
-      - add_ssh_keys:
-          fingerprints:
-            - "31:d4:50:ae:e8:c3:3b:3e:f4:66:48:47:7d:a0:18:a8"
       - run:
           name: Push to repo
           command: |
-            git config user.email "ops@lifen.fr"
-            git config user.name "Lifen"
             git add packages index.yaml
             git commit -m "relase version"
-            git checkout -b gh-pages
-            git push origin gh-pages -f
+            git push origin gh-pages 
 
 workflows:
   version: 2
   build:
     jobs:
       - test:
+          filters:
+            branches:
+              only: gh-pages
           context: org-global
       - release:
           filters:

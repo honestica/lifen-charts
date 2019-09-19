@@ -23,7 +23,7 @@ spec:
         spec:
           serviceAccountName: {{ template "kured.serviceAccountName" . }}
           containers:
-            - name: neuvector-updater-pod
+            - name: {{ template "kured.fullname" . }}-unlock
               image: "{{ .Values.autolock.image.repository }}:{{ .Values.autolock.image.tag }}"
               command:
                 - kubectl

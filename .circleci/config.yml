@@ -104,6 +104,7 @@ jobs:
             helm package awx -d packages
             helm package squid -d packages
             helm package neuvector -d packages
+            helm package kured -d packages
             helm repo index packages --url https://honestica.github.io/lifen-charts/packages
             mv packages/index.yaml index.yaml
       - run:

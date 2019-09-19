@@ -1,0 +1,39 @@
+image:
+  repository: weaveworks/kured
+  tag: 1.2.0
+  pullPolicy: IfNotPresent
+  pullSecrets: []
+
+extraArgs: {}
+
+rbac:
+  create: true
+
+podSecurityPolicy:
+  create: false
+
+serviceAccount:
+  create: true
+  name:
+
+autolock:
+  enabled: true
+  image:
+    repository: honestica/k8s-tools
+    tag: 1c80a6579bdb73059d72101c9f82f26291954d68
+  scheduleUnlock: 13 10 * * *
+  schedulelock: 14 10 * * *
+
+updateStrategy: OnDelete
+
+
+tolerations:
+  - key: node-role.kubernetes.io/master
+    effect: NoSchedule
+
+priorityClassName: ""
+
+nodeSelector: {}
+
+podAnnotations: {}
+

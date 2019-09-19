@@ -73,7 +73,11 @@ jobs:
             helm upgrade neuvector ./neuvector/ --install  --timeout 200 --wait --kube-context minikube --namespace neuvector -f ./examples/neuvector/values.yaml
             helm delete --purge neuvector
             helm upgrade neuvector ./neuvector/ --install  --timeout 200 --wait --kube-context minikube --namespace neuvector -f ./examples/neuvector/values-custom.yaml
-
+      - run:
+          name: Test kured installation
+          command: |
+            helm upgrade kured ./kured/ --install  --timeout 500 --wait -f examples/kured/values.yaml --kube-context minikube --namespace kured
+ 
   release:
     docker:
       - image: circleci/python:3
@@ -100,6 +104,7 @@ jobs:
             helm package awx -d packages
             helm package squid -d packages
             helm package neuvector -d packages
+            helm package kured -d packages
             helm repo index packages --url https://honestica.github.io/lifen-charts/packages
             mv packages/index.yaml index.yaml
       - run:

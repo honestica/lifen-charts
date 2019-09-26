@@ -77,6 +77,10 @@ jobs:
           name: Test kured installation
           command: |
             helm upgrade kured ./kured/ --install  --timeout 500 --wait -f examples/kured/values.yaml --kube-context minikube --namespace kured
+      - run:
+          name: Test airflow installation
+          command: |
+            helm upgrade airflow ./airflow/ --install  --timeout 500 --wait -f examples/airflow/values.yaml --kube-context minikube --namespace airflow
  
   release:
     docker:

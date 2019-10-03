@@ -3,9 +3,9 @@ entries:
   awx:
   - apiVersion: v1
     appVersion: v7.0.0
-    created: "2019-09-25T16:32:33.050197369Z"
+    created: "2019-10-03T10:03:52.886290088Z"
     description: A Helm chart for Kubernetes
-    digest: b968be81326045607d911a667432e78bef14fd13ee63837cde1adffbd154e230
+    digest: 89c40ec67fd17a50ad38bf95a322034d33dd0e87190df4e205354d109a98c1b2
     home: https://github.com/honestica/lifen-charts
     keywords:
     - awx
@@ -23,9 +23,9 @@ entries:
   kube-iptables-tailer:
   - apiVersion: v1
     appVersion: v0.1.0
-    created: "2019-09-25T16:32:33.050538463Z"
+    created: "2019-10-03T10:03:52.886645261Z"
     description: A Helm chart for Kubernetes
-    digest: 23f0d86f0494c18a97d85b6cc45d9b7c0cc1bc831dced2795edddbe2fcd6d3ad
+    digest: ad379cebbfadbbc93a9d62540870501b76a832deca1b519ae6f86be8ae85c835
     home: https://github.com/honestica/lifen-charts
     keywords:
     - kube-iptables-tailer
@@ -46,7 +46,25 @@ entries:
   kured:
   - apiVersion: v1
     appVersion: 1.2.0
-    created: "2019-09-25T16:32:33.050887105Z"
+    created: "2019-10-03T10:03:52.887373308Z"
+    description: A Helm chart for kured
+    digest: fe3c149cb70428a0ea09d65e9aa4c23ca80707e328da16fc5222d060f60f9570
+    home: https://github.com/weaveworks/kured
+    icon: https://raw.githubusercontent.com/weaveworks/kured/master/img/logo.png
+    maintainers:
+    - email: plummer574@gmail.com
+      name: plumdog
+    - email: pslattery@mi9retail.com
+      name: patrickmslatteryvt
+    name: kured
+    sources:
+    - https://github.com/weaveworks/kured
+    urls:
+    - https://honestica.github.io/lifen-charts/packages/kured-1.3.3.tgz
+    version: 1.3.3
+  - apiVersion: v1
+    appVersion: 1.2.0
+    created: "2019-10-03T10:03:52.887016469Z"
     description: A Helm chart for kured
     digest: 85c81ca5e993b68eaaa576bbaa3d71f6b87f3bcb0b85e062ea20c42ed8fb8751
     home: https://github.com/weaveworks/kured
@@ -65,10 +83,10 @@ entries:
   neuvector:
   - apiVersion: v1
     appVersion: 2.5.2
-    created: "2019-09-25T16:32:33.052871419Z"
+    created: "2019-10-03T10:03:52.889346001Z"
     description: NeuVector Container Security Platform includes layer 7 container
       firewall, end-to-end vulnerability scanning, and container process/file monitoring.
-    digest: 9bac106c0fda4693e8a705f64e764390a9e2a79327d06818ebb41dcf4477b36c
+    digest: 68cc4a948ba245e2b31314d785898336dac71e9934d92aae5a9d07f6095d7c49
     home: https://neuvector.com
     keywords:
     - neuvector
@@ -87,7 +105,7 @@ entries:
     version: 1.3.5
   - apiVersion: v1
     appVersion: 2.5.2
-    created: "2019-09-25T16:32:33.052185525Z"
+    created: "2019-10-03T10:03:52.888660002Z"
     description: NeuVector Container Security Platform includes layer 7 container
       firewall, end-to-end vulnerability scanning, and container process/file monitoring.
     digest: 1b98f8b7a7bf31560e957fc054105e4aeefb1d007f51a967aebc774c77db71a9
@@ -109,7 +127,7 @@ entries:
     version: 1.3.4
   - apiVersion: v1
     appVersion: 2.5.2
-    created: "2019-09-25T16:32:33.0515131Z"
+    created: "2019-10-03T10:03:52.888041376Z"
     description: NeuVector Container Security Platform includes layer 7 container
       firewall, end-to-end vulnerability scanning, and container process/file monitoring.
     digest: ace7d094132cd0e7c03b1d62a910975b90a0268318d0aa57441b226aa61d8527
@@ -132,9 +150,9 @@ entries:
   squid:
   - apiVersion: v1
     appVersion: v0.1.0
-    created: "2019-09-25T16:32:33.053170241Z"
+    created: "2019-10-03T10:03:52.88963314Z"
     description: A Helm chart for Kubernetes
-    digest: c92b18f5d12918c118ebd6aabc669a2e0325438d6f5869b9c8700a9b96d5ffb0
+    digest: 8f4012d406e9709179cf2bfb1ad25daf3916ade931d550bddf0d2e7dbbf6d0a5
     home: https://github.com/honestica/lifen-charts
     keywords:
     - squid
@@ -148,4 +166,4 @@ entries:
     urls:
     - https://honestica.github.io/lifen-charts/packages/squid-0.1.0.tgz
     version: 0.1.0
-generated: "2019-09-25T16:32:33.046910605Z"
+generated: "2019-10-03T10:03:52.883191997Z"

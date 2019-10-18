@@ -77,6 +77,10 @@ jobs:
           name: Test kured installation
           command: |
             helm upgrade kured ./kured/ --install  --timeout 500 --wait -f examples/kured/values.yaml --kube-context minikube --namespace kured
+      - run:
+          name: Test sloop installation
+          command: |
+            helm upgrade sloop ./sloop/ --install  --timeout 500 --wait -f examples/sloop/values.yaml --kube-context minikube --namespace sloop
  
   release:
     docker:
@@ -105,6 +109,7 @@ jobs:
             helm package squid -d packages
             helm package neuvector -d packages
             helm package kured -d packages
+            helm package sloop -d packages
             helm repo index packages --url https://honestica.github.io/lifen-charts/packages
             mv packages/index.yaml index.yaml
       - run:

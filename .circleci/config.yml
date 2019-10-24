@@ -81,6 +81,10 @@ jobs:
           name: Test sloop installation
           command: |
             helm upgrade sloop ./sloop/ --install  --timeout 500 --wait -f examples/sloop/values.yaml --kube-context minikube --namespace sloop
+      - run:
+          name: Test fluent-bit installation
+          command: |
+            helm upgrade fluent-bit ./fluent-bit/ --install  --timeout 500 --wait -f examples/fluent-bit/values.yaml --kube-context minikube --namespace fluent-bit
  
   release:
     docker:
@@ -110,6 +114,7 @@ jobs:
             helm package neuvector -d packages
             helm package kured -d packages
             helm package sloop -d packages
+            helm package fluent-bit -d packages
             helm repo index packages --url https://honestica.github.io/lifen-charts/packages
             mv packages/index.yaml index.yaml
       - run:

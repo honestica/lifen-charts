@@ -81,6 +81,7 @@ jobs:
           name: Test airflow installation
           command: |
             helm upgrade airflow ./airflow/ --install  --timeout 500 --wait -f examples/airflow/values.yaml --kube-context minikube --namespace airflow
+      - run:
           name: Test sloop installation
           command: |
             helm upgrade sloop ./sloop/ --install  --timeout 500 --wait -f examples/sloop/values.yaml --kube-context minikube --namespace sloop

@@ -1,8 +1,8 @@
 apiVersion: v1
-appVersion: "v7.0.0"
+appVersion: "v8.0.0"
 description: A Helm chart for Kubernetes
 name: awx
-version: 0.4.0
+version: 1.0.0
 home: https://github.com/honestica/lifen-charts
 keywords:
 - awx

@@ -19,8 +19,8 @@ serviceAccount:
 autolock:
   enabled: true
   image:
-    repository: honestica/k8s-tools
-    tag: 1c80a6579bdb73059d72101c9f82f26291954d68
+    repository: docker.io/bitnami/kubectl
+    tag: 1.15.4
   scheduleUnlock: 13 10 * * *
   schedulelock: 14 10 * * *
 

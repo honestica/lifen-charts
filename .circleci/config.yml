@@ -22,7 +22,7 @@ jobs:
             curl -Lo minikube https://github.com/kubernetes/minikube/releases/download/${MINIKUBE_VERSION}/minikube-linux-amd64 && chmod +x minikube && sudo mv minikube /usr/local/bin/
       - run:
           name: setup helm
-          command: curl https://raw.githubusercontent.com/helm/helm/master/scripts/get | bash
+          command: curl -SL https://storage.googleapis.com/kubernetes-helm/helm-v2.14.2-linux-amd64.tar.gz | tar xvz -C /tmp && sudo mv /tmp/linux-amd64/helm /usr/local/bin/helm && sudo chmod +x /usr/local/bin/helm
       - run:
           name: Execute lint on the chart
           command: |
@@ -81,6 +81,14 @@ jobs:
           name: Test airflow installation
           command: |
             helm upgrade airflow ./airflow/ --install  --timeout 500 --wait -f examples/airflow/values.yaml --kube-context minikube --namespace airflow
+          name: Test sloop installation
+          command: |
+            helm upgrade sloop ./sloop/ --install  --timeout 500 --wait -f examples/sloop/values.yaml --kube-context minikube --namespace sloop
+      - run:
+          name: Test fluent-bit installation
+          command: |
+            helm upgrade fluent-bit ./fluent-bit/ --install  --timeout 500 --wait -f examples/fluent-bit/values.yaml --kube-context minikube --namespace fluent-bit
+
  
   release:
     docker:
@@ -109,6 +117,8 @@ jobs:
             helm package squid -d packages
             helm package neuvector -d packages
             helm package kured -d packages
+            helm package sloop -d packages
+            helm package fluent-bit -d packages
             helm repo index packages --url https://honestica.github.io/lifen-charts/packages
             mv packages/index.yaml index.yaml
       - run:
@@ -125,12 +135,12 @@ workflows:
       - test:
           filters:
             branches:
-              ignore: gh-pages
+              ignore: 
+                - gh-pages
+                - master
           context: org-global
       - release:
           filters:
             branches:
               only: master
               ignore: gh-pages
-          requires:
-              - test

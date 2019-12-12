@@ -2,7 +2,7 @@ apiVersion: v1
 appVersion: "v0.1.0"
 description: A Helm chart for Kubernetes
 name: kube-iptables-tailer
-version: 0.1.0
+version: 0.1.1
 home: https://github.com/honestica/lifen-charts
 keywords:
 - kube-iptables-tailer
@@ -12,7 +12,5 @@ keywords:
 maintainers:
 - email: matthieu.paret@lifen.fr
   name: mtparet
-- email: dali@lifen.fr
-  name: dadicool
 sources:
 - https://github.com/box/kube-iptables-tailer

@@ -30,8 +30,14 @@ spec:
             - "--log_dir=/my-service-logs" # change the output directory of service logs
             - "--v=4" # enable V-leveled logging at this level
           env: 
+          {{- if .Values.iptablesLogPath }}
             - name: "IPTABLES_LOG_PATH"
               value: "{{ .Values.iptablesLogPath }}"
+          {{- end }}
+          {{- if .Values.journalDirectory }}
+            - name: "JOURNAL_DIRECTORY"
+              value: "{{ .Values.journalDirectory }}"
+          {{- end }}
             - name: "IPTABLES_LOG_PREFIX"
               # log prefix defined in your iptables chains
               value: "{{ .Values.iptablesLogPrefix }}"

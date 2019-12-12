@@ -1,0 +1,46 @@
+image:
+  repository: honestica/kube-iptables-tailer
+  tag: master-19
+  pullPolicy: IfNotPresent
+
+nameOverride: ""
+fullnameOverride: ""
+
+# Only one of the next configuration should be enabled
+# iptablesLogPath: "/var/log/iptables.log"
+journalDirectory: "/var/log/journal"
+
+iptablesLogPrefix: "calico-packet:"
+kubeApiServicer: "https://kubernetes.default:443"
+
+
+# iptablesLogPath: "/var/log/kern.log"
+journalDirectory: "/var/log/journal"
+iptablesLogPrefix: "calico-packet:"
+kubeApiServicer: "https://kubernetes.default:443"
+
+rbac:
+  create: true
+
+serviceAccount:
+  create: true
+  name:
+
+calico:
+  loggingEnable: true
+  # check your apiversion with `kubectl api-versions`
+  apiVersion: crd.projectcalico.org/v1
+
+resources: 
+  limits:
+    cpu: 50m
+    memory: 128Mi
+  requests:
+    cpu: 25m
+    memory: 64Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

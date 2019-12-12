@@ -1,13 +1,15 @@
 image:
   repository: honestica/kube-iptables-tailer
-  tag: master-1
+  tag: master-19
   pullPolicy: IfNotPresent
 
 nameOverride: ""
 fullnameOverride: ""
 
+# Only one of the next configuration should be enabled
 # iptablesLogPath: "/var/log/iptables.log"
-# journalDirectory: "/var/log/"
+# journalDirectory: "/var/log/journal"
+
 iptablesLogPrefix: "calico-packet:"
 kubeApiServicer: "https://kubernetes.default:443"
 
@@ -18,6 +20,7 @@ serviceAccount:
   create: true
   name:
 
+# Should alway enabled or you have to do manual iptable configuration on each host
 calico:
   loggingEnable: true
   # check your apiversion with `kubectl api-versions`

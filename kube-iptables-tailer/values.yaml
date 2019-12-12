@@ -6,7 +6,8 @@ image:
 nameOverride: ""
 fullnameOverride: ""
 
-iptablesLogPath: "/var/log/iptables.log"
+# iptablesLogPath: "/var/log/iptables.log"
+# journalDirectory: "/var/log/"
 iptablesLogPrefix: "calico-packet:"
 kubeApiServicer: "https://kubernetes.default:443"
 

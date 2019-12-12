@@ -24,11 +24,31 @@ jobs:
           name: setup helm
           command: curl -SL https://storage.googleapis.com/kubernetes-helm/helm-v2.14.2-linux-amd64.tar.gz | tar xvz -C /tmp && sudo mv /tmp/linux-amd64/helm /usr/local/bin/helm && sudo chmod +x /usr/local/bin/helm
       - run:
-          name: Execute lint on the chart
+          name: setup kubeval
+          command: |
+            curl -L https://github.com/instrumenta/kubeval/releases/download/0.14.0/kubeval-linux-amd64.tar.gz -o kubeval-linux-amd64.tar.gz
+            tar xf kubeval-linux-amd64.tar.gz
+            sudo mv kubeval /usr/local/bin
+      - run:
+          name: Execute lint on the charts
           command: |
             helm lint ./awx -f examples/awx/values.yaml
-            helm lint ./kube-iptables-tailer
-            helm lint ./neuvector
+            helm lint ./kube-iptables-tailer -f examples/kube-iptables-tailer/values.yaml
+            helm lint ./neuvector -f examples/neuvector/values.yaml
+            helm lint ./kured -f examples/kured/values.yaml
+            helm lint ./sloop -f examples/sloop/values.yaml
+            helm lint ./fluent-bit -f examples/fluent-bit/values.yaml
+            helm lint ./squid -f examples/squid/values.yaml
+      - run:
+          name: Execute kubeval on the charts to ensure kubernetes compability with 1.15
+          command: |
+            helm template ./awx -f examples/awx/values.yaml | kubeval -v 1.15.4 --strict
+            helm template ./kube-iptables-tailer -f examples/kube-iptables-tailer/values.yaml | kubeval -v 1.15.4 --strict
+            helm template ./neuvector -f examples/kneuvector/values.yaml | kubeval -v 1.15.4 --strict
+            helm template ./kured -f examples/kured/values.yaml | kubeval -v 1.15.4 --strict
+            helm template ./sloop -f examples/sloop/values.yaml | kubeval -v 1.15.4 --strict
+            helm template ./fluent-bit -f examples/fluent-bit/values.yaml | kubeval -v 1.15.4 --strict
+            helm template ./squid -f examples/squid/values.yaml | kubeval -v 1.15.4 --strict
       - run:
           name: start minikube
           command: |

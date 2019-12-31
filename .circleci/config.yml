@@ -44,7 +44,7 @@ jobs:
           command: |
             helm template ./awx -f examples/awx/values.yaml | kubeval -v 1.15.4 --strict
             helm template ./kube-iptables-tailer -f examples/kube-iptables-tailer/values.yaml | kubeval -v 1.15.4 --strict
-            helm template ./neuvector -f examples/neuvector/values.yaml | kubeval -v 1.15.4 --strict
+            helm template ./neuvector -f examples/neuvector/values.yaml | kubeval -v 1.15.4 --ignore-missing-schemas --strict
             helm template ./kured -f examples/kured/values.yaml | kubeval -v 1.15.4 --strict
             helm template ./sloop -f examples/sloop/values.yaml | kubeval -v 1.15.4 --strict
             helm template ./fluent-bit -f examples/fluent-bit/values.yaml | kubeval -v 1.15.4 --strict

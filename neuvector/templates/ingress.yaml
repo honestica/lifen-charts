@@ -31,7 +31,7 @@ spec:
           servicePort: 8443
 {{- end }}
 ---
-{{- if and .Values.controller.enabled .Values.controller.ingress.enabled -}}
+{{ if and .Values.controller.enabled .Values.controller.ingress.enabled -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -46,12 +46,20 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
+{{- if .Values.controller.ingress.tls }}
+  tls:
+  - hosts:
+    - {{ .Values.controller.ingress.host }}
+{{- if .Values.controller.ingress.secretName }}
+    secretName: {{ .Values.controller.ingress.secretName }}
+{{- end }}
+{{- end }}
   rules:
   - host: {{ .Values.controller.ingress.host }}
     http:
       paths:
       - path: {{ .Values.controller.ingress.path }}
         backend:
-          serviceName: neuvector-svc-controller
+          serviceName: neuvector-svc-controller-api
           servicePort: 10443
 {{- end }}

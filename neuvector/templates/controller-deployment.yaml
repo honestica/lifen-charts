@@ -1,5 +1,9 @@
 {{- if .Values.controller.enabled -}}
+{{- if (semverCompare ">=1.9-0" (substr 1 -1 .Capabilities.KubeVersion.GitVersion)) }}
+apiVersion: apps/v1
+{{- else }}
 apiVersion: extensions/v1beta1
+{{- end }}
 kind: Deployment
 metadata:
   name: neuvector-controller-pod
@@ -13,12 +17,27 @@ spec:
   minReadySeconds: 60
   strategy:
 {{ toYaml .Values.controller.strategy | indent 4 }}
+  selector:
+    matchLabels:
+      app: neuvector-controller-pod
   template:
     metadata:
       labels:
         app: neuvector-controller-pod
         release: {{ .Release.Name }}
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - neuvector-controller-pod
+              topologyKey: "kubernetes.io/hostname"
     {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
         - name: {{ .Values.imagePullSecrets }}
@@ -58,6 +77,8 @@ spec:
               readOnly: false
           {{- if .Values.containerd.enabled }}
             - mountPath: /var/run/containerd/containerd.sock
+          {{- else if .Values.crio.enabled }}
+            - mountPath: /var/run/crio/crio.sock
           {{- else }}
             - mountPath: /var/run/docker.sock
           {{- end }}
@@ -72,11 +93,7 @@ spec:
             - mountPath: /etc/config
               name: config-volume
               readOnly: true              
-          lifecycle:
-            preStop:
-              exec:
-                command: ["/usr/local/bin/consul", "leave"]
-      terminationGracePeriodSeconds: 60
+      terminationGracePeriodSeconds: 300
       restartPolicy: Always
       volumes:
         - name: nv-share
@@ -96,6 +113,8 @@ spec:
           hostPath:
           {{- if .Values.containerd.enabled }}
             path: {{ .Values.containerd.path }}
+          {{- else if .Values.crio.enabled }}
+            path: {{ .Values.crio.path }}
           {{- else }}
             path: {{ .Values.docker.path }}
           {{- end }}

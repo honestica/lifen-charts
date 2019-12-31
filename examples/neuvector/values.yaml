@@ -5,15 +5,22 @@
 openshift: false
 
 registry: docker.io
-tag: 2.5.2
+tag: 3.1.1
 imagePullSecrets: dockerhub
 
 controller:
   # If false, controller will not be installed
   enabled: true
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
   image:
     repository: neuvector/controller
   replicas: 3
+  apisvc:
+    type:
   pvc:
     enabled: false
     accessModes:
@@ -23,6 +30,11 @@ controller:
     enabled: false
     secretName: {}
     shareName: {}
+  federation:
+    mastersvc:
+      type:
+    managedsvc:
+      type:
   ingress:
     enabled: false
     host: {} # MUST be set, if ingress is enabled
@@ -111,5 +123,12 @@ containerd:
   enabled: false
   path: /var/run/containerd/containerd.sock
 
+crio:
+  enabled: false
+  path: /var/run/crio/crio.sock
+
 admissionwebhook:
+  type: ClusterIP
+
+crdwebhook:
   type: ClusterIP

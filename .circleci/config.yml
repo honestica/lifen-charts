@@ -105,7 +105,15 @@ jobs:
           name: Test fluent-bit installation
           command: |
             helm upgrade fluent-bit ./fluent-bit/ --install  --timeout 500 --wait -f examples/fluent-bit/values.yaml --kube-context minikube --namespace fluent-bit
- 
+      - run:
+          name: Debug on failures
+          command: | 
+            kubectl get node
+            kubectl get pod --all-namespaces
+            kubectl describe pod --all-namespaces
+            helm list --all --kube-context minikube --namespace lifen-app-test
+          when: on_fail
+
   release:
     docker:
       - image: circleci/python:3

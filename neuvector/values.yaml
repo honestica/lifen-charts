@@ -5,8 +5,8 @@
 openshift: false
 
 registry: docker.io
-tag: 2.5.2
-imagePullSecrets: {}
+tag: 3.1.1
+imagePullSecrets:
 
 controller:
   # If false, controller will not be installed

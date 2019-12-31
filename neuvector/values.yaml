@@ -87,8 +87,11 @@ manager:
       # nginx.ingress.kubernetes.io/whitelist-source-range: "1.1.1.1"
       # nginx.ingress.kubernetes.io/rewrite-target: /
       # nginx.ingress.kubernetes.io/enable-rewrite-log: "true"
-    tls: false
-    secretName:  # my-tls-secret
+    tls: []
+      # - hosts:
+      #   - 'host'
+      #   secretName: your secret
+        
 
 cve:
   updater:

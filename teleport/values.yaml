@@ -124,7 +124,7 @@ ports:
 proxy:
   tls:
     # We assume TLS is terminated in front of the proxy by default
-    enabled: true
+    enabled: false
     # tweak this if you have multiple proxies in a single namespace
     secretName: tls-web
 

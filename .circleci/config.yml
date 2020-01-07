@@ -39,7 +39,7 @@ jobs:
             helm lint ./sloop -f examples/sloop/values.yaml
             helm lint ./fluent-bit -f examples/fluent-bit/values.yaml
             helm lint ./squid -f examples/squid/values.yaml
-            helm lint ./squid -f examples/teleport/values.yaml
+            helm lint ./teleport -f examples/teleport/values.yaml
       - run:
           name: Execute kubeval on the charts to ensure kubernetes compability with 1.15
           command: |

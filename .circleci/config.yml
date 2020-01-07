@@ -50,7 +50,7 @@ jobs:
             helm template ./sloop -f examples/sloop/values.yaml | kubeval -v 1.15.4 --strict
             helm template ./fluent-bit -f examples/fluent-bit/values.yaml | kubeval -v 1.15.4 --strict
             helm template ./squid -f examples/squid/values.yaml | kubeval -v 1.15.4 --strict
-            helm template ./squid -f examples/teleport/values.yaml | kubeval -v 1.15.4 --strict
+            helm template ./teleport -f examples/teleport/values.yaml | kubeval -v 1.15.4 --strict
       - run:
           name: start minikube
           command: |

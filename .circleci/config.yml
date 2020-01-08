@@ -39,6 +39,7 @@ jobs:
             helm lint ./sloop -f examples/sloop/values.yaml
             helm lint ./fluent-bit -f examples/fluent-bit/values.yaml
             helm lint ./squid -f examples/squid/values.yaml
+            helm lint ./teleport -f examples/teleport/values.yaml
       - run:
           name: Execute kubeval on the charts to ensure kubernetes compability with 1.15
           command: |
@@ -49,6 +50,7 @@ jobs:
             helm template ./sloop -f examples/sloop/values.yaml | kubeval -v 1.15.4 --strict
             helm template ./fluent-bit -f examples/fluent-bit/values.yaml | kubeval -v 1.15.4 --strict
             helm template ./squid -f examples/squid/values.yaml | kubeval -v 1.15.4 --strict
+            helm template ./teleport -f examples/teleport/values.yaml | kubeval -v 1.15.4 --strict
       - run:
           name: start minikube
           command: |
@@ -78,6 +80,10 @@ jobs:
           name: Test awx installation
           command: |
             helm upgrade awx ./awx/ --install  --timeout 500 --wait -f examples/awx/values.yaml --kube-context minikube --namespace awx
+      - run:
+          name: Test teleport installation
+          command: |
+            helm upgrade teleport ./teleport/ --install  --timeout 500 --wait -f examples/teleport/values.yaml --kube-context minikube --namespace teleport
       - run:
           name: Test kube-iptables-tailer installation
           command: |
@@ -143,6 +149,7 @@ jobs:
             helm package kured -d packages
             helm package sloop -d packages
             helm package fluent-bit -d packages
+            helm package teleport -d packages
             helm repo index packages --url https://honestica.github.io/lifen-charts/packages
             mv packages/index.yaml index.yaml
       - run:

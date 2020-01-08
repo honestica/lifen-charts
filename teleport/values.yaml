@@ -1,5 +1,5 @@
 image:
-  repository: quay.io/gravitational/teleport-ent
+  repository: quay.io/gravitational/teleport
   tag: 4.2.1
   pullPolicy: IfNotPresent
   # Optionally specify an array of imagePullSecrets.
@@ -124,15 +124,15 @@ ports:
 proxy:
   tls:
     # We assume TLS is terminated in front of the proxy by default
-    enabled: false
+    enabled: true
     # tweak this if you have multiple proxies in a single namespace
     secretName: tls-web
 
 license:
   ## Set false to run Teleport in Community edition mode
   enabled: false
-  secretName: license
-  mountPath: /var/lib/license
+  # secretName: license
+  # mountPath: /var/lib/license
 
 # See the admin guide for full details
 # https://gravitational.com/teleport/docs/admin-guide/#configuration-file
@@ -162,8 +162,8 @@ config:
     public_addr: teleport.example.com
     web_listen_addr: 0.0.0.0:3080
     listen_addr: 0.0.0.0:3023
-    https_key_file: /var/lib/certs/tls.key
-    https_cert_file: /var/lib/certs/tls.crt
+    # https_key_file: /var/lib/certs/tls.key
+    # https_cert_file: /var/lib/certs/tls.crt
     # kubernetes section configures
     # kubernetes proxy protocol support
     kubernetes:

@@ -92,17 +92,17 @@ jobs:
           name: Test squid installation
           command: |
             helm upgrade squid ./squid/ --install  --timeout 500 --wait --kube-context minikube --namespace squid
-      - run:
-          name: Test neuvector installation
-          command: |
-            kubectl create secret docker-registry dockerhub -n neuvector --docker-username=$DOCKERHUB_USERNAME --docker-password=$DOCKERHUB_PASSWORD
-            helm upgrade neuvector ./neuvector/ --install  --timeout 200 --wait --kube-context minikube --namespace neuvector -f ./examples/neuvector/values.yaml
-            helm delete --purge neuvector
-            helm upgrade neuvector ./neuvector/ --install  --timeout 200 --wait --kube-context minikube --namespace neuvector -f ./examples/neuvector/values-custom.yaml
-      - run:
-          name: Test kured installation
-          command: |
-            helm upgrade kured ./kured/ --install  --timeout 500 --wait -f examples/kured/values.yaml --kube-context minikube --namespace kured
+      # - run:
+      #     name: Test neuvector installation
+      #     command: |
+      #       kubectl create secret docker-registry dockerhub -n neuvector --docker-username=$DOCKERHUB_USERNAME --docker-password=$DOCKERHUB_PASSWORD
+      #       helm upgrade neuvector ./neuvector/ --install  --timeout 200 --wait --kube-context minikube --namespace neuvector -f ./examples/neuvector/values.yaml
+      #       helm delete --purge neuvector
+      #       helm upgrade neuvector ./neuvector/ --install  --timeout 200 --wait --kube-context minikube --namespace neuvector -f ./examples/neuvector/values-custom.yaml
+      # - run:
+      #     name: Test kured installation
+      #     command: |
+      #       helm upgrade kured ./kured/ --install  --timeout 500 --wait -f examples/kured/values.yaml --kube-context minikube --namespace kured
       - run:
           name: Test sloop installation
           command: |

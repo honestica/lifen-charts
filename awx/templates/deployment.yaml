@@ -46,9 +46,9 @@ spec:
             - name: DATABASE_NAME
               value: {{ .Values.postgresql.postgresqlDatabase }}
             - name: DATABASE_HOST
-              value: {{ include "awx.fullname" . }}-postgresql
+              value: {{ .Values.postgresql.postgresqlHost }}
             - name: DATABASE_PORT
-              value: "5432"
+              value: {{ .Values.postgresql.postgresqlPort | quote }}
             - name: DATABASE_PASSWORD
               value: {{ .Values.postgresql.postgresqlPassword }}
             - name: MEMCACHED_HOST
@@ -72,7 +72,7 @@ spec:
             - name: DATABASE_HOST
               value: {{ .Values.postgresql.postgresqlHost }}
             - name: DATABASE_PORT
-              value: {{ .Values.postgresql.postgresqlPort }}
+              value: {{ .Values.postgresql.postgresqlPort | quote }}
             - name: DATABASE_PASSWORD
               value: {{ .Values.postgresql.postgresqlPassword }}
             - name: MEMCACHED_HOST

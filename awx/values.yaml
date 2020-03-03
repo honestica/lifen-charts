@@ -73,6 +73,8 @@ rabbitmq:
 # Chart values https://github.com/helm/charts/blob/master/stable/postgresql/values.yaml
 postgresql:
   install: true
+  postgresqlHost: awx-postgresql
+  postgresqlPort: 5432
   postgresqlUsername: postgres
   postgresqlPassword: awx
   postgresqlDatabase: awx

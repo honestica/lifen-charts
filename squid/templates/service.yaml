@@ -20,6 +20,12 @@ spec:
       targetPort: http
       protocol: TCP
       name: http
+{{- if .Values.metrics.enabled }}
+    - port: {{ .Values.metrics.exporter.port }}
+      targetPort: metrics
+      protocol: TCP
+      name: metrics
+{{- end }}
   selector:
     app: {{ template "squid.name" . }}
     release: {{ .Release.Name }}

@@ -48,6 +48,35 @@ spec:
             periodSeconds: 10
           resources:
 {{ toYaml .Values.resources | indent 12 }}
+{{- if .Values.metrics.enabled }}
+        - name: exporter
+          image: "{{ .Values.metrics.exporter.image.repository }}:{{ .Values.metrics.exporter.image.tag }}"
+          imagePullPolicy: {{ .Values.metrics.exporter.image.pullPolicy }}
+          env:
+          - name: SQUID_HOSTNAME
+            value: localhost
+          - name: SQUID_EXPORTER_LISTEN
+            value: ":{{ .Values.metrics.exporter.port }}"
+          - name: SQUID_PORT
+            value: "3128"
+          ports:
+          - name: metrics
+            containerPort: {{ .Values.metrics.exporter.port }}
+            protocol: TCP
+          livenessProbe:
+            tcpSocket:
+              port: {{ .Values.metrics.exporter.port }}
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /metrics
+              port: metrics
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+{{ toYaml .Values.metrics.exporter.resources | indent 12 }}
+{{- end }}
       volumes:
       - name: {{ template "squid.fullname" . }}-conf
         configMap:

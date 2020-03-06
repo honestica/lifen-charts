@@ -21,8 +21,10 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
     spec:
+{{- if .Values.image.imagePullSecrets }}
       imagePullSecrets:
         - name: {{ .Values.image.imagePullSecrets }}
+{{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

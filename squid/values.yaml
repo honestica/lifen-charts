@@ -17,6 +17,7 @@ service:
   # Specify external IP if needed
   #loadBalancerIP: "" 
   port: 80
+  # annotations: {}
 
 ingress:
   enabled: false
@@ -92,3 +93,14 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+metrics:
+  enabled: false
+  serviceMonitor: false
+  exporter:
+    port: 9301
+    resources: {}
+    image:
+      repository: boynux/squid-exporter
+      tag: v1.8
+      pullPolicy: IfNotPresent

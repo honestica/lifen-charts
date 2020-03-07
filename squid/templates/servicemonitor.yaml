@@ -1,0 +1,28 @@
+{{- if and .Values.metrics.enabled .Values.metrics.serviceMonitor }}
+{{- $fullName := include "squid.fullname" . }}
+{{- $name := include "squid.name" . }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ $fullName }}
+  labels:
+    app: {{ $name }}
+    chart: {{ template "squid.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: exporter
+spec:
+  endpoints:
+    - interval: 10s
+      scrapeTimeout: 10s
+      honorLabels: true
+      port: metrics
+      path: /metrics
+      scheme: http
+  selector:
+    matchLabels:
+      app: {{ $name }}
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+{{- end }}

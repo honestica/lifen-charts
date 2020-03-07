@@ -17,6 +17,7 @@ service:
   # Specify external IP if needed
   #loadBalancerIP: "" 
   port: 80
+  # annotations: {}
 
 ingress:
   enabled: false

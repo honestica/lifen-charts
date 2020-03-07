@@ -2,6 +2,12 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ template "squid.fullname" . }}
+{{- if .Values.service.annotations }}
+  annotations:
+  {{- range $key, $value := .Values.service.annotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
+{{- end }}
   labels:
     app: {{ template "squid.name" . }}
     chart: {{ template "squid.chart" . }}

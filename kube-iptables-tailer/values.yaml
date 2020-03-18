@@ -13,6 +13,10 @@ fullnameOverride: ""
 iptablesLogPrefix: "calico-packet:"
 kubeApiServicer: "https://kubernetes.default:443"
 
+podAnnotations: {}
+  # prometheus.io/scrape: "true"
+  # prometheus.io/port: "9090"
+
 rbac:
   create: true
 

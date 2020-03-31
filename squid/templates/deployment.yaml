@@ -25,6 +25,29 @@ spec:
       imagePullSecrets:
         - name: {{ .Values.image.imagePullSecrets }}
 {{- end }}
+      initContainers:
+        # if there is a line in config map that starts with `cache_dir`
+        # run `squid -z` which will create the cache structure on the filesystem
+        - name: create-cache-dir
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+          volumeMounts:
+          - name: {{ template "squid.fullname" . }}-conf
+            mountPath: /etc/squid/squid.conf
+            subPath: squid.conf
+          - name: cache
+            mountPath: /var/cache/squid
+          command:
+            - /bin/sh
+            - -c
+          args:
+            - |
+              set -e
+              chown -R squid.squid /var/cache/squid
+              chmod 770 /var/cache/squid
+              squid -z --foreground 2>&1
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -37,6 +60,8 @@ spec:
           - name: {{ template "squid.fullname" . }}-conf
             mountPath: /etc/squid/squid.conf
             subPath: squid.conf
+          - name: cache
+            mountPath: /var/cache/squid
         # Load the configuration files for nginx
           livenessProbe:
             tcpSocket:
@@ -83,6 +108,8 @@ spec:
       - name: {{ template "squid.fullname" . }}-conf
         configMap:
           name: {{ template "squid.fullname" . }}-conf
+      - emptyDir: {}
+        name: cache
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

@@ -2,19 +2,19 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-replicaCount: 1
 
-# awx_web & tasks are deployed in the same pod
 awx_web:
+  replicaCount: 1
   image:
     repository: ansible/awx_web
-    tag: 8.0.0
+    tag: 10.0.0
     pullPolicy: IfNotPresent
 
 awx_task:
+  replicaCount: 2
   image:
     repository: ansible/awx_task
-    tag: 8.0.0
+    tag: 10.0.0
     pullPolicy: IfNotPresent
 
 # AWX config

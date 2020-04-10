@@ -1,12 +1,13 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ include "awx.fullname" . }}
+  name: {{ include "awx.fullname" . }}-web
   labels:
     app.kubernetes.io/name: {{ include "awx.name" . }}
     helm.sh/chart: {{ include "awx.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/component: web
   annotations:
     {{- range $key, $value := .Values.deployment.annotations }}
       {{ $key }}: {{ $value | quote }}

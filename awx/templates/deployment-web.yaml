@@ -12,7 +12,7 @@ metadata:
       {{ $key }}: {{ $value | quote }}
     {{- end }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .Values.awx_web.replicaCount }}
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "awx.name" . }}
@@ -61,35 +61,6 @@ spec:
               value: {{ include "awx.fullname" . }}-memcached
             - name: RABBITMQ_HOST
               value: {{ include "awx.fullname" . }}-rabbitmq
-
-        - name: task
-          image: "{{ .Values.awx_task.image.repository }}:{{ .Values.awx_task.image.tag }}"
-          imagePullPolicy: {{ .Values.awx_task.image.pullPolicy }}
-          command:
-            - /usr/bin/launch_awx_task.sh
-          volumeMounts:
-            - mountPath: /etc/tower
-              name: {{ include "awx.fullname" . }}-application-config
-          env:
-            - name: DATABASE_USER
-              value: {{ .Values.postgresql.postgresqlUsername }}
-            - name: DATABASE_NAME
-              value: {{ .Values.postgresql.postgresqlDatabase }}
-            - name: DATABASE_HOST
-              value: {{ .Values.postgresql.postgresqlHost }}
-            - name: DATABASE_PORT
-              value: {{ .Values.postgresql.postgresqlPort | quote }}
-            - name: DATABASE_PASSWORD
-              value: {{ .Values.postgresql.postgresqlPassword }}
-            - name: MEMCACHED_HOST
-              value: {{ include "awx.fullname" . }}-memcached
-            - name: RABBITMQ_HOST
-              value: {{ include "awx.fullname" . }}-rabbitmq
-            - name: AWX_ADMIN_USER
-              value: {{ .Values.default_admin_user }}
-            - name: AWX_ADMIN_PASSWORD
-              value: {{ .Values.default_admin_password }}
-
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- if .Values.nodeSelector }}

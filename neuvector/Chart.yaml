@@ -7,4 +7,6 @@ home: https://neuvector.com
 maintainers:
   - name: becitsthere
     email: support@neuvector.com
+  - email: matthieu.paret@lifen.fr
+    name: mtparet
 engine: gotpl

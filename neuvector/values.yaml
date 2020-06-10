@@ -5,7 +5,7 @@
 openshift: false
 
 registry: docker.io
-tag: latest
+tag: 3.2.1
 imagePullSecrets:
 psp: false
 
@@ -44,8 +44,10 @@ controller:
     annotations:
       ingress.kubernetes.io/protocol: https
       # ingress.kubernetes.io/rewrite-target: /
-    tls: false
-    secretName:
+    tls: []
+      # - hosts:
+      #   - 'host'
+      #   secretName: your secret
   configmap:
     enabled: false
     data:
@@ -89,8 +91,10 @@ manager:
       # nginx.ingress.kubernetes.io/whitelist-source-range: "1.1.1.1"
       # nginx.ingress.kubernetes.io/rewrite-target: /
       # nginx.ingress.kubernetes.io/enable-rewrite-log: "true"
-    tls: false
-    secretName:  # my-tls-secret
+    tls: []
+      # - hosts:
+      #   - 'host'
+      #   secretName: your secret
 
 cve:
   updater:

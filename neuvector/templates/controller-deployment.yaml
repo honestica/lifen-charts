@@ -83,7 +83,7 @@ spec:
             - mountPath: /var/run/docker.sock
           {{- end }}
               name: runtime-sock
-              readOnly: false
+              readOnly: true
             - mountPath: /host/proc
               name: proc-vol
               readOnly: true
@@ -130,4 +130,17 @@ spec:
           {{- if not .Values.controller.configmap.enabled }}
             optional: true
           {{- end }}
+{{- if gt (int .Values.controller.disruptionbudget) 0 }}
+---
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: neuvector-controller-pdb
+  namespace: neuvector
+spec:
+  minAvailable: {{ .Values.controller.disruptionbudget }}
+  selector:
+    matchLabels:
+      app: neuvector-controller-pod
+{{- end }}
 {{- end }}

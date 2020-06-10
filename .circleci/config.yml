@@ -30,6 +30,13 @@ jobs:
             tar xf kubeval-linux-amd64.tar.gz
             sudo mv kubeval /usr/local/bin
       - run:
+          name: setup conftest and deprek8ion
+          command: |
+            curl -SL https://github.com/instrumenta/conftest/releases/download/v0.18.2/conftest_0.18.2_Linux_x86_64.tar.gz -o conftest.tar.gz
+            tar xf conftest.tar.gz
+            sudo mv conftest /usr/local/bin
+            curl https://raw.githubusercontent.com/naquada/deprek8/master/policy/deprek8.rego > deprek8.rego
+      - run:
           name: Execute lint on the charts
           command: |
             helm lint ./awx -f examples/awx/values.yaml

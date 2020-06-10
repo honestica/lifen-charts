@@ -4,9 +4,9 @@ jobs:
     machine:
       image: ubuntu-1604:201903-01
     environment:
-      K8S_VERSION: v1.15.7
+      K8S_VERSION: v1.16.10
       KUBECONFIG: /home/circleci/.kube/config
-      MINIKUBE_VERSION: v1.6.2
+      MINIKUBE_VERSION: v1.11.0
       MINIKUBE_HOME: /home/circleci
     steps:
       - checkout
@@ -22,11 +22,11 @@ jobs:
             curl -Lo minikube https://github.com/kubernetes/minikube/releases/download/${MINIKUBE_VERSION}/minikube-linux-amd64 && chmod +x minikube && sudo mv minikube /usr/local/bin/
       - run:
           name: setup helm
-          command: curl -SL https://storage.googleapis.com/kubernetes-helm/helm-v2.16.1-linux-amd64.tar.gz | tar xvz -C /tmp && sudo mv /tmp/linux-amd64/helm /usr/local/bin/helm && sudo chmod +x /usr/local/bin/helm
+          command: curl -SL https://storage.googleapis.com/kubernetes-helm/helm-v2.16.7-linux-amd64.tar.gz | tar xvz -C /tmp && sudo mv /tmp/linux-amd64/helm /usr/local/bin/helm && sudo chmod +x /usr/local/bin/helm
       - run:
           name: setup kubeval
           command: |
-            curl -L https://github.com/instrumenta/kubeval/releases/download/0.14.0/kubeval-linux-amd64.tar.gz -o kubeval-linux-amd64.tar.gz
+            curl -L https://github.com/instrumenta/kubeval/releases/download/0.15.0/kubeval-linux-amd64.tar.gz -o kubeval-linux-amd64.tar.gz
             tar xf kubeval-linux-amd64.tar.gz
             sudo mv kubeval /usr/local/bin
       - run:
@@ -41,16 +41,32 @@ jobs:
             helm lint ./squid -f examples/squid/values.yaml
             helm lint ./teleport -f examples/teleport/values.yaml
       - run:
-          name: Execute kubeval on the charts to ensure kubernetes compability with 1.15
+          name: Execute kubeval on the charts to ensure kubernetes compability with 1.16
           command: |
-            helm template ./awx -f examples/awx/values.yaml | kubeval -v 1.15.4 --strict
-            helm template ./kube-iptables-tailer -f examples/kube-iptables-tailer/values.yaml | kubeval -v 1.15.4 --strict
-            helm template ./neuvector -f examples/neuvector/values.yaml | kubeval -v 1.15.4 --ignore-missing-schemas --strict
-            helm template ./kured -f examples/kured/values.yaml | kubeval -v 1.15.4 --strict
-            helm template ./sloop -f examples/sloop/values.yaml | kubeval -v 1.15.4 --strict
-            helm template ./fluent-bit -f examples/fluent-bit/values.yaml | kubeval -v 1.15.4 --strict
-            helm template ./squid -f examples/squid/values.yaml | kubeval -v 1.15.4 --strict
-            helm template ./teleport -f examples/teleport/values.yaml | kubeval -v 1.15.4 --strict
+            helm template ./awx -f examples/awx/values.yaml > templates.yaml
+            kubeval -v 1.15.4 --strict templates.yaml
+            kubeval -v 1.16.10 --strict templates.yaml
+            helm template ./kube-iptables-tailer -f examples/kube-iptables-tailer/values.yaml > templates.yaml
+            kubeval -v 1.15.4 --strict templates.yaml
+            kubeval -v 1.16.10 --strict templates.yaml
+            helm template ./neuvector -f examples/neuvector/values.yaml > templates.yaml
+            kubeval -v 1.15.4 --ignore-missing-schemas --strict templates.yaml
+            kubeval -v 1.16.10 --ignore-missing-schemas --strict templates.yaml
+            helm template ./kured -f examples/kured/values.yaml > templates.yaml
+            kubeval -v 1.15.4 --strict templates.yaml
+            kubeval -v 1.16.10 --strict templates.yaml
+            helm template ./sloop -f examples/sloop/values.yaml > templates.yaml
+            kubeval -v 1.15.4 --strict templates.yaml
+            kubeval -v 1.16.10 --strict templates.yaml
+            helm template ./fluent-bit -f examples/fluent-bit/values.yaml > templates.yaml
+            kubeval -v 1.15.4 --strict templates.yaml
+            kubeval -v 1.16.10 --strict templates.yaml
+            helm template ./squid -f examples/squid/values.yaml > templates.yaml
+            kubeval -v 1.15.4 --strict templates.yaml
+            kubeval -v 1.16.10 --strict templates.yaml
+            helm template ./teleport -f examples/teleport/values.yaml > templates.yaml
+            kubeval -v 1.15.4 --strict templates.yaml
+            kubeval -v 1.16.10 --strict templates.yaml
       - run:
           name: start minikube
           command: |
@@ -128,7 +144,7 @@ jobs:
       - run:
           name: Install helm
           command: |
-            curl -SL https://storage.googleapis.com/kubernetes-helm/helm-v2.16.1-linux-amd64.tar.gz | tar xvz -C /tmp && sudo mv /tmp/linux-amd64/helm /usr/local/bin/helm && sudo chmod +x /usr/local/bin/helm
+            curl -SL https://storage.googleapis.com/kubernetes-helm/helm-v2.16.7-linux-amd64.tar.gz | tar xvz -C /tmp && sudo mv /tmp/linux-amd64/helm /usr/local/bin/helm && sudo chmod +x /usr/local/bin/helm
       - add_ssh_keys:
           fingerprints:
             - "31:d4:50:ae:e8:c3:3b:3e:f4:66:48:47:7d:a0:18:a8"

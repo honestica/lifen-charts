@@ -50,38 +50,38 @@ jobs:
       - run:
           name: Execute kubeval on the charts to ensure kubernetes compability with 1.15 and 1.16
           command: |
-            helm template ./awx -f examples/awx/values.yaml > templates.yaml
-            kubeval -v 1.15.4 --strict templates.yaml
-            kubeval -v 1.16.4 --strict templates.yaml
-            conftest test -p deprek8.rego templates.yaml
-            helm template ./kube-iptables-tailer -f examples/kube-iptables-tailer/values.yaml > templates.yaml
-            kubeval -v 1.15.4 --strict templates.yaml
-            kubeval -v 1.16.4 --strict templates.yaml
-            conftest test -p deprek8.rego templates.yaml
-            helm template ./neuvector -f examples/neuvector/values.yaml > templates.yaml
-            kubeval -v 1.15.4 --ignore-missing-schemas --strict templates.yaml
-            kubeval -v 1.16.4 --ignore-missing-schemas --strict templates.yaml
-            conftest test -p deprek8.rego templates.yaml
-            helm template ./kured -f examples/kured/values.yaml > templates.yaml
-            kubeval -v 1.15.4 --strict templates.yaml
-            kubeval -v 1.16.4 --strict templates.yaml
-            conftest test -p deprek8.rego templates.yaml
-            helm template ./sloop -f examples/sloop/values.yaml > templates.yaml
-            kubeval -v 1.15.4 --strict templates.yaml
-            kubeval -v 1.16.4 --strict templates.yaml
-            conftest test -p deprek8.rego templates.yaml
-            helm template ./fluent-bit -f examples/fluent-bit/values.yaml > templates.yaml
-            kubeval -v 1.15.4 --strict templates.yaml
-            kubeval -v 1.16.4 --strict templates.yaml
-            conftest test -p deprek8.rego templates.yaml
-            helm template ./squid -f examples/squid/values.yaml > templates.yaml
-            kubeval -v 1.15.4 --strict templates.yaml
-            kubeval -v 1.16.4 --strict templates.yaml
-            conftest test -p deprek8.rego templates.yaml
-            helm template ./teleport -f examples/teleport/values.yaml > templates.yaml
-            kubeval -v 1.15.4 --strict templates.yaml
-            kubeval -v 1.16.4 --strict templates.yaml
-            conftest test -p deprek8.rego templates.yaml
+            helm template ./awx -f examples/awx/values.yaml > awx.yaml
+            kubeval -v 1.15.4 --strict awx.yaml
+            kubeval -v 1.16.4 --strict awx.yaml
+            conftest test -p deprek8.rego awx.yaml
+            helm template ./kube-iptables-tailer -f examples/kube-iptables-tailer/values.yaml > kube-iptables-tailer.yaml
+            kubeval -v 1.15.4 --strict kube-iptables-tailer.yaml
+            kubeval -v 1.16.4 --strict kube-iptables-tailer.yaml
+            conftest test -p deprek8.rego kube-iptables-tailer.yaml
+            helm template ./neuvector -f examples/neuvector/values.yaml > neuvector.yaml
+            kubeval -v 1.15.4 --ignore-missing-schemas --strict neuvector.yaml
+            kubeval -v 1.16.4 --ignore-missing-schemas --strict neuvector.yaml
+            conftest test -p deprek8.rego neuvector.yaml
+            helm template ./kured -f examples/kured/values.yaml > kured.yaml
+            kubeval -v 1.15.4 --strict kured.yaml
+            kubeval -v 1.16.4 --strict kured.yaml
+            conftest test -p deprek8.rego kured.yaml
+            helm template ./sloop -f examples/sloop/values.yaml > sloop.yaml
+            kubeval -v 1.15.4 --strict sloop.yaml
+            kubeval -v 1.16.4 --strict sloop.yaml
+            conftest test -p deprek8.rego sloop.yaml
+            helm template ./fluent-bit -f examples/fluent-bit/values.yaml > fluent-bit.yaml
+            kubeval -v 1.15.4 --strict fluent-bit.yaml
+            kubeval -v 1.16.4 --strict fluent-bit.yaml
+            conftest test -p deprek8.rego fluent-bit.yaml
+            helm template ./squid -f examples/squid/values.yaml > squid.yaml
+            kubeval -v 1.15.4 --strict squid.yaml
+            kubeval -v 1.16.4 --strict squid.yaml
+            conftest test -p deprek8.rego squid.yaml
+            helm template ./teleport -f examples/teleport/values.yaml > teleport.yaml
+            kubeval -v 1.15.4 --strict teleport.yaml
+            kubeval -v 1.16.4 --strict teleport.yaml
+            conftest test -p deprek8.rego teleport.yaml
       - run:
           name: start minikube
           command: |

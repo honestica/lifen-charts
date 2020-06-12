@@ -4,9 +4,9 @@ jobs:
     machine:
       image: ubuntu-1604:201903-01
     environment:
-      K8S_VERSION: v1.15.7
+      K8S_VERSION: v1.16.10
       KUBECONFIG: /home/circleci/.kube/config
-      MINIKUBE_VERSION: v1.6.2
+      MINIKUBE_VERSION: v1.11.0
       MINIKUBE_HOME: /home/circleci
     steps:
       - checkout
@@ -22,13 +22,20 @@ jobs:
             curl -Lo minikube https://github.com/kubernetes/minikube/releases/download/${MINIKUBE_VERSION}/minikube-linux-amd64 && chmod +x minikube && sudo mv minikube /usr/local/bin/
       - run:
           name: setup helm
-          command: curl -SL https://storage.googleapis.com/kubernetes-helm/helm-v2.16.1-linux-amd64.tar.gz | tar xvz -C /tmp && sudo mv /tmp/linux-amd64/helm /usr/local/bin/helm && sudo chmod +x /usr/local/bin/helm
+          command: curl -SL https://storage.googleapis.com/kubernetes-helm/helm-v2.16.7-linux-amd64.tar.gz | tar xvz -C /tmp && sudo mv /tmp/linux-amd64/helm /usr/local/bin/helm && sudo chmod +x /usr/local/bin/helm
       - run:
           name: setup kubeval
           command: |
-            curl -L https://github.com/instrumenta/kubeval/releases/download/0.14.0/kubeval-linux-amd64.tar.gz -o kubeval-linux-amd64.tar.gz
+            curl -L https://github.com/instrumenta/kubeval/releases/download/0.15.0/kubeval-linux-amd64.tar.gz -o kubeval-linux-amd64.tar.gz
             tar xf kubeval-linux-amd64.tar.gz
             sudo mv kubeval /usr/local/bin
+      - run:
+          name: setup conftest and deprek8ion
+          command: |
+            curl -SL https://github.com/instrumenta/conftest/releases/download/v0.18.2/conftest_0.18.2_Linux_x86_64.tar.gz -o conftest.tar.gz
+            tar xf conftest.tar.gz
+            sudo mv conftest /usr/local/bin
+            curl https://raw.githubusercontent.com/naquada/deprek8/master/policy/deprek8.rego > deprek8.rego
       - run:
           name: Execute lint on the charts
           command: |
@@ -41,20 +48,44 @@ jobs:
             helm lint ./squid -f examples/squid/values.yaml
             helm lint ./teleport -f examples/teleport/values.yaml
       - run:
-          name: Execute kubeval on the charts to ensure kubernetes compability with 1.15
+          name: Execute kubeval on the charts to ensure kubernetes compability with 1.15 and 1.16
           command: |
-            helm template ./awx -f examples/awx/values.yaml | kubeval -v 1.15.4 --strict
-            helm template ./kube-iptables-tailer -f examples/kube-iptables-tailer/values.yaml | kubeval -v 1.15.4 --strict
-            helm template ./neuvector -f examples/neuvector/values.yaml | kubeval -v 1.15.4 --ignore-missing-schemas --strict
-            helm template ./kured -f examples/kured/values.yaml | kubeval -v 1.15.4 --strict
-            helm template ./sloop -f examples/sloop/values.yaml | kubeval -v 1.15.4 --strict
-            helm template ./fluent-bit -f examples/fluent-bit/values.yaml | kubeval -v 1.15.4 --strict
-            helm template ./squid -f examples/squid/values.yaml | kubeval -v 1.15.4 --strict
-            helm template ./teleport -f examples/teleport/values.yaml | kubeval -v 1.15.4 --strict
+            helm template ./awx -f examples/awx/values.yaml > awx.yaml
+            kubeval -v 1.15.4 --strict awx.yaml
+            kubeval -v 1.16.4 --strict awx.yaml
+            conftest test -p deprek8.rego awx.yaml
+            helm template ./kube-iptables-tailer -f examples/kube-iptables-tailer/values.yaml > kube-iptables-tailer.yaml
+            kubeval -v 1.15.4 --strict kube-iptables-tailer.yaml
+            kubeval -v 1.16.4 --strict kube-iptables-tailer.yaml
+            conftest test -p deprek8.rego kube-iptables-tailer.yaml
+            helm template ./neuvector -f examples/neuvector/values.yaml > neuvector.yaml
+            kubeval -v 1.15.4 --ignore-missing-schemas --strict neuvector.yaml
+            kubeval -v 1.16.4 --ignore-missing-schemas --strict neuvector.yaml
+            conftest test -p deprek8.rego neuvector.yaml
+            helm template ./kured -f examples/kured/values.yaml > kured.yaml
+            kubeval -v 1.15.4 --strict kured.yaml
+            kubeval -v 1.16.4 --strict kured.yaml
+            conftest test -p deprek8.rego kured.yaml
+            helm template ./sloop -f examples/sloop/values.yaml > sloop.yaml
+            kubeval -v 1.15.4 --strict sloop.yaml
+            kubeval -v 1.16.4 --strict sloop.yaml
+            conftest test -p deprek8.rego sloop.yaml
+            helm template ./fluent-bit -f examples/fluent-bit/values.yaml > fluent-bit.yaml
+            kubeval -v 1.15.4 --strict fluent-bit.yaml
+            kubeval -v 1.16.4 --strict fluent-bit.yaml
+            conftest test -p deprek8.rego fluent-bit.yaml
+            helm template ./squid -f examples/squid/values.yaml > squid.yaml
+            kubeval -v 1.15.4 --strict squid.yaml
+            kubeval -v 1.16.4 --strict squid.yaml
+            conftest test -p deprek8.rego squid.yaml
+            helm template ./teleport -f examples/teleport/values.yaml > teleport.yaml
+            kubeval -v 1.15.4 --strict teleport.yaml
+            kubeval -v 1.16.4 --strict teleport.yaml
+            conftest test -p deprek8.rego teleport.yaml
       - run:
           name: start minikube
           command: |
-            sudo minikube start --vm-driver=none --cpus 2 --memory 4096 --kubernetes-version=${K8S_VERSION} &> $HOME/minikube.log 2>&1 < /dev/null
+            sudo minikube start --vm-driver=none --cpus 2 --memory 4096 --network-plugin=cni --kubernetes-version=${K8S_VERSION} &> $HOME/minikube.log 2>&1 < /dev/null
       - run:
           name: fix permission
           command: |
@@ -66,6 +97,10 @@ jobs:
           command: |
             kubectl describe node
       - run:
+          name: Setup Cluster
+          command: |
+            ./scripts/setup_cluster.sh
+      - run:
           name: wait for minikube
           command: |
             JSONPATH='{range .items[*]}{@.metadata.name}:{range @.status.conditions[*]}{@.type}={@.status};{end}{end}';
@@ -73,13 +108,9 @@ jobs:
               sleep 1;
             done
       - run:
-          name: Setup Cluster
-          command: |
-            ./scripts/setup_cluster.sh
-      - run:
           name: Test awx installation
           command: |
-            helm upgrade awx ./awx/ --install  --timeout 500 --wait -f examples/awx/values.yaml --kube-context minikube --namespace awx
+            #helm upgrade awx ./awx/ --install  --timeout 500 --wait -f examples/awx/values.yaml --kube-context minikube --namespace awx
       - run:
           name: Test teleport installation
           command: |
@@ -128,7 +159,7 @@ jobs:
       - run:
           name: Install helm
           command: |
-            curl -SL https://storage.googleapis.com/kubernetes-helm/helm-v2.16.1-linux-amd64.tar.gz | tar xvz -C /tmp && sudo mv /tmp/linux-amd64/helm /usr/local/bin/helm && sudo chmod +x /usr/local/bin/helm
+            curl -SL https://storage.googleapis.com/kubernetes-helm/helm-v2.16.7-linux-amd64.tar.gz | tar xvz -C /tmp && sudo mv /tmp/linux-amd64/helm /usr/local/bin/helm && sudo chmod +x /usr/local/bin/helm
       - add_ssh_keys:
           fingerprints:
             - "31:d4:50:ae:e8:c3:3b:3e:f4:66:48:47:7d:a0:18:a8"

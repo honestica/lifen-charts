@@ -38,7 +38,6 @@ spec:
 {{- end }}
 {{- if and .Values.controller.enabled .Values.controller.ingress.enabled }}
 ---
-{{- if and .Values.controller.enabled .Values.controller.ingress.enabled -}}
 {{- if (semverCompare ">=1.14-0" (substr 1 -1 .Capabilities.KubeVersion.GitVersion)) }}
 apiVersion: networking.k8s.io/v1beta1
 {{- else }}

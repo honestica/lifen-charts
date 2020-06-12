@@ -3,7 +3,26 @@ entries:
   awx:
   - apiVersion: v1
     appVersion: v10.0.0
-    created: "2020-06-10T16:47:11.825351332Z"
+    created: "2020-06-12T14:17:06.066741663Z"
+    description: A Helm chart for Kubernetes
+    digest: 33dc657eb987f37d92bb25559879601899be9c26f741bf6c856f168a6dbd8b25
+    home: https://github.com/honestica/lifen-charts
+    keywords:
+    - awx
+    - ansible
+    - tower
+    maintainers:
+    - email: matthieu.paret@lifen.fr
+      name: mtparet
+    name: awx
+    sources:
+    - https://github.com/ansible/awx
+    urls:
+    - https://honestica.github.io/lifen-charts/packages/awx-1.2.1.tgz
+    version: 1.2.1
+  - apiVersion: v1
+    appVersion: v10.0.0
+    created: "2020-06-12T14:17:06.06372139Z"
     description: A Helm chart for Kubernetes
     digest: 3ad470ddc54db66b0103cf76095ff564f121b6569c783c61668d161836390e2e
     home: https://github.com/honestica/lifen-charts
@@ -22,7 +41,7 @@ entries:
     version: 1.2.0
   - apiVersion: v1
     appVersion: v9.2.0
-    created: "2020-06-10T16:47:11.819833799Z"
+    created: "2020-06-12T14:17:06.059900505Z"
     description: A Helm chart for Kubernetes
     digest: 32616ac88a9a4e66d319198ab1380161a1ebd2df39776a66d7cc2ae9e4a6f3cc
     home: https://github.com/honestica/lifen-charts
@@ -41,7 +60,7 @@ entries:
     version: 1.1.0
   - apiVersion: v1
     appVersion: v8.0.0
-    created: "2020-06-10T16:47:11.805299417Z"
+    created: "2020-06-12T14:17:06.056768019Z"
     description: A Helm chart for Kubernetes
     digest: 09399d04613cfe3836bf89f27c2d03e45a6aac454a3241b388f6854cc1881407
     home: https://github.com/honestica/lifen-charts
@@ -60,7 +79,7 @@ entries:
     version: 1.0.0
   - apiVersion: v1
     appVersion: v7.0.0
-    created: "2020-06-10T16:47:11.802096938Z"
+    created: "2020-06-12T14:17:06.053814705Z"
     description: A Helm chart for Kubernetes
     digest: 4b7b658d3d804536e18c23c88d8a2dea3f3267ef9b43609f1bdf56458b688cc7
     home: https://github.com/honestica/lifen-charts
@@ -80,9 +99,9 @@ entries:
   fluent-bit:
   - apiVersion: v1
     appVersion: 1.3.2
-    created: "2020-06-10T16:47:11.826678978Z"
+    created: "2020-06-12T14:17:06.067424053Z"
     description: Fast and Lightweight Log/Data Forwarder for Linux, BSD and OSX
-    digest: f91ba399b2313a3647fdc12d32c27ec325789738cf68762a89dcaa6b916a5be7
+    digest: 8a7a05b841b829681a572091382877b0c8ae7ec56cbf9234fd3d489d67583096
     home: https://fluentbit.io
     icon: https://fluentbit.io/assets/img/logo1-default.png
     keywords:
@@ -106,9 +125,9 @@ entries:
   kube-iptables-tailer:
   - apiVersion: v1
     appVersion: v0.1.0
-    created: "2020-06-10T16:47:11.828487898Z"
+    created: "2020-06-12T14:17:06.068525851Z"
     description: A Helm chart for Kubernetes
-    digest: 66cc722948fc71552e847adc2f68de8d8a6f5e5c8c0e34e053b83613c0f94857
+    digest: 19fdb3cdf5868cbc4199ffa98161d573cf5c1899d59d0bef10029449fe1f07a0
     home: https://github.com/honestica/lifen-charts
     keywords:
     - kube-iptables-tailer
@@ -126,7 +145,7 @@ entries:
     version: 0.1.2
   - apiVersion: v1
     appVersion: v0.1.0
-    created: "2020-06-10T16:47:11.827881653Z"
+    created: "2020-06-12T14:17:06.068159847Z"
     description: A Helm chart for Kubernetes
     digest: daf2efefbdae88ffcfb9e82fada13e32cf6bb3e2c4c1c7b1658804cf7afbb94f
     home: https://github.com/honestica/lifen-charts
@@ -146,7 +165,7 @@ entries:
     version: 0.1.1
   - apiVersion: v1
     appVersion: v0.1.0
-    created: "2020-06-10T16:47:11.827287165Z"
+    created: "2020-06-12T14:17:06.067805178Z"
     description: A Helm chart for Kubernetes
     digest: 476bcbaf7601bacbc02cc4b62d0b82817a6950205cc992df0d06f229e7ebd6f2
     home: https://github.com/honestica/lifen-charts
@@ -169,9 +188,9 @@ entries:
   kured:
   - apiVersion: v1
     appVersion: 1.2.0
-    created: "2020-06-10T16:47:11.830480214Z"
+    created: "2020-06-12T14:17:06.069694209Z"
     description: A Helm chart for kured
-    digest: a88ea5669ef46d085489642d7858c40a1e21bb78f3caaa003c0d388de93415d1
+    digest: 80c00fd615391d96cd8e8e9efe79b3ac7332fc7fc250c667102bdec676823578
     home: https://github.com/weaveworks/kured
     icon: https://raw.githubusercontent.com/weaveworks/kured/master/img/logo.png
     maintainers:
@@ -187,7 +206,7 @@ entries:
     version: 1.3.4
   - apiVersion: v1
     appVersion: 1.2.0
-    created: "2020-06-10T16:47:11.829757171Z"
+    created: "2020-06-12T14:17:06.069288039Z"
     description: A Helm chart for kured
     digest: 36cb852008f96a11687bf038e2c8ba1ba63c4c9ed9a0cb66702301ca38a3dcde
     home: https://github.com/weaveworks/kured
@@ -205,7 +224,7 @@ entries:
     version: 1.3.3
   - apiVersion: v1
     appVersion: 1.2.0
-    created: "2020-06-10T16:47:11.829131219Z"
+    created: "2020-06-12T14:17:06.068914712Z"
     description: A Helm chart for kured
     digest: 85c81ca5e993b68eaaa576bbaa3d71f6b87f3bcb0b85e062ea20c42ed8fb8751
     home: https://github.com/weaveworks/kured
@@ -224,7 +243,26 @@ entries:
   neuvector:
   - apiVersion: v1
     appVersion: 3.2.1
-    created: "2020-06-10T16:47:11.8417058Z"
+    created: "2020-06-12T14:17:06.081706125Z"
+    description: NeuVector Full Lifecycle Container Security Platform delivers the
+      only cloud-native security with uncompromising end-to-end protection from DevOps
+      vulnerability protection to automated run-time security, and featuring a true
+      Layer 7 container firewall.
+    digest: dd1ed285545c4e86e0fdaabb37c1bca251a582f5a2225d4c253ccd4f7c50c6dc
+    engine: gotpl
+    home: https://neuvector.com
+    maintainers:
+    - email: support@neuvector.com
+      name: becitsthere
+    - email: matthieu.paret@lifen.fr
+      name: mtparet
+    name: neuvector
+    urls:
+    - https://honestica.github.io/lifen-charts/packages/neuvector-1.5.2.tgz
+    version: 1.5.2
+  - apiVersion: v1
+    appVersion: 3.2.1
+    created: "2020-06-12T14:17:06.079125429Z"
     description: NeuVector Full Lifecycle Container Security Platform delivers the
       only cloud-native security with uncompromising end-to-end protection from DevOps
       vulnerability protection to automated run-time security, and featuring a true
@@ -243,7 +281,7 @@ entries:
     version: 1.5.1
   - apiVersion: v1
     appVersion: 3.1.1
-    created: "2020-06-10T16:47:11.838711992Z"
+    created: "2020-06-12T14:17:06.076579049Z"
     description: NeuVector Container Security Platform includes layer 7 container
       firewall, end-to-end vulnerability scanning, and container process/file monitoring.
     digest: a01d715f6d23c406c9f050281f211bb348dc90619ce905a5bc9889fe690d7a95
@@ -266,7 +304,7 @@ entries:
     version: 1.4.3
   - apiVersion: v1
     appVersion: 3.1.1
-    created: "2020-06-10T16:47:11.836804127Z"
+    created: "2020-06-12T14:17:06.075063035Z"
     description: NeuVector Container Security Platform includes layer 7 container
       firewall, end-to-end vulnerability scanning, and container process/file monitoring.
     digest: 156f9f1907f981d2b8096ccd8e12e6a835831154cef835ec14a225a52003a299
@@ -289,7 +327,7 @@ entries:
     version: 1.4.2
   - apiVersion: v1
     appVersion: 2.5.2
-    created: "2020-06-10T16:47:11.835100462Z"
+    created: "2020-06-12T14:17:06.073631017Z"
     description: NeuVector Container Security Platform includes layer 7 container
       firewall, end-to-end vulnerability scanning, and container process/file monitoring.
     digest: 551e3a35f3e4443e4b5e43a550023341385d995e049067dab1879a2ec6f01454
@@ -311,7 +349,7 @@ entries:
     version: 1.3.5
   - apiVersion: v1
     appVersion: 2.5.2
-    created: "2020-06-10T16:47:11.832949337Z"
+    created: "2020-06-12T14:17:06.072367043Z"
     description: NeuVector Container Security Platform includes layer 7 container
       firewall, end-to-end vulnerability scanning, and container process/file monitoring.
     digest: 1b98f8b7a7bf31560e957fc054105e4aeefb1d007f51a967aebc774c77db71a9
@@ -333,7 +371,7 @@ entries:
     version: 1.3.4
   - apiVersion: v1
     appVersion: 2.5.2
-    created: "2020-06-10T16:47:11.831665938Z"
+    created: "2020-06-12T14:17:06.070450284Z"
     description: NeuVector Container Security Platform includes layer 7 container
       firewall, end-to-end vulnerability scanning, and container process/file monitoring.
     digest: ace7d094132cd0e7c03b1d62a910975b90a0268318d0aa57441b226aa61d8527
@@ -356,9 +394,9 @@ entries:
   sloop:
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2020-06-10T16:47:11.842306313Z"
+    created: "2020-06-12T14:17:06.082280159Z"
     description: Sloop is a kubernetes history visualization tool.
-    digest: ac45a30f9f62892c067446c1da0d278da9c917b5bd60c8fe5aae4bffcd7b6fcf
+    digest: 5a9cf7b6830fcb29cc532844adc72381ec5f23050ee4310701891b07f3645d41
     icon: https://raw.githubusercontent.com/salesforce/sloop/master/other/logo.jpg
     name: sloop
     urls:
@@ -367,7 +405,25 @@ entries:
   squid:
   - apiVersion: v1
     appVersion: v0.1.0
-    created: "2020-06-10T16:47:11.848400005Z"
+    created: "2020-06-12T14:17:06.085679246Z"
+    description: A Helm chart for Kubernetes
+    digest: eb389c0174325bad4b245d0c7e3eef1450632374e615792068a4af7f27aee810
+    home: https://github.com/honestica/lifen-charts
+    keywords:
+    - squid
+    - proxy
+    maintainers:
+    - email: matthieu.paret@lifen.fr
+      name: mtparet
+    name: squid
+    sources:
+    - https://github.com/squid-cache/squid
+    urls:
+    - https://honestica.github.io/lifen-charts/packages/squid-0.2.3.tgz
+    version: 0.2.3
+  - apiVersion: v1
+    appVersion: v0.1.0
+    created: "2020-06-12T14:17:06.08508643Z"
     description: A Helm chart for Kubernetes
     digest: fe04eb0d8465316d1aff2935a7bf3b35719e489ebeab1c69389e2f630dd34382
     home: https://github.com/honestica/lifen-charts
@@ -385,7 +441,7 @@ entries:
     version: 0.2.2
   - apiVersion: v1
     appVersion: v0.1.0
-    created: "2020-06-10T16:47:11.847649022Z"
+    created: "2020-06-12T14:17:06.084543619Z"
     description: A Helm chart for Kubernetes
     digest: 220b2ff20a580bbdf14096a62f14da911c1fb7dc56a387adb43299e570ec96b8
     home: https://github.com/honestica/lifen-charts
@@ -403,7 +459,7 @@ entries:
     version: 0.2.1
   - apiVersion: v1
     appVersion: v0.1.0
-    created: "2020-06-10T16:47:11.846881659Z"
+    created: "2020-06-12T14:17:06.083946284Z"
     description: A Helm chart for Kubernetes
     digest: d7fc947e81b6a327c7fadb004b5ccc1990541a08df95e8d16d79b77449c531a0
     home: https://github.com/honestica/lifen-charts
@@ -421,7 +477,7 @@ entries:
     version: 0.2.0
   - apiVersion: v1
     appVersion: v0.1.0
-    created: "2020-06-10T16:47:11.845252902Z"
+    created: "2020-06-12T14:17:06.083381166Z"
     description: A Helm chart for Kubernetes
     digest: 8bcb87df1cfc7bdaf3f49138d86682a7853ad3b9de53eac3d1f8d2bdd4593de6
     home: https://github.com/honestica/lifen-charts
@@ -439,7 +495,7 @@ entries:
     version: 0.1.1
   - apiVersion: v1
     appVersion: v0.1.0
-    created: "2020-06-10T16:47:11.842908226Z"
+    created: "2020-06-12T14:17:06.082854992Z"
     description: A Helm chart for Kubernetes
     digest: c93fc07019e29c78833eb5992d844c4b9d09dfd9b96d0c1403865c1a10a0538b
     home: https://github.com/honestica/lifen-charts
@@ -457,7 +513,18 @@ entries:
     version: 0.1.0
   teleport:
   - apiVersion: v1
-    created: "2020-06-10T16:47:11.849313532Z"
+    created: "2020-06-12T14:17:06.087332994Z"
+    description: Teleport Enterprise
+    digest: 5627b9da34d61883e50d98928613f2459ed3f4208228d6ab5a4067b7161bf3b1
+    keywords:
+    - Teleport Enterprise
+    name: teleport
+    tillerVersion: '>=2.12.0'
+    urls:
+    - https://honestica.github.io/lifen-charts/packages/teleport-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v1
+    created: "2020-06-12T14:17:06.086398877Z"
     description: Teleport Enterprise
     digest: a3bc90abd58b384464c8ec12246243fa6e7ec0c80fbeb0220b51112b4803a2ea
     keywords:
@@ -467,4 +534,4 @@ entries:
     urls:
     - https://honestica.github.io/lifen-charts/packages/teleport-0.1.0.tgz
     version: 0.1.0
-generated: "2020-06-10T16:47:11.798886526Z"
+generated: "2020-06-12T14:17:06.05126166Z"

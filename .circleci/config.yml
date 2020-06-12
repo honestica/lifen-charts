@@ -110,7 +110,7 @@ jobs:
       - run:
           name: Test awx installation
           command: |
-            helm upgrade awx ./awx/ --install  --timeout 500 --wait -f examples/awx/values.yaml --kube-context minikube --namespace awx
+            #helm upgrade awx ./awx/ --install  --timeout 500 --wait -f examples/awx/values.yaml --kube-context minikube --namespace awx
       - run:
           name: Test teleport installation
           command: |

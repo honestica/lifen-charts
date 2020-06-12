@@ -13,7 +13,7 @@ minikube addons enable metrics-server
 kubectl config use-context minikube
 
 # Install calico
-curl https://docs.projectcalico.org/v3.8/manifests/calico.yaml -O
+curl https://docs.projectcalico.org/v3.14/manifests/calico.yaml -O
 kubectl apply -f calico.yaml
 
 # Create the namespace where this application will be deployed:

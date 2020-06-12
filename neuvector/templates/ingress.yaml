@@ -36,6 +36,7 @@ spec:
           serviceName: neuvector-service-webui
           servicePort: 8443
 {{- end }}
+{{- if and .Values.controller.enabled .Values.controller.ingress.enabled }}
 ---
 {{- if and .Values.controller.enabled .Values.controller.ingress.enabled -}}
 {{- if (semverCompare ">=1.14-0" (substr 1 -1 .Capabilities.KubeVersion.GitVersion)) }}
@@ -50,12 +51,22 @@ metadata:
 {{- with .Values.controller.ingress.annotations }}
   annotations:
 {{ toYaml . | indent 4 }}
-{{- end }}
+{{- end -}}
   labels:
     chart: {{ template "neuvector.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
+{{- if .Values.controller.ingress.tls }}
+  tls:
+  {{- range .Values.controller.ingress.tls }}
+    - hosts:
+      {{- range .hosts  }}
+        - {{ . | quote }}
+      {{- end }}
+      secretName: {{ .secretName }}
+  {{- end }}
+{{- end }}
   rules:
   - host: {{ .Values.controller.ingress.host }}
     http:
@@ -64,4 +75,4 @@ spec:
         backend:
           serviceName: neuvector-svc-controller-api
           servicePort: 10443
-{{- end }}
+{{- end -}}

@@ -5,8 +5,9 @@
 openshift: false
 
 registry: docker.io
-tag: 3.1.1
+tag: 3.2.1
 imagePullSecrets:
+psp: false
 
 controller:
   # If false, controller will not be installed
@@ -19,6 +20,7 @@ controller:
   image:
     repository: neuvector/controller
   replicas: 3
+  disruptionbudget: 0
   apisvc:
     type:
   pvc:
@@ -42,8 +44,10 @@ controller:
     annotations:
       ingress.kubernetes.io/protocol: https
       # ingress.kubernetes.io/rewrite-target: /
-    tls: false
-    secretName:
+    tls: []
+      # - hosts:
+      #   - 'host'
+      #   secretName: your secret
   configmap:
     enabled: false
     data:
@@ -91,7 +95,6 @@ manager:
       # - hosts:
       #   - 'host'
       #   secretName: your secret
-        
 
 cve:
   updater:
@@ -101,6 +104,17 @@ cve:
       repository: neuvector/updater
       tag: latest
     schedule: "0 0 * * *"
+  scanner:
+    enabled: false
+    replicas: 3
+    dockerPath: ""
+    strategy:
+      type: RollingUpdate
+      rollingUpdate:
+        maxSurge: 1
+        maxUnavailable: 0
+    image:
+      repository: neuvector/scanner
 
 exporter:
   # If false, exporter will not be installed

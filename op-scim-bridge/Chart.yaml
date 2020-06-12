@@ -1,0 +1,15 @@
+apiVersion: v1
+name: op-scim-bridge
+version: 1.0.0
+description: The 1Password SCIM bridge
+keywords:
+  - "azure active directory"
+  - "okta"
+  - "provisioning"
+  - "SCIM"
+home: https://support.1password.com/scim
+maintainers: # (optional)
+  - name: Lifen Ops
+    email: ops@lifen.fr
+icon: https://1password.com/img/logo-v1.svg
+appVersion: v1.4.1

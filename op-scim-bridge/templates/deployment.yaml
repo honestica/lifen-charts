@@ -1,0 +1,45 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: op-scim-bridge
+  labels: &ScimDeploymentLabels
+    app.kubernetes.io/name: {{ .Release.Name }}
+    app.kubernetes.io/component: op-scim-bridge
+spec:
+  selector:
+    matchLabels: *ScimDeploymentLabels
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels: *ScimDeploymentLabels
+    spec:
+      containers:
+      - name: op-scim-bridge
+        image: {{ .Values.image }}
+        imagePullPolicy: Always
+        command: ["/op-scim/op-scim"]
+        args: ["--redis-host={{ .Release.Name }}-redis-master", "--session={{ .Values.scimsessionPath }}", "--port=8080"]
+        env:
+        - name: "update"
+          value: "1"
+        - name: OP_DOMAIN
+          value: {{ .Values.accountdomain }}
+        - name: OP_ONE_CLICK
+          value: "true"
+        ports:
+        - containerPort: 8080
+        - containerPort: 8443
+        volumeMounts:
+        - name: {{ .Release.Name }}-scimsession
+          mountPath: "/secret"
+          readOnly: false
+      volumes:
+      - name: {{ .Release.Name }}-scimsession
+        persistentVolumeClaim:
+          claimName: {{ .Release.Name }}-pvc
+
+
+

@@ -1,0 +1,11 @@
+---
+scimsessionPath: /secret/scimsession
+image: 1password/scim:v1.4.1
+
+redis:
+  enabled: true
+  usePassword: false
+  cluster:
+    enabled: true
+    slaveCount: 1
+    

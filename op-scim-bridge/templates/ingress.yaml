@@ -1,0 +1,11 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: {{ .Release.Name }}-ingress
+  labels:
+    app.kubernetes.io/name: {{ .Release.Name }}
+    app.kubernetes.io/component: op-scim-bridge
+spec:
+  backend:
+    serviceName: {{ .Release.Name }}-bridge-svc
+    servicePort: 80

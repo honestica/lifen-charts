@@ -6,11 +6,5 @@ metadata:
   labels:
     app.kubernetes.io/name: {{ .Release.Name }}
     app.kubernetes.io/component: op-scim-bridge
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Mi
-  storageClassName: standard
-  
+spec: 
+{{ .Values.storageSpec | toYaml | trim | indent 2 }}

@@ -9,7 +9,7 @@ metadata:
 spec:
   selector:
     matchLabels: *ScimDeploymentLabels
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   strategy:
     type: Recreate
   template:
@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: op-scim-bridge
-        image: {{ .Values.image }}
+        image: "1password/scim:{{ .Chart.AppVersion }}"
         imagePullPolicy: Always
         command: ["/op-scim/op-scim"]
         args: ["--redis-host={{ .Release.Name }}-redis-master", "--session={{ .Values.scimsessionPath }}", "--port=8080"]
@@ -31,7 +31,6 @@ spec:
           value: "true"
         ports:
         - containerPort: 8080
-        - containerPort: 8443
         volumeMounts:
         - name: {{ .Release.Name }}-scimsession
           mountPath: "/secret"

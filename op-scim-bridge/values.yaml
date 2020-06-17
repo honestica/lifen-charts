@@ -1,6 +1,15 @@
 ---
+replicaCount: 1
+accountdomain: example.com
 scimsessionPath: /secret/scimsession
-image: 1password/scim:v1.4.1
+
+storageSpec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Mi
+  storageClassName: standard
 
 redis:
   enabled: true

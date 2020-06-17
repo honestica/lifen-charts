@@ -143,6 +143,11 @@ jobs:
           command: |
             helm upgrade fluent-bit ./fluent-bit/ --install  --timeout 500 --wait -f examples/fluent-bit/values.yaml --kube-context minikube --namespace fluent-bit
       - run:
+          name: Test op-scim installation
+          command: |
+            helm dependency update ./op-scim-bridge/
+            helm upgrade op-scim ./op-scim-bridge/ --install  --timeout 500 --wait -f examples/op-scim-bridge/values.yaml --kube-context minikube --namespace op-scim
+      - run:
           name: Debug on failures
           command: | 
             kubectl get node

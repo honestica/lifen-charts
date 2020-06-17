@@ -1,0 +1,5 @@
+dependencies:
+  - name: redis
+    version: 10.7.1
+    repository: https://charts.bitnami.com/bitnami
+    condition: redis.install

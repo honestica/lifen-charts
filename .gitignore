@@ -1,2 +1,5 @@
 # Vim
 *.swp
+
+# Artifacts
+*/charts/*.tgz

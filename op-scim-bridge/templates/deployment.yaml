@@ -4,41 +4,49 @@ kind: Deployment
 metadata:
   name: op-scim-bridge
   labels: &ScimDeploymentLabels
-    app.kubernetes.io/name: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ $.Release.Name }}
     app.kubernetes.io/component: op-scim-bridge
+  annotations:
+    {{- range $key, $value := $.Values.deployment.annotations }}
+      {{ $key }}: {{ $value | quote }}
+    {{- end }}
 spec:
   selector:
     matchLabels: *ScimDeploymentLabels
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ $.Values.replicaCount }}
   strategy:
     type: Recreate
   template:
     metadata:
       labels: *ScimDeploymentLabels
     spec:
+    {{- if $.Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml $.Values.nodeSelector | indent 8 }}
+    {{- end }}
       containers:
       - name: op-scim-bridge
         image: "1password/scim:{{ .Chart.AppVersion }}"
         imagePullPolicy: Always
         command: ["/op-scim/op-scim"]
-        args: ["--redis-host={{ .Release.Name }}-redis-master", "--session={{ .Values.scimsessionPath }}", "--port=8080"]
+        args: ["--redis-host={{ .Release.Name }}-redis-master", "--session={{ .Values.scimsessionPath }}", "--port={{ .Values.service.internalPort }}"]
         env:
         - name: "update"
           value: "1"
         - name: OP_DOMAIN
-          value: {{ .Values.accountdomain }}
+          value: {{ $.Values.accountdomain }}
         - name: OP_ONE_CLICK
           value: "true"
         ports:
-        - containerPort: 8080
+        - containerPort: {{ $.Values.service.internalPort }}
         volumeMounts:
-        - name: {{ .Release.Name }}-scimsession
+        - name: {{ $.Release.Name }}-scimsession
           mountPath: "/secret"
           readOnly: false
       volumes:
-      - name: {{ .Release.Name }}-scimsession
+      - name: {{ $.Release.Name }}-scimsession
         persistentVolumeClaim:
-          claimName: {{ .Release.Name }}-pvc
+          claimName: {{ $.Release.Name }}-pvc
 
 
 

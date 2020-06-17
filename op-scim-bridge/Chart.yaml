@@ -3,6 +3,11 @@ name: op-scim-bridge
 version: 1.0.0
 description: The 1Password SCIM bridge
 home: https://github.com/honestica/lifen-charts
+keywords:
+  - onepassword
+  - scim
+  - op-scim
+  - bridge
 maintainers: # (optional)
   - name: Lifen Ops
     email: ops@lifen.fr

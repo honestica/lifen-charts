@@ -29,12 +29,12 @@ spec:
         image: "1password/scim:{{ .Chart.AppVersion }}"
         imagePullPolicy: Always
         command: ["/op-scim/op-scim"]
-        args: ["--redis-host={{ .Release.Name }}-redis-master", "--session={{ .Values.scimsessionPath }}", "--port={{ .Values.service.internalPort }}"]
+        args: ["--redis-host={{ .Release.Name }}-redis-master", "--session=/secret/scimsession", "--port={{ .Values.service.internalPort }}", "--letsencrypt-domain={{ .Values.accountDomain }}"]
         env:
         - name: "update"
           value: "1"
         - name: OP_DOMAIN
-          value: {{ $.Values.accountdomain }}
+          value: {{ $.Values.accountDomain }}
         - name: OP_ONE_CLICK
           value: "true"
         ports:
@@ -45,8 +45,5 @@ spec:
           readOnly: false
       volumes:
       - name: {{ $.Release.Name }}-scimsession
-        persistentVolumeClaim:
-          claimName: {{ $.Release.Name }}-pvc
-
-
-
+        secret:
+          secretName: {{ $.Release.Name }}-scimsession

@@ -5,8 +5,8 @@
 replicaCount: 1
 accountDomain: example.com
 
-# Optional session data (scim session file content, base64 string)
-#sessionData: ""
+# Optional session data (scim session file content)
+#sessionData: "{}"
 
 deployment:
   annotations: {}

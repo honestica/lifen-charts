@@ -5,3 +5,6 @@
 
 replicaCount: 1
 accountdomain: lifen.fr
+
+# Empty json object
+sessionData: "{}"

@@ -1,7 +1,12 @@
 ---
+# An scim-session secret needs to be defined in the same namespace as this chart.
+# It has to contain the scimsession key containing the scim session data.
+
 replicaCount: 1
-accountdomain: example.com
-scimsessionPath: /secret/scimsession
+accountDomain: example.com
+
+# Optional session data (scim session file content)
+#sessionData: "{}"
 
 deployment:
   annotations: {}
@@ -26,14 +31,6 @@ ingress:
     #   hosts:
     #     - chart-example.local
 
-storageSpec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Mi
-  storageClassName: standard
-
 # Dependencies
 redis:
   enabled: true
@@ -41,4 +38,3 @@ redis:
   cluster:
     enabled: true
     slaveCount: 1
-    

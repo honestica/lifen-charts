@@ -27,6 +27,7 @@ spec:
       labels:
         app.kubernetes.io/name: {{ template "awx.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: web
     spec:
       containers:
         - name: web
@@ -71,6 +72,8 @@ spec:
     {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
+      tolerations:
+{{- toYaml .Values.tolerations | nindent 8 }}
     {{- end }}
       volumes:
         - name: {{ include "awx.fullname" . }}-application-config

@@ -1,4 +1,108 @@
+# Default values for squid.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
 
 replicaCount: 1
 
-enableReleaseAntiAffinity: true
+image:
+  repository: honestica/squid
+  tag: 4-f9839050-1344-48d2-981a-b73e4541e193
+  pullPolicy: IfNotPresent
+  # imagePullSecrets:
+
+service:
+  type: ClusterIP
+  #  Specify IP to whitelist if needed
+  #loadBalancerSourceRanges: ""
+  # Specify external IP if needed
+  #loadBalancerIP: ""
+  port: 80
+  # annotations: {}
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  path: /
+  hosts:
+    - chart-example.local
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+config: |
+  acl SSL_ports port 443
+  acl Safe_ports port 80		# http
+  acl Safe_ports port 21		# ftp
+  acl Safe_ports port 443		# https
+  acl Safe_ports port 70		# gopher
+  acl Safe_ports port 210		# wais
+  acl Safe_ports port 1025-65535	# unregistered ports
+  acl Safe_ports port 280		# http-mgmt
+  acl Safe_ports port 488		# gss-http
+  acl Safe_ports port 591		# filemaker
+  acl Safe_ports port 777		# multiling http
+  acl CONNECT method CONNECT
+
+  # Recommended minimum Access Permission configuration:
+  #
+  # Deny requests to certain unsafe ports
+  http_access deny !Safe_ports
+
+  # Only allow cachemgr access from localhost
+  http_access allow localhost manager
+  http_access deny manager
+
+  # Squid normally listens to port 3128
+  http_port 3128
+
+  # Uncomment and adjust the following to add a disk cache directory.
+  #cache_dir ufs /var/cache/squid 100 16 256
+
+  # Leave coredumps in the first cache dir
+  coredump_dir /var/cache/squid
+
+  #
+  # Add any of your own refresh_pattern entries above these.
+  #
+  refresh_pattern ^ftp:		1440	20%	10080
+  refresh_pattern ^gopher:	1440	0%	1440
+  refresh_pattern -i (/cgi-bin/|\?) 0	0%	0
+  refresh_pattern .		0	20%	4320
+
+  # Do not display squid version
+  httpd_suppress_version_string on
+
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: []
+
+releaseAntiAffinity: true
+
+metrics:
+  enabled: false
+  serviceMonitor: false
+  exporter:
+    port: 9301
+    resources: {}
+    image:
+      repository: boynux/squid-exporter
+      tag: v1.8
+      pullPolicy: IfNotPresent

@@ -92,7 +92,9 @@ nodeSelector: {}
 
 tolerations: []
 
-enableReleaseAntiAffinity: false
+affinity: []
+
+releaseAntiAffinity: true
 
 metrics:
   enabled: false

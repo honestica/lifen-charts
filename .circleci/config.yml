@@ -11,16 +11,17 @@ jobs:
       HELM_VERSION: << parameters.helm >>
       KUBEVAL_VERSION: 0.15.0
       CONFTEST_VERSION: 0.21.0
-      K8S_VERSION: v1.16.10
+      K8S_VERSIONS: 1.17.4 1.16.4 1.15.7
+      KUBECTL_VERSION: v1.16.13
       KUBECONFIG: /home/circleci/.kube/config
-      MINIKUBE_VERSION: v1.11.0
+      MINIKUBE_VERSION: v1.12.3
       MINIKUBE_HOME: /home/circleci
     steps:
       - checkout
       - run:
           name: setup kubectl
           command: |
-            curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/${K8S_VERSION}/bin/linux/amd64/kubectl && chmod +x kubectl && sudo mv kubectl /usr/local/bin/
+            curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl && chmod +x kubectl && sudo mv kubectl /usr/local/bin/
             mkdir -p ${HOME}/.kube
             touch ${HOME}/.kube/config
       - run:
@@ -55,44 +56,45 @@ jobs:
             helm lint ./squid -f examples/squid/values.yaml
             helm lint ./teleport -f examples/teleport/values.yaml
       - run:
-          name: Execute kubeval on the charts to ensure kubernetes compability with 1.15 and 1.16
+          name: Execute helm template
           command: |
             helm template ./awx -f examples/awx/values.yaml > awx.yaml
-            kubeval -v 1.15.4 --strict awx.yaml
-            kubeval -v 1.16.4 --strict awx.yaml
-            conftest test -p deprek8.rego awx.yaml
             helm template ./kube-iptables-tailer -f examples/kube-iptables-tailer/values.yaml > kube-iptables-tailer.yaml
-            kubeval -v 1.15.4 --strict kube-iptables-tailer.yaml
-            kubeval -v 1.16.4 --strict kube-iptables-tailer.yaml
-            conftest test -p deprek8.rego kube-iptables-tailer.yaml
             helm template ./neuvector -f examples/neuvector/values.yaml > neuvector.yaml
-            kubeval -v 1.15.4 --ignore-missing-schemas --strict neuvector.yaml
-            kubeval -v 1.16.4 --ignore-missing-schemas --strict neuvector.yaml
-            conftest test -p deprek8.rego neuvector.yaml
             helm template ./kured -f examples/kured/values.yaml > kured.yaml
-            kubeval -v 1.15.4 --strict kured.yaml
-            kubeval -v 1.16.4 --strict kured.yaml
-            conftest test -p deprek8.rego kured.yaml
             helm template ./sloop -f examples/sloop/values.yaml > sloop.yaml
-            kubeval -v 1.15.4 --strict sloop.yaml
-            kubeval -v 1.16.4 --strict sloop.yaml
-            conftest test -p deprek8.rego sloop.yaml
             helm template ./fluent-bit -f examples/fluent-bit/values.yaml > fluent-bit.yaml
-            kubeval -v 1.15.4 --strict fluent-bit.yaml
-            kubeval -v 1.16.4 --strict fluent-bit.yaml
-            conftest test -p deprek8.rego fluent-bit.yaml
             helm template ./squid -f examples/squid/values.yaml > squid.yaml
-            kubeval -v 1.15.4 --strict squid.yaml
-            kubeval -v 1.16.4 --strict squid.yaml
-            conftest test -p deprek8.rego squid.yaml
             helm template ./teleport -f examples/teleport/values.yaml > teleport.yaml
-            kubeval -v 1.15.4 --strict teleport.yaml
-            kubeval -v 1.16.4 --strict teleport.yaml
+      - run:
+          name: Run kubeval on the charts to ensure kubernetes compability
+          command: |
+            for kv in ${K8S_VERSIONS}
+            do
+              kubeval -v $kv --strict awx.yaml
+              kubeval -v $kv --strict kube-iptables-tailer.yaml
+              kubeval -v $kv --ignore-missing-schemas --strict neuvector.yaml
+              kubeval -v $kv --strict kured.yaml
+              kubeval -v $kv --strict sloop.yaml
+              kubeval -v $kv --strict fluent-bit.yaml
+              kubeval -v $kv --strict squid.yaml
+              kubeval -v $kv --strict teleport.yaml
+            done
+      - run:
+          name: Run deprek8
+          command: |
+            conftest test -p deprek8.rego awx.yaml
+            conftest test -p deprek8.rego kube-iptables-tailer.yaml
+            conftest test -p deprek8.rego neuvector.yaml
+            conftest test -p deprek8.rego kured.yaml
+            conftest test -p deprek8.rego sloop.yaml
+            conftest test -p deprek8.rego fluent-bit.yaml
+            conftest test -p deprek8.rego squid.yaml
             conftest test -p deprek8.rego teleport.yaml
       - run:
           name: start minikube
           command: |
-            sudo minikube start --vm-driver=none --cpus 2 --memory 4096 --network-plugin=cni --kubernetes-version=${K8S_VERSION} &> $HOME/minikube.log 2>&1 < /dev/null
+            sudo minikube start --vm-driver=none --cpus 2 --memory 4096 --network-plugin=cni --kubernetes-version=${KUBECTL_VERSION} &> $HOME/minikube.log 2>&1 < /dev/null
       - run:
           name: fix permission
           command: |

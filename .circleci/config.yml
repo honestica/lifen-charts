@@ -1,9 +1,16 @@
-version: 2
+version: 2.1
+
 jobs:
   test:
+    parameters:
+      helm:
+        type: string
     machine:
       image: ubuntu-1604:201903-01
     environment:
+      HELM_VERSION: << parameters.helm >>
+      KUBEVAL_VERSION: 0.15.0
+      CONFTEST_VERSION: 0.21.0
       K8S_VERSION: v1.16.10
       KUBECONFIG: /home/circleci/.kube/config
       MINIKUBE_VERSION: v1.11.0
@@ -22,17 +29,17 @@ jobs:
             curl -Lo minikube https://github.com/kubernetes/minikube/releases/download/${MINIKUBE_VERSION}/minikube-linux-amd64 && chmod +x minikube && sudo mv minikube /usr/local/bin/
       - run:
           name: setup helm
-          command: curl -SL https://storage.googleapis.com/kubernetes-helm/helm-v2.16.7-linux-amd64.tar.gz | tar xvz -C /tmp && sudo mv /tmp/linux-amd64/helm /usr/local/bin/helm && sudo chmod +x /usr/local/bin/helm
+          command: curl -SL https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz | tar xvz -C /tmp && sudo mv /tmp/linux-amd64/helm /usr/local/bin/helm && sudo chmod +x /usr/local/bin/helm
       - run:
           name: setup kubeval
           command: |
-            curl -L https://github.com/instrumenta/kubeval/releases/download/0.15.0/kubeval-linux-amd64.tar.gz -o kubeval-linux-amd64.tar.gz
+            curl -L https://github.com/instrumenta/kubeval/releases/download/${KUBEVAL_VERSION}/kubeval-linux-amd64.tar.gz -o kubeval-linux-amd64.tar.gz
             tar xf kubeval-linux-amd64.tar.gz
             sudo mv kubeval /usr/local/bin
       - run:
           name: setup conftest and deprek8ion
           command: |
-            curl -SL https://github.com/instrumenta/conftest/releases/download/v0.18.2/conftest_0.18.2_Linux_x86_64.tar.gz -o conftest.tar.gz
+            curl -SL https://github.com/open-policy-agent/conftest/releases/download/v${CONFTEST_VERSION}/conftest_${CONFTEST_VERSION}_Linux_x86_64.tar.gz -o conftest.tar.gz
             tar xf conftest.tar.gz
             sudo mv conftest /usr/local/bin
             curl https://raw.githubusercontent.com/naquada/deprek8/master/policy/deprek8.rego > deprek8.rego
@@ -164,7 +171,7 @@ jobs:
       - run:
           name: Install helm
           command: |
-            curl -SL https://storage.googleapis.com/kubernetes-helm/helm-v2.16.7-linux-amd64.tar.gz | tar xvz -C /tmp && sudo mv /tmp/linux-amd64/helm /usr/local/bin/helm && sudo chmod +x /usr/local/bin/helm
+            curl -SL https://storage.googleapis.com/kubernetes-helm/helm-v${HELM_VERSION}-linux-amd64.tar.gz | tar xvz -C /tmp && sudo mv /tmp/linux-amd64/helm /usr/local/bin/helm && sudo chmod +x /usr/local/bin/helm
       - add_ssh_keys:
           fingerprints:
             - "31:d4:50:ae:e8:c3:3b:3e:f4:66:48:47:7d:a0:18:a8"
@@ -202,9 +209,14 @@ workflows:
   build:
     jobs:
       - test:
+          matrix:
+            parameters:
+              helm:
+                - 2.17.0-rc.1
+                - 3.3.4
           filters:
             branches:
-              ignore: 
+              ignore:
                 - gh-pages
                 - master
           context: org-global

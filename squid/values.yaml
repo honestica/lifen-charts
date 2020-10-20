@@ -92,7 +92,7 @@ nodeSelector: {}
 
 tolerations: []
 
-affinity: []
+affinity: {}
 
 releaseAntiAffinity: true
 

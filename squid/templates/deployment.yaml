@@ -114,8 +114,23 @@ spec:
       nodeSelector:
 {{ toYaml . | indent 8 }}
     {{- end }}
-    {{- with .Values.affinity }}
+    {{- if or .Values.releaseAntiAffinity .Values.affinity }}
       affinity:
+    {{- end }}
+    {{- if .Values.releaseAntiAffinity }}
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              topologyKey: kubernetes.io/hostname
+              labelSelector:
+                matchExpressions:
+                - key: release
+                  operator: In
+                  values:
+                  - {{ .Release.Name }}
+    {{- end }}
+    {{- with .Values.affinity }}
 {{ toYaml . | indent 8 }}
     {{- end }}
     {{- with .Values.tolerations }}

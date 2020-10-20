@@ -6,17 +6,18 @@ replicaCount: 1
 
 image:
   repository: honestica/squid
-  tag: 4-1549455e-9405-48ee-9c7e-dcacbdc7ba53
+  tag: 4-f9839050-1344-48d2-981a-b73e4541e193
   pullPolicy: IfNotPresent
-  # imagePullSecrets: 
+  # imagePullSecrets:
 
 service:
   type: ClusterIP
   #  Specify IP to whitelist if needed
   #loadBalancerSourceRanges: ""
   # Specify external IP if needed
-  #loadBalancerIP: "" 
+  #loadBalancerIP: ""
   port: 80
+  # annotations: {}
 
 ingress:
   enabled: false
@@ -92,3 +93,16 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+releaseAntiAffinity: true
+
+metrics:
+  enabled: false
+  serviceMonitor: false
+  exporter:
+    port: 9301
+    resources: {}
+    image:
+      repository: boynux/squid-exporter
+      tag: v1.8
+      pullPolicy: IfNotPresent

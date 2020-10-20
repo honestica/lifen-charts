@@ -11,7 +11,7 @@ jobs:
       HELM_VERSION: << parameters.helm >>
       KUBEVAL_VERSION: 0.15.0
       CONFTEST_VERSION: 0.21.0
-      K8S_VERSIONS: 1.17.4 1.16.4 1.15.7
+      K8S_VERSIONS: 1.18.1 1.17.4 1.16.4 1.15.7
       KUBECTL_VERSION: v1.17.11
       KUBECONFIG: /home/circleci/.kube/config
       MINIKUBE_VERSION: v1.12.3

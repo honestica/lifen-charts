@@ -5,10 +5,13 @@ jobs:
     parameters:
       helm:
         type: string
+      hsec:
+        type: string
     machine:
       image: ubuntu-1604:201903-01
     environment:
       HELM_VERSION: << parameters.helm >>
+      HSEC: << parameters.hsec >>
       KUBEVAL_VERSION: 0.15.0
       CONFTEST_VERSION: 0.21.0
       K8S_VERSIONS: 1.18.1 1.17.4 1.16.4 1.15.7
@@ -117,16 +120,6 @@ jobs:
               sleep 1;
             done
       - run:
-          name: Set Helm timeout unit
-          command: |
-            if [[ "${HELM_VERSION}" == *"2."* ]]
-            then
-              export HSEC=
-            else
-              export HSEC=s
-            fi
-            echo $HSEC
-      - run:
           name: Test awx installation
           command: |
             #helm upgrade awx ./awx/ --install  --timeout 500${HSEC} --wait -f examples/awx/values.yaml --kube-context minikube --namespace awx
@@ -221,11 +214,19 @@ workflows:
   build:
     jobs:
       - test:
-          matrix:
-            parameters:
-              helm:
-                - 2.16.12
-                - 3.3.4
+          name: helm-2.16.12
+          helm: 2.16.12
+          hsec: ""
+          filters:
+            branches:
+              ignore:
+                - gh-pages
+                - master
+          context: org-global
+      - test:
+          name: helm-3.3.4
+          helm: 3.3.4
+          hsec: s
           filters:
             branches:
               ignore:

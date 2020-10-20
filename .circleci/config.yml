@@ -125,6 +125,7 @@ jobs:
             else
               export HSEC=s
             fi
+            echo $HSEC
       - run:
           name: Test awx installation
           command: |

@@ -20,9 +20,9 @@ kubectl apply -f calico.yaml
 
 kubectl apply -f $DIR/cluster_setup.yaml 
 
-# Install helm 
+# Install helm
 
-HVER=$(helm version)
+HVER=$(helm version || true)
 
 if [[ $HVER == *"v2."* ]]; then
   helm init --wait --upgrade

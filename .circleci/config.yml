@@ -223,7 +223,7 @@ workflows:
           matrix:
             parameters:
               helm:
-                - 2.17.0-rc.1
+                - 2.16.12
                 - 3.3.4
           filters:
             branches:

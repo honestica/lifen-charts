@@ -22,6 +22,13 @@ kubectl apply -f $DIR/cluster_setup.yaml
 
 # Install helm 
 
-helm init --wait --upgrade
+HVER=$(helm version)
+
+if [[ $HVER == *"v2."* ]]; then
+  helm init --wait --upgrade
+else
+  helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+  helm repo update
+fi
 
 helm upgrade nginx-ingress-internal --set controller.ingressClass=nginx --set controller.service.enableHttps=false stable/nginx-ingress --install --kube-context minikube --namespace ingress

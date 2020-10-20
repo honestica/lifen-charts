@@ -13,3 +13,8 @@ metadata:
   labels:
     name: neuvector
     heritage: lifen-auto
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ingress

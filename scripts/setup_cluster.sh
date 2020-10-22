@@ -13,17 +13,14 @@ minikube addons enable ingress
 # Ensure we run on minikube
 kubectl config use-context minikube
 
-# Create the namespace where this application will be deployed:
-
-kubectl apply -f $DIR/cluster_setup.yaml 
-
-# Install helm
-
+# Extract helm version
 HVER=$(helm version || true)
 
-if [[ $HVER == *"v2."* ]]; then
+if [[ $HVER == *"v2."* ]]; then # Helm 2
+  # Install tiller
   helm init --wait --upgrade
 else
+  # Helm 3 comes without any repos
   helm repo add stable https://kubernetes-charts.storage.googleapis.com/
   helm repo update
 fi

@@ -139,8 +139,8 @@ jobs:
             kubectl create namespace neuvector || true
             kubectl create secret docker-registry dockerhub -n neuvector --docker-username=$DOCKERHUB_USERNAME --docker-password=$DOCKERHUB_PASSWORD
             helm upgrade neuvector ./neuvector/ --install  --timeout 200${HSEC} --wait --kube-context minikube --namespace neuvector -f ./examples/neuvector/values.yaml
-            helm delete --purge neuvector
-            helm upgrade neuvector ./neuvector/ --install  --timeout 200${HSEC} --wait --kube-context minikube --namespace neuvector -f ./examples/neuvector/values-custom.yaml
+            helm delete --purge neuvector || helm delete neuvector --kube-context minikube --namespace neuvector # Helm 3 needs namespace
+            helm upgrade neuvector-custom ./neuvector/ --install  --timeout 200${HSEC} --wait --kube-context minikube --namespace neuvector -f ./examples/neuvector/values-custom.yaml
       # - run:
       #     name: Test kured installation
       #     command: |
@@ -229,7 +229,7 @@ workflows:
           context: org-global
       - test:
           name: helm-3
-          helm: 3.3.4
+          helm: 3.2.4
           hsec: s
           filters:
             branches:

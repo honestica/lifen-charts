@@ -5,7 +5,7 @@
 openshift: false
 
 registry: docker.io
-tag: 3.2.1
+tag: latest
 imagePullSecrets:
 psp: false
 
@@ -44,10 +44,8 @@ controller:
     annotations:
       ingress.kubernetes.io/protocol: https
       # ingress.kubernetes.io/rewrite-target: /
-    tls: []
-      # - hosts:
-      #   - 'host'
-      #   secretName: your secret
+    tls: false
+    secretName:
   configmap:
     enabled: false
     data:
@@ -91,21 +89,19 @@ manager:
       # nginx.ingress.kubernetes.io/whitelist-source-range: "1.1.1.1"
       # nginx.ingress.kubernetes.io/rewrite-target: /
       # nginx.ingress.kubernetes.io/enable-rewrite-log: "true"
-    tls: []
-      # - hosts:
-      #   - 'host'
-      #   secretName: your secret
+    tls: false
+    secretName:  # my-tls-secret
 
 cve:
   updater:
     # If false, cve updater will not be installed
-    enabled: false
+    enabled: true
     image:
       repository: neuvector/updater
       tag: latest
     schedule: "0 0 * * *"
   scanner:
-    enabled: false
+    enabled: true
     replicas: 3
     dockerPath: ""
     strategy:

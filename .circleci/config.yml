@@ -173,6 +173,11 @@ jobs:
           when: on_fail
 
   release:
+    parameters:
+      helm:
+        type: string
+    environment:
+      HELM_VERSION: << parameters.helm >>
     docker:
       - image: circleci/python:3
     steps:
@@ -180,7 +185,7 @@ jobs:
       - run:
           name: Install helm
           command: |
-            curl -SL https://storage.googleapis.com/kubernetes-helm/helm-v${HELM_VERSION}-linux-amd64.tar.gz | tar xvz -C /tmp && sudo mv /tmp/linux-amd64/helm /usr/local/bin/helm && sudo chmod +x /usr/local/bin/helm
+            curl -SL https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz | tar xvz -C /tmp && sudo chmod +x /tmp/linux-amd64/* && sudo mv /tmp/linux-amd64/* /usr/local/bin/
       - add_ssh_keys:
           fingerprints:
             - "31:d4:50:ae:e8:c3:3b:3e:f4:66:48:47:7d:a0:18:a8"
@@ -238,6 +243,7 @@ workflows:
                 - master
           context: org-global
       - release:
+          helm: 2.16.12
           filters:
             branches:
               only: master

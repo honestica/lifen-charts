@@ -1,19 +1,30 @@
-version: 2
+version: 2.1
+
 jobs:
   test:
+    parameters:
+      helm:
+        type: string
+      hsec:
+        type: string
     machine:
-      image: ubuntu-1604:201903-01
+      image: ubuntu-2004:202010-01
     environment:
-      K8S_VERSION: v1.16.10
+      HELM_VERSION: << parameters.helm >>
+      HSEC: << parameters.hsec >>
+      KUBEVAL_VERSION: 0.15.0
+      CONFTEST_VERSION: 0.21.0
+      K8S_VERSIONS: 1.18.1 1.17.4 1.16.4
+      KUBECTL_VERSION: v1.17.11
       KUBECONFIG: /home/circleci/.kube/config
-      MINIKUBE_VERSION: v1.11.0
+      MINIKUBE_VERSION: v1.14.0
       MINIKUBE_HOME: /home/circleci
     steps:
       - checkout
       - run:
           name: setup kubectl
           command: |
-            curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/${K8S_VERSION}/bin/linux/amd64/kubectl && chmod +x kubectl && sudo mv kubectl /usr/local/bin/
+            curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl && chmod +x kubectl && sudo mv kubectl /usr/local/bin/
             mkdir -p ${HOME}/.kube
             touch ${HOME}/.kube/config
       - run:
@@ -22,17 +33,17 @@ jobs:
             curl -Lo minikube https://github.com/kubernetes/minikube/releases/download/${MINIKUBE_VERSION}/minikube-linux-amd64 && chmod +x minikube && sudo mv minikube /usr/local/bin/
       - run:
           name: setup helm
-          command: curl -SL https://storage.googleapis.com/kubernetes-helm/helm-v2.16.7-linux-amd64.tar.gz | tar xvz -C /tmp && sudo mv /tmp/linux-amd64/helm /usr/local/bin/helm && sudo chmod +x /usr/local/bin/helm
+          command: curl -SL https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz | tar xvz -C /tmp && sudo chmod +x /tmp/linux-amd64/* && sudo mv /tmp/linux-amd64/* /usr/local/bin/
       - run:
           name: setup kubeval
           command: |
-            curl -L https://github.com/instrumenta/kubeval/releases/download/0.15.0/kubeval-linux-amd64.tar.gz -o kubeval-linux-amd64.tar.gz
+            curl -L https://github.com/instrumenta/kubeval/releases/download/${KUBEVAL_VERSION}/kubeval-linux-amd64.tar.gz -o kubeval-linux-amd64.tar.gz
             tar xf kubeval-linux-amd64.tar.gz
             sudo mv kubeval /usr/local/bin
       - run:
           name: setup conftest and deprek8ion
           command: |
-            curl -SL https://github.com/instrumenta/conftest/releases/download/v0.18.2/conftest_0.18.2_Linux_x86_64.tar.gz -o conftest.tar.gz
+            curl -SL https://github.com/open-policy-agent/conftest/releases/download/v${CONFTEST_VERSION}/conftest_${CONFTEST_VERSION}_Linux_x86_64.tar.gz -o conftest.tar.gz
             tar xf conftest.tar.gz
             sudo mv conftest /usr/local/bin
             curl https://raw.githubusercontent.com/naquada/deprek8/master/policy/deprek8.rego > deprek8.rego
@@ -48,50 +59,45 @@ jobs:
             helm lint ./squid -f examples/squid/values.yaml
             helm lint ./teleport -f examples/teleport/values.yaml
       - run:
-          name: Execute kubeval on the charts to ensure kubernetes compability with 1.15 and 1.16
+          name: Execute helm template
           command: |
             helm template ./awx -f examples/awx/values.yaml > awx.yaml
-            kubeval -v 1.15.4 --strict awx.yaml
-            kubeval -v 1.16.4 --strict awx.yaml
-            conftest test -p deprek8.rego awx.yaml
             helm template ./kube-iptables-tailer -f examples/kube-iptables-tailer/values.yaml > kube-iptables-tailer.yaml
-            kubeval -v 1.15.4 --strict kube-iptables-tailer.yaml
-            kubeval -v 1.16.4 --strict kube-iptables-tailer.yaml
-            conftest test -p deprek8.rego kube-iptables-tailer.yaml
             helm template ./neuvector -f examples/neuvector/values.yaml > neuvector.yaml
-            kubeval -v 1.15.4 --ignore-missing-schemas --strict neuvector.yaml
-            kubeval -v 1.16.4 --ignore-missing-schemas --strict neuvector.yaml
-            conftest test -p deprek8.rego neuvector.yaml
             helm template ./kured -f examples/kured/values.yaml > kured.yaml
-            kubeval -v 1.15.4 --strict kured.yaml
-            kubeval -v 1.16.4 --strict kured.yaml
-            conftest test -p deprek8.rego kured.yaml
             helm template ./sloop -f examples/sloop/values.yaml > sloop.yaml
-            kubeval -v 1.15.4 --strict sloop.yaml
-            kubeval -v 1.16.4 --strict sloop.yaml
-            conftest test -p deprek8.rego sloop.yaml
             helm template ./fluent-bit -f examples/fluent-bit/values.yaml > fluent-bit.yaml
-            kubeval -v 1.15.4 --strict fluent-bit.yaml
-            kubeval -v 1.16.4 --strict fluent-bit.yaml
-            conftest test -p deprek8.rego fluent-bit.yaml
             helm template ./squid -f examples/squid/values.yaml > squid.yaml
-            kubeval -v 1.15.4 --strict squid.yaml
-            kubeval -v 1.16.4 --strict squid.yaml
-            conftest test -p deprek8.rego squid.yaml
             helm template ./teleport -f examples/teleport/values.yaml > teleport.yaml
-            kubeval -v 1.15.4 --strict teleport.yaml
-            kubeval -v 1.16.4 --strict teleport.yaml
+      - run:
+          name: Run kubeval on the charts to ensure kubernetes compability
+          command: |
+            for kv in ${K8S_VERSIONS}
+            do
+              kubeval -v $kv --strict awx.yaml
+              kubeval -v $kv --strict kube-iptables-tailer.yaml
+              kubeval -v $kv --ignore-missing-schemas --strict neuvector.yaml
+              kubeval -v $kv --strict kured.yaml
+              kubeval -v $kv --strict sloop.yaml
+              kubeval -v $kv --strict fluent-bit.yaml
+              kubeval -v $kv --strict squid.yaml
+              kubeval -v $kv --strict teleport.yaml
+            done
+      - run:
+          name: Run deprek8
+          command: |
+            conftest test -p deprek8.rego awx.yaml
+            conftest test -p deprek8.rego kube-iptables-tailer.yaml
+            conftest test -p deprek8.rego neuvector.yaml
+            conftest test -p deprek8.rego kured.yaml
+            conftest test -p deprek8.rego sloop.yaml
+            conftest test -p deprek8.rego fluent-bit.yaml
+            conftest test -p deprek8.rego squid.yaml
             conftest test -p deprek8.rego teleport.yaml
       - run:
           name: start minikube
           command: |
-            sudo minikube start --vm-driver=none --cpus 2 --memory 4096 --network-plugin=cni --kubernetes-version=${K8S_VERSION} &> $HOME/minikube.log 2>&1 < /dev/null
-      - run:
-          name: fix permission
-          command: |
-            sudo chown circleci:circleci -R /home/circleci/.minikube
-            sudo mkdir -p /etc/kubernetes 
-            sudo chown circleci:circleci -R /etc/kubernetes
+            minikube start --vm-driver=docker --cpus 2 --memory 4096 --network-plugin=cni --cni=calico --kubernetes-version=${KUBECTL_VERSION} &> $HOME/minikube.log 2>&1 < /dev/null
       - run:
           name: debug node
           command: |
@@ -110,46 +116,56 @@ jobs:
       - run:
           name: Test awx installation
           command: |
-            #helm upgrade awx ./awx/ --install  --timeout 500 --wait -f examples/awx/values.yaml --kube-context minikube --namespace awx
+            kubectl create namespace awx || true
+            #helm upgrade awx ./awx/ --install  --timeout 500${HSEC} --wait -f examples/awx/values.yaml --kube-context minikube --namespace awx
       - run:
           name: Test teleport installation
           command: |
-            helm upgrade teleport ./teleport/ --install  --timeout 500 --wait -f examples/teleport/values.yaml --kube-context minikube --namespace teleport
+            kubectl create namespace teleport || true
+            helm upgrade teleport ./teleport/ --install  --timeout 500${HSEC} --wait -f examples/teleport/values.yaml --kube-context minikube --namespace teleport
       - run:
           name: Test kube-iptables-tailer installation
           command: |
-            helm upgrade kube-iptables-tailer ./kube-iptables-tailer/ --install  --timeout 500 --wait -f examples/kube-iptables-tailer/values.yaml --kube-context minikube --namespace kube-iptables-tailer
+            kubectl create namespace kube-iptables-tailer || true
+            helm upgrade kube-iptables-tailer ./kube-iptables-tailer/ --install  --timeout 500${HSEC} --wait -f examples/kube-iptables-tailer/values.yaml --kube-context minikube --namespace kube-iptables-tailer
       - run:
           name: Test squid installation
           command: |
-            helm upgrade squid ./squid/ --install  --timeout 500 --wait --kube-context minikube --namespace squid
+            kubectl create namespace squid || true
+            helm upgrade squid ./squid/ --install  --timeout 500${HSEC} --wait --kube-context minikube --namespace squid
       - run:
           name: Test neuvector installation
           command: |
+            kubectl create namespace neuvector || true
             kubectl create secret docker-registry dockerhub -n neuvector --docker-username=$DOCKERHUB_USERNAME --docker-password=$DOCKERHUB_PASSWORD
-            helm upgrade neuvector ./neuvector/ --install  --timeout 200 --wait --kube-context minikube --namespace neuvector -f ./examples/neuvector/values.yaml
-            helm delete --purge neuvector
-            helm upgrade neuvector ./neuvector/ --install  --timeout 200 --wait --kube-context minikube --namespace neuvector -f ./examples/neuvector/values-custom.yaml
+            helm upgrade neuvector ./neuvector/ --install  --timeout 200${HSEC} --wait --kube-context minikube --namespace neuvector -f ./examples/neuvector/values.yaml
+            helm delete --purge neuvector || helm delete neuvector --kube-context minikube --namespace neuvector # Helm 3 needs namespace
+            helm upgrade neuvector-custom ./neuvector/ --install  --timeout 200${HSEC} --wait --kube-context minikube --namespace neuvector -f ./examples/neuvector/values-custom.yaml
       # - run:
       #     name: Test kured installation
       #     command: |
-      #       helm upgrade kured ./kured/ --install  --timeout 500 --wait -f examples/kured/values.yaml --kube-context minikube --namespace kured
+      #       kubectl create namespace kured || true
+      #       helm upgrade kured ./kured/ --install  --timeout 500${HSEC} --wait -f examples/kured/values.yaml --kube-context minikube --namespace kured
       - run:
           name: Test sloop installation
           command: |
-            helm upgrade sloop ./sloop/ --install  --timeout 500 --wait -f examples/sloop/values.yaml --kube-context minikube --namespace sloop
+            kubectl create namespace sloop || true
+            helm upgrade sloop ./sloop/ --install  --timeout 500${HSEC} --wait -f examples/sloop/values.yaml --kube-context minikube --namespace sloop
       - run:
           name: Test fluent-bit installation
           command: |
-            helm upgrade fluent-bit ./fluent-bit/ --install  --timeout 500 --wait -f examples/fluent-bit/values.yaml --kube-context minikube --namespace fluent-bit
+            kubectl create namespace fluent-bit || true
+            helm upgrade fluent-bit ./fluent-bit/ --install  --timeout 500${HSEC} --wait -f examples/fluent-bit/values.yaml --kube-context minikube --namespace fluent-bit
       - run:
           name: Test op-scim installation
           command: |
+            kubectl create namespace op-scim || true
             helm dependency update ./op-scim-bridge/
-            helm upgrade op-scim ./op-scim-bridge/ --install  --timeout 500 --wait -f examples/op-scim-bridge/values.yaml --kube-context minikube --namespace op-scim
+            helm upgrade op-scim ./op-scim-bridge/ --install  --timeout 500${HSEC} --wait -f examples/op-scim-bridge/values.yaml --kube-context minikube --namespace op-scim
       - run:
           name: Debug on failures
           command: | 
+            cat $HOME/minikube.log
             kubectl get node
             kubectl get pod --all-namespaces
             kubectl describe pod --all-namespaces
@@ -157,6 +173,11 @@ jobs:
           when: on_fail
 
   release:
+    parameters:
+      helm:
+        type: string
+    environment:
+      HELM_VERSION: << parameters.helm >>
     docker:
       - image: circleci/python:3
     steps:
@@ -164,7 +185,7 @@ jobs:
       - run:
           name: Install helm
           command: |
-            curl -SL https://storage.googleapis.com/kubernetes-helm/helm-v2.16.7-linux-amd64.tar.gz | tar xvz -C /tmp && sudo mv /tmp/linux-amd64/helm /usr/local/bin/helm && sudo chmod +x /usr/local/bin/helm
+            curl -SL https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz | tar xvz -C /tmp && sudo chmod +x /tmp/linux-amd64/* && sudo mv /tmp/linux-amd64/* /usr/local/bin/
       - add_ssh_keys:
           fingerprints:
             - "31:d4:50:ae:e8:c3:3b:3e:f4:66:48:47:7d:a0:18:a8"
@@ -202,13 +223,27 @@ workflows:
   build:
     jobs:
       - test:
+          name: helm-2
+          helm: 2.16.12
+          hsec: ""
           filters:
             branches:
-              ignore: 
+              ignore:
+                - gh-pages
+                - master
+          context: org-global
+      - test:
+          name: helm-3
+          helm: 3.2.4
+          hsec: s
+          filters:
+            branches:
+              ignore:
                 - gh-pages
                 - master
           context: org-global
       - release:
+          helm: 2.16.12
           filters:
             branches:
               only: master

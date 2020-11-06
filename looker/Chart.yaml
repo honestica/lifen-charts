@@ -1,0 +1,17 @@
+apiVersion: v1
+version: 1.0.0
+home: https://looker.com/
+description: A Looker Helm chart for Kubernetes.
+name: helm-looker
+icon: https://looker.com/assets/img/images/logos/looker.svg
+maintainers:
+  - name: mparet
+    email: matthieu.paret@lifen.fr
+  - name: cthuault
+    email: clement.thuault@lifen.fr
+  - name: mmillien
+    email: marc.millien@lifen.fr
+  - name: fpoussin
+    email: fabien.poussin@lifen.fr
+  - name: cbellivier
+    email: claire@bellivier.com

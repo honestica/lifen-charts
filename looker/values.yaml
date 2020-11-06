@@ -1,0 +1,46 @@
+replicaCount: 1
+
+# Image
+image:
+  repository: "looker"
+  tag: latest
+  pullPolicy: IfNotPresent
+
+nameOverride: ""
+fullnameOverride: ""
+
+# Pod security specific configurations. see deployment.yaml
+podSecurityContext: {}
+securityContext: {}
+
+# Service
+service:
+  type: ClusterIP
+  port: 443
+
+# Ingress
+ingress:
+  enabled: false
+  annotations:
+    {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  host: "looker.yourdomain.com"
+  tls:
+    enabled: false
+  #  secretName: chart-example-tls
+
+resources:
+  {}
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

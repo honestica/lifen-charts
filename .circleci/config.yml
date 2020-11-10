@@ -163,8 +163,14 @@ jobs:
             helm dependency update ./op-scim-bridge/
             helm upgrade op-scim ./op-scim-bridge/ --install  --timeout 500${HSEC} --wait -f examples/op-scim-bridge/values.yaml --kube-context minikube --namespace op-scim
       - run:
+          name: Test looker installation
+          command: |
+            kubectl create namespace looker || true
+            kubectl create secret docker-registry dockerhub -n looker --docker-username=$DOCKERHUB_USERNAME --docker-password=$DOCKERHUB_PASSWORD
+            helm upgrade looker ./looker/ --install  --timeout 200${HSEC} --wait --kube-context minikube --namespace looker -f ./examples/looker/values.yaml
+      - run:
           name: Debug on failures
-          command: | 
+          command: |
             cat $HOME/minikube.log
             kubectl get node
             kubectl get pod --all-namespaces
@@ -209,6 +215,7 @@ jobs:
             helm package fluent-bit -d packages
             helm package teleport -d packages
             helm package op-scim-bridge -d packages
+            helm package looker -d packages
             helm repo index packages --url https://honestica.github.io/lifen-charts/packages
             mv packages/index.yaml index.yaml
       - run:
@@ -216,7 +223,7 @@ jobs:
           command: |
             git add packages index.yaml
             git commit -m "relase version"
-            git push origin gh-pages 
+            git push origin gh-pages
 
 workflows:
   version: 2

@@ -8,7 +8,7 @@ image:
   repository: honestica/looker
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "43c1a37b1968a61b970f442f1464584b5c7b44dd"
+  tag: "b2a1747f80d93518e156459350160fd92117d8e6"
 
 imagePullSecrets:
   - name: dockerhub
@@ -18,13 +18,15 @@ fullnameOverride: ""
 
 # This will be appended to the current 'env:' key. You can use any of the kubernetes env
 # syntax here
-extraEnvs: []
+extraEnvs:
+ - name: LOOKEREXTRAARGS
+   value: --shared-storage-dir=/tmp/
 #  - name: JAVAARGS
 #    value:
 #  - name: JAVAJVMARGS
 #    value: -XX:+UseG1GC -XX:MaxGCPauseMillis=2000 -XX:MinRAMPercentage=50 -XX:MaxRAMPercentage=80
 #  - name: LOOKERARGS
-#    value: --no-daemonize --log-format=json --no-log-to-file
+#    value: --no-daemonize --log-format=json --no-log-to-file --shared-storage-dir=/tmp/
 #  - name: PROTOCOL
 #    value: https
 
@@ -46,9 +48,9 @@ securityContext:
   capabilities:
     drop:
     - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 1000
 
 service:
   type: ClusterIP

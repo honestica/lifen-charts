@@ -27,6 +27,25 @@ spec:
       serviceAccountName: {{ include "looker.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: link-jar-to-home
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+          volumeMounts:
+          - mountPath: /tmp
+            name: tmp-volume
+          - mountPath: /home/looker
+            name: looker-home
+          command:
+            - /bin/sh
+            - -c
+          args:
+            - |
+              ln -s /opt/looker/looker-dependencies.jar /home/looker/looker-dependencies.jar
+              ln -s /opt/looker/looker.jar /home/looker/looker.jar
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -59,8 +78,10 @@ spec:
             failureThreshold: 20
             periodSeconds: 10
           volumeMounts:
-          - mountPath: /home/looker/.tmp
+          - mountPath: /tmp
             name: tmp-volume
+          - mountPath: /home/looker
+            name: looker-home
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
@@ -77,5 +98,8 @@ spec:
       {{- end }}
       volumes:
       - name: tmp-volume
+        emptyDir:
+          medium: "Memory"
+      - name: looker-home
         emptyDir:
           medium: "Memory"

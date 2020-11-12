@@ -83,6 +83,11 @@ spec:
             name: tmp-volume
           - mountPath: /home/looker
             name: looker-home
+{{- if or .Values.databaseConfigFile .Values.databaseConfigSecretName -}}
+          - mountPath: /home/looker/looker-db.yml
+            name: db-secret
+            subPath: looker-db.yml
+{{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
@@ -104,3 +109,13 @@ spec:
       - name: looker-home
         emptyDir:
           medium: "Memory"
+{{- if .Values.databaseConfigFile -}}
+      - name: db-secret
+        secret:
+          secretName: {{ include "looker.fullname" . }}
+{{- end }}
+{{- if .Values.databaseConfigSecretName -}}
+      - name: db-secret
+        secret:
+          secretName: {{ .Values.databaseConfigSecretName }}
+{{- end }}

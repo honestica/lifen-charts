@@ -8,7 +8,7 @@ image:
   repository: honestica/looker
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "b2a1747f80d93518e156459350160fd92117d8e6"
+  tag: "005ee260db694ac1bdbab7d0fca664fa8195907f"
 
 imagePullSecrets:
   - name: dockerhub
@@ -48,6 +48,7 @@ securityContext:
   capabilities:
     drop:
     - ALL
+  allowPrivilegeEscalation: false
   readOnlyRootFilesystem: true
   runAsNonRoot: true
   runAsUser: 1000

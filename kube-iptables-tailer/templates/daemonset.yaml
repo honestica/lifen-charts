@@ -25,6 +25,9 @@ spec:
 {{- end }}
     spec:
       serviceAccountName: {{ template "kube-iptables-tailer.serviceAccountName" . }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName | quote }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

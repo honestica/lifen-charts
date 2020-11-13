@@ -76,14 +76,14 @@ spec:
               path: /alive
               port: https
               scheme: HTTPS
-            failureThreshold: 20
+            failureThreshold: 30
             periodSeconds: 10
           volumeMounts:
           - mountPath: /tmp
             name: tmp-volume
           - mountPath: /home/looker
             name: looker-home
-{{- if or .Values.databaseConfigFile .Values.databaseConfigSecretName -}}
+{{- if or .Values.databaseConfigFile .Values.databaseConfigSecretName }}
           - mountPath: /home/looker/looker-db.yml
             name: db-secret
             subPath: looker-db.yml
@@ -109,12 +109,12 @@ spec:
       - name: looker-home
         emptyDir:
           medium: "Memory"
-{{- if .Values.databaseConfigFile -}}
+{{- if .Values.databaseConfigFile }}
       - name: db-secret
         secret:
           secretName: {{ include "looker.fullname" . }}
 {{- end }}
-{{- if .Values.databaseConfigSecretName -}}
+{{- if .Values.databaseConfigSecretName }}
       - name: db-secret
         secret:
           secretName: {{ .Values.databaseConfigSecretName }}

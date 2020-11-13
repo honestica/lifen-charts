@@ -123,19 +123,16 @@ jobs:
           command: |
             kubectl create namespace teleport || true
             helm upgrade teleport ./teleport/ --install  --timeout 500${HSEC} --wait -f examples/teleport/values.yaml --kube-context minikube --namespace teleport
-            helm delete --purge teleport --kube-context minikube --namespace teleport
       - run:
           name: Test kube-iptables-tailer installation
           command: |
             kubectl create namespace kube-iptables-tailer || true
             helm upgrade kube-iptables-tailer ./kube-iptables-tailer/ --install  --timeout 500${HSEC} --wait -f examples/kube-iptables-tailer/values.yaml --kube-context minikube --namespace kube-iptables-tailer
-            helm delete --purge kube-iptables-tailer --kube-context minikube --namespace kube-iptables-tailer
       - run:
           name: Test squid installation
           command: |
             kubectl create namespace squid || true
             helm upgrade squid ./squid/ --install  --timeout 500${HSEC} --wait --kube-context minikube --namespace squid
-            helm delete --purge squid --kube-context minikube --namespace squid
       - run:
           name: Test neuvector installation
           command: |
@@ -144,7 +141,6 @@ jobs:
             helm upgrade neuvector ./neuvector/ --install  --timeout 200${HSEC} --wait --kube-context minikube --namespace neuvector -f ./examples/neuvector/values.yaml
             helm delete --purge neuvector || helm delete neuvector --kube-context minikube --namespace neuvector # Helm 3 needs namespace
             helm upgrade neuvector-custom ./neuvector/ --install  --timeout 200${HSEC} --wait --kube-context minikube --namespace neuvector -f ./examples/neuvector/values-custom.yaml
-            helm delete --purge neuvector-custom --kube-context minikube --namespace neuvector
       # - run:
       #     name: Test kured installation
       #     command: |
@@ -155,27 +151,23 @@ jobs:
           command: |
             kubectl create namespace sloop || true
             helm upgrade sloop ./sloop/ --install  --timeout 500${HSEC} --wait -f examples/sloop/values.yaml --kube-context minikube --namespace sloop
-            helm delete --purge sloop --kube-context minikube --namespace sloop
       - run:
           name: Test fluent-bit installation
           command: |
             kubectl create namespace fluent-bit || true
             helm upgrade fluent-bit ./fluent-bit/ --install  --timeout 500${HSEC} --wait -f examples/fluent-bit/values.yaml --kube-context minikube --namespace fluent-bit
-            helm delete --purge fluent-bit --kube-context minikube --namespace fluent-bit
       - run:
           name: Test op-scim installation
           command: |
             kubectl create namespace op-scim || true
             helm dependency update ./op-scim-bridge/
             helm upgrade op-scim ./op-scim-bridge/ --install  --timeout 500${HSEC} --wait -f examples/op-scim-bridge/values.yaml --kube-context minikube --namespace op-scim
-            helm delete --purge op-scim --kube-context minikube --namespace op-scim
       - run:
           name: Test looker installation
           command: |
             kubectl create namespace looker || true
             kubectl create secret docker-registry dockerhub -n looker --docker-username=$DOCKERHUB_USERNAME --docker-password=$DOCKERHUB_PASSWORD
             helm upgrade looker ./looker/ --install  --timeout 200${HSEC} --wait --kube-context minikube --namespace looker -f ./examples/looker/values.yaml
-            helm delete --purge looker --kube-context minikube --namespace looker
       - run:
           name: Debug on failures
           command: |

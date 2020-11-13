@@ -17,8 +17,10 @@ fullnameOverride: ""
 # This will be appended to the current 'env:' key. You can use any of the kubernetes env
 # syntax here
 extraEnvs:
+  # share storage is in memory for a standalone instance to avoid writing on the disk
+  # specify where db credentials are stored
  - name: LOOKEREXTRAARGS
-   value: --shared-storage-dir=/tmp/
+   value: --shared-storage-dir=/tmp/ #-d /home/looker/looker-db.yml
 #  - name: JAVAARGS
 #    value:
 #  - name: JAVAJVMARGS
@@ -30,6 +32,7 @@ extraEnvs:
 
 # by default a in-memory database is created
 
+# -d /home/looker/looker-db.yml must be added in LOOKEREXTRAARGS
 # databaseConfigFile:|-
   # dialect: mysql
   # host: YOUR_HOSTNAME
@@ -38,6 +41,7 @@ extraEnvs:
   # database: YOUR_DBNAME
   # port: YOUR_PORT
 
+# -d /home/looker/looker-db.yml must be added in LOOKEREXTRAARGS
 # You can provide it as an already existing secret with the key looker-db.yml: contain the whole file
 # databaseConfigSecretName: looker-db-secret
 

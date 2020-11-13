@@ -167,7 +167,7 @@ jobs:
           command: |
             kubectl create namespace looker || true
             kubectl create secret docker-registry dockerhub -n looker --docker-username=$DOCKERHUB_USERNAME --docker-password=$DOCKERHUB_PASSWORD
-            helm upgrade looker ./looker/ --install  --timeout 200${HSEC} --wait --kube-context minikube --namespace looker -f ./examples/looker/values.yaml
+            helm upgrade looker ./looker/ --install  --timeout 500${HSEC} --wait --kube-context minikube --namespace looker -f ./examples/looker/values.yaml
       - run:
           name: Debug on failures
           command: |

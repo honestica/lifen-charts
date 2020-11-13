@@ -78,6 +78,7 @@ spec:
               scheme: HTTPS
             failureThreshold: 30
             periodSeconds: 10
+          terminationMessagePolicy: FallbackToLogsOnError
           volumeMounts:
           - mountPath: /tmp
             name: tmp-volume

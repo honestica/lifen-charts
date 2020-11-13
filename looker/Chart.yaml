@@ -5,6 +5,10 @@ description: A Looker Helm chart for Kubernetes.
 icon: https://looker.com/assets/img/images/logos/looker.svg
 type: application
 version: 0.1.0
+keywords:
+- looker
+- google
+- data
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
 # follow Semantic Versioning. They should reflect the version the application is using.
@@ -12,3 +16,6 @@ appVersion: 2.16.0
 maintainers:
   - name: mparet
     email: matthieu.paret@lifen.fr
+sources:
+- https://github.com/honestica/lifen-charts
+- https://github.com/honestica/docker-looker

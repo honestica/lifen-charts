@@ -175,7 +175,7 @@ jobs:
             kubectl get node
             kubectl get pod --all-namespaces
             kubectl describe pod --all-namespaces
-            kubect logs --tail 2000 -lapp.kubernetes.io/instance=looker -n looker
+            kubectl logs --tail 2000 -lapp.kubernetes.io/instance=looker -n looker
             helm list --all --kube-context minikube --namespace lifen-app-test
           when: on_fail
 

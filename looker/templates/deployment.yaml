@@ -76,7 +76,7 @@ spec:
               path: /alive
               port: https
               scheme: HTTPS
-            failureThreshold: 30
+            failureThreshold: 50
             periodSeconds: 10
           terminationMessagePolicy: FallbackToLogsOnError
           volumeMounts:

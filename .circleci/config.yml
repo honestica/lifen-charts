@@ -133,14 +133,6 @@ jobs:
           command: |
             kubectl create namespace squid || true
             helm upgrade squid ./squid/ --install  --timeout 500${HSEC} --wait --kube-context minikube --namespace squid
-      - run:
-          name: Test neuvector installation
-          command: |
-            kubectl create namespace neuvector || true
-            kubectl create secret docker-registry dockerhub -n neuvector --docker-username=$DOCKERHUB_USERNAME --docker-password=$DOCKERHUB_PASSWORD
-            helm upgrade neuvector ./neuvector/ --install  --timeout 200${HSEC} --wait --kube-context minikube --namespace neuvector -f ./examples/neuvector/values.yaml
-            helm delete --purge neuvector || helm delete neuvector --kube-context minikube --namespace neuvector # Helm 3 needs namespace
-            helm upgrade neuvector-custom ./neuvector/ --install  --timeout 200${HSEC} --wait --kube-context minikube --namespace neuvector -f ./examples/neuvector/values-custom.yaml
       # - run:
       #     name: Test kured installation
       #     command: |
@@ -162,6 +154,14 @@ jobs:
             kubectl create namespace op-scim || true
             helm dependency update ./op-scim-bridge/
             helm upgrade op-scim ./op-scim-bridge/ --install  --timeout 500${HSEC} --wait -f examples/op-scim-bridge/values.yaml --kube-context minikube --namespace op-scim
+      - run:
+          name: Test neuvector installation
+          command: |
+            kubectl create namespace neuvector || true
+            kubectl create secret docker-registry dockerhub -n neuvector --docker-username=$DOCKERHUB_USERNAME --docker-password=$DOCKERHUB_PASSWORD
+            helm upgrade neuvector ./neuvector/ --install  --timeout 200${HSEC} --wait --kube-context minikube --namespace neuvector -f ./examples/neuvector/values.yaml
+            helm delete --purge neuvector || helm delete neuvector --kube-context minikube --namespace neuvector # Helm 3 needs namespace
+            helm upgrade neuvector-custom ./neuvector/ --install  --timeout 200${HSEC} --wait --kube-context minikube --namespace neuvector -f ./examples/neuvector/values-custom.yaml
       - run:
           name: Test looker installation
           command: |

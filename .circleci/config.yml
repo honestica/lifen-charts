@@ -15,9 +15,9 @@ jobs:
       KUBEVAL_VERSION: 0.15.0
       CONFTEST_VERSION: 0.21.0
       K8S_VERSIONS: 1.18.1 1.17.4 1.16.4
-      KUBECTL_VERSION: v1.17.11
+      KUBECTL_VERSION: v1.18.12
       KUBECONFIG: /home/circleci/.kube/config
-      MINIKUBE_VERSION: v1.14.0
+      MINIKUBE_VERSION: v1.14.2
       MINIKUBE_HOME: /home/circleci
     steps:
       - checkout
@@ -97,7 +97,7 @@ jobs:
       - run:
           name: start minikube
           command: |
-            minikube start --vm-driver=docker --cpus 2 --memory 4096 --network-plugin=cni --cni=calico --kubernetes-version=${KUBECTL_VERSION} &> $HOME/minikube.log 2>&1 < /dev/null
+            minikube start --vm-driver=docker --cpus 2 --memory 5096 --network-plugin=cni --cni=calico --kubernetes-version=${KUBECTL_VERSION} &> $HOME/minikube.log 2>&1 < /dev/null
       - run:
           name: debug node
           command: |
@@ -133,14 +133,6 @@ jobs:
           command: |
             kubectl create namespace squid || true
             helm upgrade squid ./squid/ --install  --timeout 500${HSEC} --wait --kube-context minikube --namespace squid
-      - run:
-          name: Test neuvector installation
-          command: |
-            kubectl create namespace neuvector || true
-            kubectl create secret docker-registry dockerhub -n neuvector --docker-username=$DOCKERHUB_USERNAME --docker-password=$DOCKERHUB_PASSWORD
-            helm upgrade neuvector ./neuvector/ --install  --timeout 200${HSEC} --wait --kube-context minikube --namespace neuvector -f ./examples/neuvector/values.yaml
-            helm delete --purge neuvector || helm delete neuvector --kube-context minikube --namespace neuvector # Helm 3 needs namespace
-            helm upgrade neuvector-custom ./neuvector/ --install  --timeout 200${HSEC} --wait --kube-context minikube --namespace neuvector -f ./examples/neuvector/values-custom.yaml
       # - run:
       #     name: Test kured installation
       #     command: |
@@ -163,12 +155,27 @@ jobs:
             helm dependency update ./op-scim-bridge/
             helm upgrade op-scim ./op-scim-bridge/ --install  --timeout 500${HSEC} --wait -f examples/op-scim-bridge/values.yaml --kube-context minikube --namespace op-scim
       - run:
+          name: Test neuvector installation
+          command: |
+            kubectl create namespace neuvector || true
+            kubectl create secret docker-registry dockerhub -n neuvector --docker-username=$DOCKERHUB_USERNAME --docker-password=$DOCKERHUB_PASSWORD
+            helm upgrade neuvector ./neuvector/ --install  --timeout 200${HSEC} --wait --kube-context minikube --namespace neuvector -f ./examples/neuvector/values.yaml
+            helm delete --purge neuvector || helm delete neuvector --kube-context minikube --namespace neuvector # Helm 3 needs namespace
+            helm upgrade neuvector-custom ./neuvector/ --install  --timeout 200${HSEC} --wait --kube-context minikube --namespace neuvector -f ./examples/neuvector/values-custom.yaml
+      - run:
+          name: Test looker installation
+          command: |
+            kubectl create namespace looker || true
+            kubectl create secret docker-registry dockerhub -n looker --docker-username=$DOCKERHUB_USERNAME --docker-password=$DOCKERHUB_PASSWORD
+            helm upgrade looker ./looker/ --install  --timeout 500${HSEC} --wait --kube-context minikube --namespace looker -f ./examples/looker/values.yaml
+      - run:
           name: Debug on failures
-          command: | 
+          command: |
             cat $HOME/minikube.log
             kubectl get node
             kubectl get pod --all-namespaces
             kubectl describe pod --all-namespaces
+            kubectl logs --tail 2000 -lapp.kubernetes.io/instance=looker -n looker
             helm list --all --kube-context minikube --namespace lifen-app-test
           when: on_fail
 
@@ -209,6 +216,7 @@ jobs:
             helm package fluent-bit -d packages
             helm package teleport -d packages
             helm package op-scim-bridge -d packages
+            helm package looker -d packages
             helm repo index packages --url https://honestica.github.io/lifen-charts/packages
             mv packages/index.yaml index.yaml
       - run:
@@ -216,7 +224,7 @@ jobs:
           command: |
             git add packages index.yaml
             git commit -m "relase version"
-            git push origin gh-pages 
+            git push origin gh-pages
 
 workflows:
   version: 2

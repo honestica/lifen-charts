@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "looker.fullname" . }}
+  labels:
+    {{- include "looker.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: 443
+      targetPort: https
+      protocol: TCP
+      name: https
+  selector:
+    {{- include "looker.selectorLabels" . | nindent 4 }}

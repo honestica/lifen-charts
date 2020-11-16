@@ -1,0 +1,124 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "looker.fullname" . }}
+  labels:
+    {{- include "looker.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "looker.selectorLabels" . | nindent 6 }}
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "looker.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "looker.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: link-jar-to-home
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          workingDir: /home/looker
+          volumeMounts:
+          - mountPath: /tmp
+            name: tmp-volume
+          - mountPath: /home/looker
+            name: looker-home
+          command:
+            - /bin/sh
+            - -c
+          args:
+            - |
+              ln -s /opt/looker/looker-dependencies.jar /home/looker/looker-dependencies.jar
+              ln -s /opt/looker/looker.jar /home/looker/looker.jar
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          workingDir: /home/looker
+          env:
+{{- if .Values.extraEnvs }}
+{{ toYaml .Values.extraEnvs | indent 10 }}
+{{- end }}
+          ports:
+            - name: https
+              containerPort: 9999
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /alive
+              port: https
+              scheme: HTTPS
+          readinessProbe:
+            httpGet:
+              path: /alive
+              port: https
+              scheme: HTTPS
+          startupProbe:
+            httpGet:
+              path: /alive
+              port: https
+              scheme: HTTPS
+            failureThreshold: 50
+            periodSeconds: 10
+          terminationMessagePolicy: FallbackToLogsOnError
+          volumeMounts:
+          - mountPath: /tmp
+            name: tmp-volume
+          - mountPath: /home/looker
+            name: looker-home
+{{- if or .Values.databaseConfigFile .Values.databaseConfigSecretName }}
+          - mountPath: /home/looker/looker-db.yml
+            name: db-secret
+            subPath: looker-db.yml
+{{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+      - name: tmp-volume
+        emptyDir:
+          medium: "Memory"
+      - name: looker-home
+        emptyDir:
+          medium: "Memory"
+{{- if .Values.databaseConfigFile }}
+      - name: db-secret
+        secret:
+          secretName: {{ include "looker.fullname" . }}
+{{- end }}
+{{- if .Values.databaseConfigSecretName }}
+      - name: db-secret
+        secret:
+          secretName: {{ .Values.databaseConfigSecretName }}
+{{- end }}

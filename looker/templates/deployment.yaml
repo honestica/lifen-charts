@@ -64,6 +64,8 @@ spec:
               containerPort: 9999
               protocol: TCP
           livenessProbe:
+            failureThreshold: 10
+            initialDelaySeconds: 300
             httpGet:
               path: /alive
               port: https

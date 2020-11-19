@@ -58,6 +58,7 @@ jobs:
             helm lint ./fluent-bit -f examples/fluent-bit/values.yaml
             helm lint ./squid -f examples/squid/values.yaml
             helm lint ./teleport -f examples/teleport/values.yaml
+            helm lint ./looker -f examples/looker/values.yaml
       - run:
           name: Execute helm template
           command: |
@@ -69,6 +70,7 @@ jobs:
             helm template ./fluent-bit -f examples/fluent-bit/values.yaml > fluent-bit.yaml
             helm template ./squid -f examples/squid/values.yaml > squid.yaml
             helm template ./teleport -f examples/teleport/values.yaml > teleport.yaml
+            helm template ./looker -f examples/looker/values.yaml > teleport.yaml
       - run:
           name: Run kubeval on the charts to ensure kubernetes compability
           command: |
@@ -82,6 +84,7 @@ jobs:
               kubeval -v $kv --strict fluent-bit.yaml
               kubeval -v $kv --strict squid.yaml
               kubeval -v $kv --strict teleport.yaml
+              kubeval -v $kv --strict looker.yaml
             done
       - run:
           name: Run deprek8
@@ -94,6 +97,7 @@ jobs:
             conftest test -p deprek8.rego fluent-bit.yaml
             conftest test -p deprek8.rego squid.yaml
             conftest test -p deprek8.rego teleport.yaml
+            conftest test -p deprek8.rego looker.yaml
       - run:
           name: start minikube
           command: |

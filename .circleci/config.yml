@@ -70,7 +70,7 @@ jobs:
             helm template ./fluent-bit -f examples/fluent-bit/values.yaml > fluent-bit.yaml
             helm template ./squid -f examples/squid/values.yaml > squid.yaml
             helm template ./teleport -f examples/teleport/values.yaml > teleport.yaml
-            helm template ./looker -f examples/looker/values.yaml > teleport.yaml
+            helm template ./looker -f examples/looker/values.yaml > looker.yaml
       - run:
           name: Run kubeval on the charts to ensure kubernetes compability
           command: |

@@ -3,7 +3,7 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ $fullName }}
+  name: {{ $fullName }}-data
   labels:
     {{- include "looker.labels" . | nindent 4 }}
 {{- if .Values.persistence.annotations }}

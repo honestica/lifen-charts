@@ -3,7 +3,7 @@ name: looker
 home: https://github.com/honestica/lifen-charts
 description: A Looker Helm chart for Kubernetes.
 icon: https://looker.com/assets/img/images/logos/looker.svg
-type: application
+# type: application
 version: 0.1.1
 keywords:
 - looker

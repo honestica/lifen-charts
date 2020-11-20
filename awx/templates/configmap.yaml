@@ -10,7 +10,7 @@ metadata:
 data:
   secret_key: {{ .Values.awx_secret_key }}
   environment_sh: |
-   
+
   nginx_conf: |
     #user awx;
 
@@ -182,30 +182,14 @@ data:
             'PASSWORD': "{{ .Values.postgresql.postgresqlPassword }}",
             'HOST': "{{ .Values.postgresql.postgresqlHost }}",
             'PORT': "{{ .Values.postgresql.postgresqlPort }}",
+            'OPTIONS': {
+                'connect_timeout': {{ .Values.postgresql.connectTimeout }},
+                'sslmode': '{{ .Values.postgresql.sslMode }}',
+            },
         }
     }
 
-    BROKER_URL = 'amqp://{}:{}@{}:{}/{}'.format(
-        "{{ .Values.rabbitmq.rabbitmq.username }}",
-        "{{ .Values.rabbitmq.rabbitmq.password }}",
-        "{{ include "awx.fullname" . }}-rabbitmq",
-        "{{ default "5672" .Values.rabbitmq.service.port }}",
-        "{{ default "awx" .Values.rabbitmq.vhost }}")
-
-    CHANNEL_LAYERS = {
-        'default': {'BACKEND': 'asgi_amqp.AMQPChannelLayer',
-                    'ROUTING': 'awx.main.routing.channel_routing',
-                    'CONFIG': {'url': BROKER_URL}}
-    }
-
-    CACHES = {
-        'default': {
-            'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-            'LOCATION': '{}:{}'.format("{{ include "awx.fullname" . }}-memcached", "{{ default "11211" .Values.memcached_port }}")
-        },
-        'ephemeral': {
-            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        },
-    }
-
+    AWX_CONTAINER_GROUP_DEFAULT_IMAGE = 'ansible/ansible-runner'
+    BROADCAST_WEBSOCKET_PORT = 8052
+    BROADCAST_WEBSOCKET_PROTOCOL = 'http'
     USE_X_FORWARDED_PORT = True

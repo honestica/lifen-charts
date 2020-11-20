@@ -16,5 +16,4 @@ spec:
       name: http
   selector:
     app.kubernetes.io/name: {{ include "awx.name" . }}
-    app.kubernetes.io/component: web
     app.kubernetes.io/instance: {{ .Release.Name }}

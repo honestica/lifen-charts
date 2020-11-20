@@ -37,8 +37,8 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           workingDir: /home/looker
           volumeMounts:
-          - mountPath: /tmp
-            name: tmp-volume
+          - mountPath: /data
+            name: {{ template "looker.fullname" . }}-shared-data-dir
           - mountPath: /home/looker
             name: looker-home
           command:
@@ -84,8 +84,8 @@ spec:
             periodSeconds: 10
           terminationMessagePolicy: FallbackToLogsOnError
           volumeMounts:
-          - mountPath: /tmp
-            name: tmp-volume
+          - mountPath: /data
+            name: {{ template "looker.fullname" . }}-shared-data-dir
           - mountPath: /home/looker
             name: looker-home
 {{- if or .Values.databaseConfigFile .Values.databaseConfigSecretName }}
@@ -108,6 +108,14 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       volumes:
+      - name: {{ template "looker.fullname" . }}-shared-data-dir
+        {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.existingClaim | default (printf "%s-%s" (include "looker.fullname" .) "data") }}
+        {{- else }}
+        emptyDir:
+          medium: "Memory"
+        {{- end }}
       - name: tmp-volume
         emptyDir:
           medium: "Memory"

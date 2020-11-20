@@ -2,20 +2,22 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+replicaCount: 1
 
+# awx_web & tasks are deployed in the same pod
 awx_web:
-  replicaCount: 1
   image:
     repository: ansible/awx_web
-    tag: 10.0.0
+    tag: 10-71
     pullPolicy: IfNotPresent
 
 awx_task:
-  replicaCount: 2
   image:
     repository: ansible/awx_task
-    tag: 10.0.0
+    tag: 10-71
     pullPolicy: IfNotPresent
+
+imagePullSecrets: []
 
 # AWX config
 awx_secret_key: awxsecret
@@ -34,9 +36,9 @@ ingress:
   enabled: false
   # Used to create an Ingress record.
   hosts:
-    - chart-example.local
-  annotations: {}
-    # kubernetes.io/ingress.class: nginx
+    - awx.minikube
+  annotations:
+    kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   tls: []
     # Secrets must be manually created in the namespace.
@@ -44,31 +46,6 @@ ingress:
     #   hosts:
     #     - chart-example.local
 
-
-# Chart values https://github.com/helm/charts/blob/master/stable/memcached/values.yaml
-memcached:
-  install: true
-
-# Chart values https://github.com/helm/charts/blob/master/stable/rabbitmq/values.yaml
-rabbitmq:
-  install: true
-  rabbitmq:
-    username: awx
-    password: awx
-    ## Configution file content https://www.rabbitmq.com/configure.html#configuration-files
-    configuration: |-
-        ## Clustering
-        cluster_formation.peer_discovery_backend  = rabbit_peer_discovery_k8s
-        cluster_formation.k8s.host = kubernetes.default.svc.cluster.local
-        cluster_formation.node_cleanup.interval = 10
-        cluster_formation.node_cleanup.only_log_warning = false
-        cluster_partition_handling = autoheal
-        ## queue master locator
-        queue_master_locator=min-masters
-        ## enable guest user
-        loopback_users.guest = false
-        ## awx vhost
-        default_vhost = awx
 
 # Chart values https://github.com/helm/charts/blob/master/stable/postgresql/values.yaml
 postgresql:
@@ -78,6 +55,7 @@ postgresql:
   postgresqlUsername: postgres
   postgresqlPassword: awx
   postgresqlDatabase: awx
+  sslMode: allow
   persistence:
     enabled: true
   metrics:
@@ -94,6 +72,8 @@ resources: {}
   # requests:
   #  cpu: 100m
   #  memory: 128Mi
+
+hostAliases: []
 
 nodeSelector: {}
 

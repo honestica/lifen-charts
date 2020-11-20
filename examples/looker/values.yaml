@@ -22,7 +22,7 @@ extraEnvs:
   # share storage is in memory for a standalone instance to avoid writing on the disk
   # specify where db credentials are stored
  - name: LOOKEREXTRAARGS
-   value: --shared-storage-dir=/tmp/ #-d /home/looker/looker-db.yml
+   value: --shared-storage-dir=/data/ #-d /home/looker/looker-db.yml
 #  - name: JAVAARGS
 #    value:
 #  - name: JAVAJVMARGS

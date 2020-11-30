@@ -28,6 +28,10 @@ spec:
       {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName | quote }}
       {{- end }}
+{{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.image.pullSecrets | indent 8 }}
+{{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -50,6 +54,14 @@ spec:
               value: "{{ .Values.iptablesLogPrefix }}"
             - name: "KUBE_API_SERVER"
               value: "{{ .Values.kubeApiServicer }}"
+          {{- if .Values.packetDropLogTimeLayout }}
+            - name: "PACKET_DROP_LOG_TIME_LAYOUT"
+              value: "{{ .Values.packetDropLogTimeLayout }}"
+          {{- end }}
+          {{- if .Values.logTimeRegex }}
+            - name: "LOG_TIME_REGEX"
+              value: '{{ .Values.logTimeRegex }}'
+          {{- end }}
           volumeMounts:
             - name: "iptables-logs"
               mountPath: "/var/log"

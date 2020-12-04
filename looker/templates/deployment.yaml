@@ -63,6 +63,9 @@ spec:
             - name: https
               containerPort: 9999
               protocol: TCP
+            - name: api
+              containerPort: 19999
+              protocol: TCP
           livenessProbe:
             failureThreshold: 10
             initialDelaySeconds: 300

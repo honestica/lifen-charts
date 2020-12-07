@@ -1,0 +1,36 @@
+{{- if .Values.ingressApi.enabled -}}
+{{- $fullName := include "looker.fullname" . -}}
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: {{ $fullName }}-api
+  labels:
+    {{- include "looker.labels" . | nindent 4 }}
+  {{- with .Values.ingressApi.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if .Values.ingressApi.tls }}
+  tls:
+    {{- range .Values.ingressApi.tls }}
+    - hosts:
+        {{- range .hosts }}
+        - {{ . | quote }}
+        {{- end }}
+      secretName: {{ .secretName }}
+    {{- end }}
+  {{- end }}
+  rules:
+    {{- range .Values.ingressApi.hosts }}
+    - host: {{ .host | quote }}
+      http:
+        paths:
+          {{- range .paths }}
+          - path: {{ . }}
+            backend:
+              serviceName: {{ $fullName }}
+              servicePort: 19443
+          {{- end }}
+    {{- end }}
+  {{- end }}

@@ -11,5 +11,9 @@ spec:
       targetPort: https
       protocol: TCP
       name: https
+    - port: 19443
+      targetPort: api
+      protocol: TCP
+      name: api
   selector:
     {{- include "looker.selectorLabels" . | nindent 4 }}

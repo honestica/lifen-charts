@@ -1,6 +1,6 @@
 image:
   repository: honestica/kube-iptables-tailer
-  tag: master-19
+  tag: master-44
   pullPolicy: IfNotPresent
 
 nameOverride: ""

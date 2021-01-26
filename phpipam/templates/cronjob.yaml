@@ -1,0 +1,69 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: {{ template "phpipam.fullname" . }}
+  labels:
+    app: {{ template "phpipam.name" . }}
+    chart: {{ template "phpipam.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  schedule: "{{ .Values.cronjob.schedule }}"
+  concurrencyPolicy: Forbid
+  {{- with .Values.cronjob.failedJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ . }}
+  {{- end }}
+  {{- with .Values.cronjob.successfulJobsHistoryLimit }}
+  successfulJobsHistoryLimit: {{ . }}
+  {{- end }}
+  jobTemplate:
+    metadata:
+      labels:
+        app: {{ template "phpipam.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      template:
+        metadata:
+          labels:
+            app: {{ template "phpipam.name" . }}
+            release: {{ .Release.Name }}
+
+        spec:
+          restartPolicy: Never
+    {{- if (default .Values.image.imagePullSecrets .Values.cronjob.image.imagePullSecrets) }}
+          imagePullSecrets:
+            - name: {{ (default .Values.image.pullSecrets .Values.cronjob.image.pullSecrets) }}
+    {{- end }}
+          containers:
+            - name: {{ .Chart.Name }}
+              image: "{{ .Values.cronjob.image.repository }}:{{ .Values.cronjob.image.tag }}"
+              imagePullPolicy: {{ .Values.cronjob.image.imagePullPolicy }}
+              env:
+                - name: TZ
+                  value: {{ (default .Values.cronjob.timezone "Europe/Paris") }}
+                - name: SCAN_INTERVAL
+                  value: {{ .Values.cronjob.scanInterval }}
+                - name: IPAM_DATABASE_USER
+                  value: {{ .Values.mariadb.username }}
+                - name: IPAM_DATABASE_NAME
+                  value: {{ .Values.mariadb.database }}
+                - name: IPAM_DATABASE_HOST
+                  value: {{ .Values.mariadb.host }}
+                - name: IPAM_DATABASE_PORT
+                  value: {{ .Values.mariadb.port | quote }}
+                - name: IPAM_DATABASE_PASS
+                  value: {{ .Values.mariadb.password }}
+              resources:
+    {{ toYaml .Values.cronjob.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

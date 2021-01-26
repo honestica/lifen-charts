@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "phpipam.fullname" . }}
+  labels:
+    app: {{ template "phpipam.name" . }}
+    chart: {{ template "phpipam.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "phpipam.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "phpipam.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+{{- if .Values.image.imagePullSecrets }}
+      imagePullSecrets:
+        - name: {{ .Values.image.imagePullSecrets }}
+{{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+          - name: http
+            containerPort: 80
+            protocol: TCP
+          volumeMounts:
+          - name: logo
+            mountPath: /phpipam/css/images/logo
+          env:
+            - name: IPAM_DATABASE_USER
+              value: {{ .Values.mariadb.username }}
+            - name: IPAM_DATABASE_NAME
+              value: {{ .Values.mariadb.database }}
+            - name: IPAM_DATABASE_HOST
+              value: {{ .Values.mariadb.host }}
+            - name: IPAM_DATABASE_PORT
+              value: {{ .Values.mariadb.port | quote }}
+            - name: IPAM_DATABASE_PASS
+              value: {{ .Values.mariadb.password }}
+            - name: TZ
+              value: {{ (default .Values.extraVars.timezone "Europe/Paris") }}
+        # Load the configuration files for nginx
+          livenessProbe:
+            tcpSocket:
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10 
+          readinessProbe:
+            tcpSocket:
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+      volumes:
+      - emptyDir:
+          medium: "Memory"
+        name: logo
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+
+

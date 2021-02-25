@@ -25,6 +25,7 @@ podAnnotations: {}
 
 rbac:
   create: true
+  pspEnabled: true
 
 serviceAccount:
   create: true

@@ -15,4 +15,11 @@ rules:
 - apiGroups: [""]
   resources: ["events"]
   verbs:     ["patch","create"]
+{{- if .Values.rbac.pspEnabled }}
+- apiGroups: ["policy"]
+  resources: ["podsecuritypolicies"]
+  verbs:     ["use"]
+  resourceNames:
+  - {{ include "kube-iptables-tailer.fullname" . }}
+{{- end }}
 {{- end -}}

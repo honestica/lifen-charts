@@ -21,6 +21,6 @@ if [[ $HVER == *"v2."* ]]; then # Helm 2
   helm init --wait --upgrade
 else
   # Helm 3 comes without any repos
-  helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+  helm repo add stable https://charts.helm.sh/stable
   helm repo update
 fi

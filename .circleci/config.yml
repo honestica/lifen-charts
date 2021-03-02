@@ -14,10 +14,10 @@ jobs:
       HSEC: << parameters.hsec >>
       KUBEVAL_VERSION: 0.15.0
       CONFTEST_VERSION: 0.21.0
-      K8S_VERSIONS: 1.18.1 1.17.4 1.16.4
-      KUBECTL_VERSION: v1.18.12
+      K8S_VERSIONS: 1.19.7 1.18.1
+      KUBECTL_VERSION: v1.19.7
       KUBECONFIG: /home/circleci/.kube/config
-      MINIKUBE_VERSION: v1.14.2
+      MINIKUBE_VERSION: v1.17.1
       MINIKUBE_HOME: /home/circleci
     steps:
       - checkout
@@ -70,12 +70,12 @@ jobs:
           command: |
             for kv in ${K8S_VERSIONS}
             do
-              kubeval -v $kv --strict awx.yaml
-              kubeval -v $kv --strict kube-iptables-tailer.yaml
-              kubeval -v $kv --ignore-missing-schemas --strict neuvector.yaml
-              kubeval -v $kv --strict squid.yaml
-              kubeval -v $kv --strict teleport.yaml
-              kubeval -v $kv --strict looker.yaml
+              kubeval -v $kv --strict awx.yaml --schema-location https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master
+              kubeval -v $kv --strict kube-iptables-tailer.yaml --schema-location https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master
+              kubeval -v $kv --ignore-missing-schemas --strict neuvector.yaml --schema-location https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master
+              kubeval -v $kv --strict squid.yaml --schema-location https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master
+              kubeval -v $kv --strict teleport.yaml --schema-location https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master
+              kubeval -v $kv --strict looker.yaml --schema-location https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master
             done
       - run:
           name: Run deprek8

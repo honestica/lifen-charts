@@ -35,6 +35,7 @@ Common labels
 */}}
 {{- define "looker.labels" -}}
 helm.sh/chart: {{ include "looker.chart" . }}
+app: {{ template "looker.name" . }}
 {{ include "looker.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}

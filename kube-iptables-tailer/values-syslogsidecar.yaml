@@ -13,7 +13,7 @@ nameOverride: ""
 fullnameOverride: ""
 
 # Only one of the next configuration should be enabled
-# iptablesLogPath: "/var/log/iptables.log"
+iptablesLogPath: "/var/log/kernel.log"
 # journalDirectory: "/var/log/journal"
 
 iptablesLogPrefix: "calico-packet:"
@@ -56,6 +56,6 @@ tolerations: []
 affinity: {}
 
 syslogSidecar:
-  enabled: false
+  enabled: true
   image: rsyslog/syslog_appliance_alpine
   tag: latest

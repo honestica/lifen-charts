@@ -62,6 +62,10 @@ spec:
             subPath: squid.conf
           - name: cache
             mountPath: /var/cache/squid
+        {{- if .Values.configSecret }}
+          - name: config
+            mountPath: /etc/squid/config
+        {{- end }}
         # Load the configuration files for nginx
           livenessProbe:
             tcpSocket:
@@ -110,6 +114,11 @@ spec:
           name: {{ template "squid.fullname" . }}-conf
       - emptyDir: {}
         name: cache
+    {{- if .Values.configSecret }}
+      - name: config
+        secret:
+          secretName: {{ .Values.configSecret }}
+    {{- end }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

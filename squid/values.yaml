@@ -75,6 +75,8 @@ config: |
   # Do not display squid version
   httpd_suppress_version_string on
 
+# Optionally specify a secret whose contents will be mounted into /etc/squid/config.
+# configSecret: config-example
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

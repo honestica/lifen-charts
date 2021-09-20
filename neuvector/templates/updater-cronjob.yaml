@@ -1,5 +1,7 @@
 {{- if .Values.cve.updater.enabled -}}
-{{- if (semverCompare ">=1.8-0" (substr 1 -1 .Capabilities.KubeVersion.GitVersion)) }}
+{{- if (semverCompare ">=1.21-0" (substr 1 -1 .Capabilities.KubeVersion.GitVersion)) }}
+apiVersion: batch/v1
+{{- else if (semverCompare ">=1.8-0" (substr 1 -1 .Capabilities.KubeVersion.GitVersion)) }}
 apiVersion: batch/v1beta1
 {{- else }}
 apiVersion: batch/v2alpha1
@@ -26,9 +28,22 @@ spec:
           imagePullSecrets:
             - name: {{ .Values.imagePullSecrets }}
         {{- end }}
+        {{- if .Values.cve.updater.priorityClassName }}
+          priorityClassName: {{ .Values.cve.updater.priorityClassName }}
+        {{- end }}
+          serviceAccountName: {{ .Values.serviceAccount }}
+          serviceAccount: {{ .Values.serviceAccount }}
           containers:
             - name: neuvector-updater-pod
+              {{ if eq .Values.registry "registry.neuvector.com" }}
+              {{ if .Values.oem }}
+              image: "{{ .Values.registry }}/{{ .Values.oem }}/updater:{{ .Values.cve.updater.image.tag }}"
+              {{- else }}
+              image: "{{ .Values.registry }}/updater:{{ .Values.cve.updater.image.tag }}"
+              {{- end }}
+              {{- else }}
               image: "{{ .Values.registry }}/{{ .Values.cve.updater.image.repository }}:{{ .Values.cve.updater.image.tag }}"
+              {{- end }}
               imagePullPolicy: Always
           {{- if .Values.cve.scanner.enabled }}
               lifecycle:

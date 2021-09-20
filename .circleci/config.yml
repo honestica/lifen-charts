@@ -135,9 +135,9 @@ jobs:
           command: |
             kubectl create namespace neuvector || true
             kubectl create secret docker-registry dockerhub -n neuvector --docker-username=$DOCKERHUB_USERNAME --docker-password=$DOCKERHUB_PASSWORD
-            helm upgrade neuvector ./neuvector/ --install  --timeout 200s --wait --kube-context minikube --namespace neuvector -f ./examples/neuvector/values.yaml
-            helm delete --purge neuvector || helm delete neuvector --kube-context minikube --namespace neuvector # Helm 3 needs namespace
-            helm upgrade neuvector-custom ./neuvector/ --install  --timeout 200s --wait --kube-context minikube --namespace neuvector -f ./examples/neuvector/values-custom.yaml
+            helm upgrade neuvector ./neuvector/ --install  --timeout 300s --wait --kube-context minikube --namespace neuvector -f ./examples/neuvector/values.yaml
+            helm delete neuvector --kube-context minikube --namespace neuvector
+            helm upgrade neuvector-custom ./neuvector/ --install  --timeout 300s --wait --kube-context minikube --namespace neuvector -f ./examples/neuvector/values-custom.yaml
       - run:
           name: Test looker installation
           command: |

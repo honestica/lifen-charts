@@ -5,20 +5,19 @@ jobs:
     parameters:
       helm:
         type: string
-      hsec:
-        type: string
+
     machine:
       image: ubuntu-2004:202010-01
     environment:
       HELM_VERSION: << parameters.helm >>
-      HSEC: << parameters.hsec >>
-      KUBEVAL_VERSION: 0.15.0
-      CONFTEST_VERSION: 0.21.0
-      K8S_VERSIONS: 1.19.7 1.18.1
-      KUBECTL_VERSION: v1.19.7
+      KUBEVAL_VERSION: v0.16.1
+      CONFTEST_VERSION: 0.27.0
+      K8S_VERSIONS: 1.21.4 1.20.10 1.19.13
+      KUBECTL_VERSION: v1.21.4
       KUBECONFIG: /home/circleci/.kube/config
-      MINIKUBE_VERSION: v1.17.1
+      MINIKUBE_VERSION: v1.23.0
       MINIKUBE_HOME: /home/circleci
+      K8S_SCHEMAS: https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master
     steps:
       - checkout
       - run:
@@ -70,12 +69,12 @@ jobs:
           command: |
             for kv in ${K8S_VERSIONS}
             do
-              kubeval -v $kv --strict awx.yaml --schema-location https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master
-              kubeval -v $kv --strict kube-iptables-tailer.yaml --schema-location https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master
-              kubeval -v $kv --ignore-missing-schemas --strict neuvector.yaml --schema-location https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master
-              kubeval -v $kv --strict squid.yaml --schema-location https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master
-              kubeval -v $kv --strict teleport.yaml --schema-location https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master
-              kubeval -v $kv --strict looker.yaml --schema-location https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master
+              kubeval -v $kv --strict awx.yaml --schema-location ${K8S_SCHEMAS}
+              kubeval -v $kv --strict kube-iptables-tailer.yaml --schema-location ${K8S_SCHEMAS}
+              kubeval -v $kv --ignore-missing-schemas --strict neuvector.yaml --schema-location ${K8S_SCHEMAS}
+              kubeval -v $kv --strict squid.yaml --schema-location ${K8S_SCHEMAS}
+              kubeval -v $kv --strict teleport.yaml --schema-location ${K8S_SCHEMAS}
+              kubeval -v $kv --strict looker.yaml --schema-location ${K8S_SCHEMAS}
             done
       - run:
           name: Run deprek8
@@ -105,46 +104,46 @@ jobs:
             until kubectl get nodes -o jsonpath="$JSONPATH" 2>&1 | grep -q "Ready=True"; do
               sleep 1;
             done
-      - run:
-          name: Test awx installation
-          command: |
-            kubectl create namespace awx || true
-            #helm upgrade awx ./awx/ --install  --timeout 500${HSEC} --wait -f examples/awx/values.yaml --kube-context minikube --namespace awx
+      # - run:
+      #     name: Test awx installation
+      #     command: |
+      #       kubectl create namespace awx || true
+      #       helm upgrade awx ./awx/ --install  --timeout 500s --wait -f examples/awx/values.yaml --kube-context minikube --namespace awx
       - run:
           name: Test teleport installation
           command: |
             kubectl create namespace teleport || true
-            helm upgrade teleport ./teleport/ --install  --timeout 500${HSEC} --wait -f examples/teleport/values.yaml --kube-context minikube --namespace teleport
+            helm upgrade teleport ./teleport/ --install  --timeout 500s --wait -f examples/teleport/values.yaml --kube-context minikube --namespace teleport
       - run:
           name: Test kube-iptables-tailer installation
           command: |
             kubectl create namespace kube-iptables-tailer || true
-            helm upgrade kube-iptables-tailer ./kube-iptables-tailer/ --install  --timeout 500${HSEC} --wait -f examples/kube-iptables-tailer/values.yaml --kube-context minikube --namespace kube-iptables-tailer
+            helm upgrade kube-iptables-tailer ./kube-iptables-tailer/ --install  --timeout 500s --wait -f examples/kube-iptables-tailer/values.yaml --kube-context minikube --namespace kube-iptables-tailer
       - run:
           name: Test squid installation
           command: |
             kubectl create namespace squid || true
-            helm upgrade squid ./squid/ --install  --timeout 500${HSEC} --wait --kube-context minikube --namespace squid
+            helm upgrade squid ./squid/ --install  --timeout 500s --wait --kube-context minikube --namespace squid
       - run:
           name: Test op-scim installation
           command: |
             kubectl create namespace op-scim || true
             helm dependency update ./op-scim-bridge/
-            helm upgrade op-scim ./op-scim-bridge/ --install  --timeout 500${HSEC} --wait -f examples/op-scim-bridge/values.yaml --kube-context minikube --namespace op-scim
-      - run:
-          name: Test neuvector installation
-          command: |
-            kubectl create namespace neuvector || true
-            kubectl create secret docker-registry dockerhub -n neuvector --docker-username=$DOCKERHUB_USERNAME --docker-password=$DOCKERHUB_PASSWORD
-            helm upgrade neuvector ./neuvector/ --install  --timeout 200${HSEC} --wait --kube-context minikube --namespace neuvector -f ./examples/neuvector/values.yaml
-            helm delete --purge neuvector || helm delete neuvector --kube-context minikube --namespace neuvector # Helm 3 needs namespace
-            helm upgrade neuvector-custom ./neuvector/ --install  --timeout 200${HSEC} --wait --kube-context minikube --namespace neuvector -f ./examples/neuvector/values-custom.yaml
+            helm upgrade op-scim ./op-scim-bridge/ --install  --timeout 500s --wait -f examples/op-scim-bridge/values.yaml --kube-context minikube --namespace op-scim
+      # - run:
+      #     name: Test neuvector installation
+      #     command: |
+      #       kubectl create namespace neuvector || true
+      #       kubectl create secret docker-registry dockerhub -n neuvector --docker-username=$DOCKERHUB_USERNAME --docker-password=$DOCKERHUB_PASSWORD
+      #       helm upgrade neuvector ./neuvector/ --install  --timeout 300s --wait --kube-context minikube --namespace neuvector -f ./examples/neuvector/values.yaml
+      #       helm delete neuvector --kube-context minikube --namespace neuvector
+      #       helm upgrade neuvector-custom ./neuvector/ --install  --timeout 300s --wait --kube-context minikube --namespace neuvector -f ./examples/neuvector/values-custom.yaml
       - run:
           name: Test looker installation
           command: |
             kubectl create namespace looker || true
             kubectl create secret docker-registry dockerhub -n looker --docker-username=$DOCKERHUB_USERNAME --docker-password=$DOCKERHUB_PASSWORD
-            helm upgrade looker ./looker/ --install  --timeout 500${HSEC} --wait --kube-context minikube --namespace looker -f ./examples/looker/values.yaml
+            helm upgrade looker ./looker/ --install  --timeout 500s --wait --kube-context minikube --namespace looker -f ./examples/looker/values.yaml
       - run:
           name: Debug on failures
           command: |
@@ -205,19 +204,8 @@ workflows:
   build:
     jobs:
       - test:
-          name: helm-2
-          helm: 2.17.0
-          hsec: ""
-          filters:
-            branches:
-              ignore:
-                - gh-pages
-                - master
-          context: org-global
-      - test:
           name: helm-3
-          helm: 3.2.4
-          hsec: s
+          helm: 3.6.3
           filters:
             branches:
               ignore:
@@ -225,7 +213,7 @@ workflows:
                 - master
           context: org-global
       - release:
-          helm: 2.17.0
+          helm: 3.6.3
           filters:
             branches:
               only: master

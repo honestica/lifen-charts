@@ -35,7 +35,7 @@ spec:
     {{- end }}
       containers:
         - name: neuvector-prometheus-exporter-pod
-          image: "{{ .Values.registry }}/{{ .Values.exporter.image.repository }}:{{ .Values.exporter.image.tag }}"
+          image: "{{ .Values.exporter.registry }}/{{ .Values.exporter.image.repository }}:{{ .Values.exporter.image.tag }}"
           imagePullPolicy: Always
           env:
             - name: CTRL_API_SERVICE

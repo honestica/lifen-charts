@@ -12,4 +12,4 @@ maintainers: # (optional)
   - name: Lifen Ops
     email: ops@lifen.fr
 icon: https://1password.com/img/logo-v1.svg
-appVersion: v1.4.3
+appVersion: v2.1.2

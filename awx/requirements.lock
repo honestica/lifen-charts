@@ -1,6 +1,12 @@
 dependencies:
 - name: postgresql
-  repository: https://kubernetes-charts.storage.googleapis.com/
+  repository: https://charts.helm.sh/stable
   version: 8.5.0
-digest: sha256:0b99f7a24d586e027b30f2b7997da786538ffc6b967b35ec0fcbe5e6bcfafd7a
-generated: "2020-04-15T21:50:41.470853012+02:00"
+- name: memcached
+  repository: https://charts.helm.sh/stable
+  version: 3.2.2
+- name: rabbitmq
+  repository: https://charts.helm.sh/stable
+  version: 6.18.1
+digest: sha256:1ec33c895beb75acd5e883b90f2dd2857a28a5d488a5dcd68e25ee55ed38adaa
+generated: "2021-09-14T20:14:27.831889466+02:00"

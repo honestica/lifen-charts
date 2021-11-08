@@ -2,12 +2,8 @@ version: 2.1
 
 jobs:
   test:
-    parameters:
-      helm:
-        type: string
-
     machine:
-      image: ubuntu-2004:202010-01
+      image: ubuntu-2004:202107-02
     environment:
       HELM_VERSION: 3.7.1
       KUBEVAL_VERSION: v0.16.1
@@ -136,11 +132,8 @@ jobs:
           when: on_fail
 
   release:
-    parameters:
-      helm:
-        type: string
     environment:
-      HELM_VERSION: << parameters.helm >>
+      HELM_VERSION: 3.7.1
     docker:
       - image: circleci/python:3
     steps:

@@ -3,9 +3,22 @@ entries:
   awx:
   - apiVersion: v1
     appVersion: v10.0.0
-    created: "2021-05-10T11:11:46.141825337Z"
+    created: "2021-11-08T12:04:59.892850704Z"
+    dependencies:
+    - condition: postgresql.install
+      name: postgresql
+      repository: https://charts.helm.sh/stable
+      version: 8.5.0
+    - condition: memcached.install
+      name: memcached
+      repository: https://charts.helm.sh/stable
+      version: 3.2.2
+    - condition: rabbitmq.install
+      name: rabbitmq
+      repository: https://charts.helm.sh/stable
+      version: 6.18.1
     description: A Helm chart for Kubernetes
-    digest: 8db401596ee8e53417a0a102c9a29d870a0331d160aa2aed72797d363aa2d7f0
+    digest: 3421344646970f069636f773b76218fa56df84082ffc07b04a6317850663fc88
     home: https://github.com/honestica/lifen-charts
     keywords:
     - awx
@@ -22,7 +35,20 @@ entries:
     version: 10.0.1
   - apiVersion: v1
     appVersion: v10.0.0
-    created: "2021-05-10T11:11:46.134787293Z"
+    created: "2021-11-08T12:04:59.88706393Z"
+    dependencies:
+    - condition: rabbitmq.install
+      name: rabbitmq
+      repository: https://kubernetes-charts.storage.googleapis.com/
+      version: 6.18.1
+    - condition: postgresql.install
+      name: postgresql
+      repository: https://kubernetes-charts.storage.googleapis.com/
+      version: 8.5.0
+    - condition: memcached.install
+      name: memcached
+      repository: https://kubernetes-charts.storage.googleapis.com/
+      version: 3.2.2
     description: A Helm chart for Kubernetes
     digest: b2b552901754a081b660e56d1e6f4be72a2fe83041a1abbe838ed55b7d870f6d
     home: https://github.com/honestica/lifen-charts
@@ -41,7 +67,20 @@ entries:
     version: 1.2.1
   - apiVersion: v1
     appVersion: v10.0.0
-    created: "2021-05-10T11:11:46.130008559Z"
+    created: "2021-11-08T12:04:59.882531661Z"
+    dependencies:
+    - condition: rabbitmq.install
+      name: rabbitmq
+      repository: https://kubernetes-charts.storage.googleapis.com/
+      version: 6.18.1
+    - condition: postgresql.install
+      name: postgresql
+      repository: https://kubernetes-charts.storage.googleapis.com/
+      version: 8.5.0
+    - condition: memcached.install
+      name: memcached
+      repository: https://kubernetes-charts.storage.googleapis.com/
+      version: 3.2.2
     description: A Helm chart for Kubernetes
     digest: 3ad470ddc54db66b0103cf76095ff564f121b6569c783c61668d161836390e2e
     home: https://github.com/honestica/lifen-charts
@@ -60,7 +99,20 @@ entries:
     version: 1.2.0
   - apiVersion: v1
     appVersion: v9.2.0
-    created: "2021-05-10T11:11:46.124422732Z"
+    created: "2021-11-08T12:04:59.875989186Z"
+    dependencies:
+    - condition: rabbitmq.install
+      name: rabbitmq
+      repository: https://kubernetes-charts.storage.googleapis.com/
+      version: 6.18.1
+    - condition: postgresql.install
+      name: postgresql
+      repository: https://kubernetes-charts.storage.googleapis.com/
+      version: 8.5.0
+    - condition: memcached.install
+      name: memcached
+      repository: https://kubernetes-charts.storage.googleapis.com/
+      version: 3.2.2
     description: A Helm chart for Kubernetes
     digest: 32616ac88a9a4e66d319198ab1380161a1ebd2df39776a66d7cc2ae9e4a6f3cc
     home: https://github.com/honestica/lifen-charts
@@ -79,7 +131,20 @@ entries:
     version: 1.1.0
   - apiVersion: v1
     appVersion: v8.0.0
-    created: "2021-05-10T11:11:46.120922314Z"
+    created: "2021-11-08T12:04:59.869882616Z"
+    dependencies:
+    - condition: rabbitmq.install
+      name: rabbitmq
+      repository: https://kubernetes-charts.storage.googleapis.com/
+      version: 6.9.0
+    - condition: postgresql.install
+      name: postgresql
+      repository: https://kubernetes-charts.storage.googleapis.com/
+      version: 6.5.0
+    - condition: memcached.install
+      name: memcached
+      repository: https://kubernetes-charts.storage.googleapis.com/
+      version: 3.0.1
     description: A Helm chart for Kubernetes
     digest: 09399d04613cfe3836bf89f27c2d03e45a6aac454a3241b388f6854cc1881407
     home: https://github.com/honestica/lifen-charts
@@ -98,7 +163,20 @@ entries:
     version: 1.0.0
   - apiVersion: v1
     appVersion: v7.0.0
-    created: "2021-05-10T11:11:46.118268461Z"
+    created: "2021-11-08T12:04:59.864524378Z"
+    dependencies:
+    - condition: rabbitmq.install
+      name: rabbitmq
+      repository: https://kubernetes-charts.storage.googleapis.com/
+      version: 6.4.2
+    - condition: postgresql.install
+      name: postgresql
+      repository: https://kubernetes-charts.storage.googleapis.com/
+      version: 6.3.2
+    - condition: memcached.install
+      name: memcached
+      repository: https://kubernetes-charts.storage.googleapis.com/
+      version: 2.9.0
     description: A Helm chart for Kubernetes
     digest: 4b7b658d3d804536e18c23c88d8a2dea3f3267ef9b43609f1bdf56458b688cc7
     home: https://github.com/honestica/lifen-charts
@@ -118,9 +196,9 @@ entries:
   kube-iptables-tailer:
   - apiVersion: v1
     appVersion: v0.1.0
-    created: "2021-05-10T11:11:46.144098963Z"
+    created: "2021-11-08T12:04:59.895713317Z"
     description: A Helm chart for Kubernetes
-    digest: 43b658756340b34638df55023a9b3add9e69f018c408b59c43606cf70ae0ca2d
+    digest: d6f963975732448fc6919b370d869a66487498ffd59a78f67843bfe88ba8b6c4
     home: https://github.com/honestica/lifen-charts
     keywords:
     - kube-iptables-tailer
@@ -138,7 +216,7 @@ entries:
     version: 0.1.6
   - apiVersion: v1
     appVersion: v0.1.0
-    created: "2021-05-10T11:11:46.143754993Z"
+    created: "2021-11-08T12:04:59.895272364Z"
     description: A Helm chart for Kubernetes
     digest: 4c927f890f6dc8a48af449d861b09886169396086d5d53cfec68c9f479f03f13
     home: https://github.com/honestica/lifen-charts
@@ -158,7 +236,7 @@ entries:
     version: 0.1.5
   - apiVersion: v1
     appVersion: v0.1.0
-    created: "2021-05-10T11:11:46.143440349Z"
+    created: "2021-11-08T12:04:59.89483643Z"
     description: A Helm chart for Kubernetes
     digest: 5a23d302ab86bc7784eee1171020679e1e4ed433d818f8caaeb253fc2420b26d
     home: https://github.com/honestica/lifen-charts
@@ -178,7 +256,7 @@ entries:
     version: 0.1.4
   - apiVersion: v1
     appVersion: v0.1.0
-    created: "2021-05-10T11:11:46.143121956Z"
+    created: "2021-11-08T12:04:59.894422198Z"
     description: A Helm chart for Kubernetes
     digest: 2aadce054b2b9bc2b236c259d7973b2ab09971cdc0b5c523f13a755be728004e
     home: https://github.com/honestica/lifen-charts
@@ -198,7 +276,7 @@ entries:
     version: 0.1.3
   - apiVersion: v1
     appVersion: v0.1.0
-    created: "2021-05-10T11:11:46.142805809Z"
+    created: "2021-11-08T12:04:59.894025061Z"
     description: A Helm chart for Kubernetes
     digest: b5107294185b65cd280110d703ade9ac0875425bc768a42a7ce52beac3b1b96b
     home: https://github.com/honestica/lifen-charts
@@ -218,7 +296,7 @@ entries:
     version: 0.1.2
   - apiVersion: v1
     appVersion: v0.1.0
-    created: "2021-05-10T11:11:46.142476467Z"
+    created: "2021-11-08T12:04:59.893640542Z"
     description: A Helm chart for Kubernetes
     digest: daf2efefbdae88ffcfb9e82fada13e32cf6bb3e2c4c1c7b1658804cf7afbb94f
     home: https://github.com/honestica/lifen-charts
@@ -238,7 +316,7 @@ entries:
     version: 0.1.1
   - apiVersion: v1
     appVersion: v0.1.0
-    created: "2021-05-10T11:11:46.142157581Z"
+    created: "2021-11-08T12:04:59.893255708Z"
     description: A Helm chart for Kubernetes
     digest: 476bcbaf7601bacbc02cc4b62d0b82817a6950205cc992df0d06f229e7ebd6f2
     home: https://github.com/honestica/lifen-charts
@@ -261,9 +339,9 @@ entries:
   looker:
   - apiVersion: v1
     appVersion: 2.16.0
-    created: "2021-05-10T11:11:46.145268892Z"
+    created: "2021-11-08T12:04:59.897402208Z"
     description: A Looker Helm chart for Kubernetes.
-    digest: a737b1cef2df6be7f90dad621e5a681be87ba651d2b86dc339018876463d65df
+    digest: d6ba2b1d24c6e4f4ccccf7a30f2dab2e71166c30a43f477f7e6852653bf57421
     home: https://github.com/honestica/lifen-charts
     icon: https://looker.com/assets/img/images/logos/looker.svg
     keywords:
@@ -282,7 +360,7 @@ entries:
     version: 0.1.2
   - apiVersion: v1
     appVersion: 2.16.0
-    created: "2021-05-10T11:11:46.144832738Z"
+    created: "2021-11-08T12:04:59.896807371Z"
     description: A Looker Helm chart for Kubernetes.
     digest: 977edd52940e8287efd9b59b25f5bef6e50deb5d47225dd1cd94e0cfbae9b435
     home: https://github.com/honestica/lifen-charts
@@ -303,7 +381,7 @@ entries:
     version: 0.1.1
   - apiVersion: v1
     appVersion: 2.16.0
-    created: "2021-05-10T11:11:46.144457968Z"
+    created: "2021-11-08T12:04:59.896238007Z"
     description: A Looker Helm chart for Kubernetes.
     digest: 2c517b375bb7f67635739f353fa89298df9fb58ad7372f50641a9fa5966cfc17
     home: https://github.com/honestica/lifen-charts
@@ -325,13 +403,12 @@ entries:
   neuvector:
   - apiVersion: v1
     appVersion: 3.2.1
-    created: "2021-05-10T11:11:46.155459495Z"
+    created: "2021-11-08T12:04:59.908507108Z"
     description: NeuVector Full Lifecycle Container Security Platform delivers the
       only cloud-native security with uncompromising end-to-end protection from DevOps
       vulnerability protection to automated run-time security, and featuring a true
       Layer 7 container firewall.
     digest: 1eb8741520f40e8b35b545408aed78a7734c1be8166fe7a8f9e98c0337c04c75
-    engine: gotpl
     home: https://neuvector.com
     maintainers:
     - email: support@neuvector.com
@@ -344,13 +421,12 @@ entries:
     version: 1.5.2
   - apiVersion: v1
     appVersion: 3.2.1
-    created: "2021-05-10T11:11:46.152922648Z"
+    created: "2021-11-08T12:04:59.905679617Z"
     description: NeuVector Full Lifecycle Container Security Platform delivers the
       only cloud-native security with uncompromising end-to-end protection from DevOps
       vulnerability protection to automated run-time security, and featuring a true
       Layer 7 container firewall.
     digest: 6f7c4509c546c71e5eef36505ac7446b873aece8e34273b5454cf0a1fc214d8f
-    engine: gotpl
     home: https://neuvector.com
     maintainers:
     - email: support@neuvector.com
@@ -363,11 +439,10 @@ entries:
     version: 1.5.1
   - apiVersion: v1
     appVersion: 3.1.1
-    created: "2021-05-10T11:11:46.15054366Z"
+    created: "2021-11-08T12:04:59.903239065Z"
     description: NeuVector Container Security Platform includes layer 7 container
       firewall, end-to-end vulnerability scanning, and container process/file monitoring.
     digest: a01d715f6d23c406c9f050281f211bb348dc90619ce905a5bc9889fe690d7a95
-    engine: gotpl
     home: https://neuvector.com
     keywords:
     - neuvector
@@ -386,11 +461,10 @@ entries:
     version: 1.4.3
   - apiVersion: v1
     appVersion: 3.1.1
-    created: "2021-05-10T11:11:46.149195897Z"
+    created: "2021-11-08T12:04:59.902044388Z"
     description: NeuVector Container Security Platform includes layer 7 container
       firewall, end-to-end vulnerability scanning, and container process/file monitoring.
     digest: 156f9f1907f981d2b8096ccd8e12e6a835831154cef835ec14a225a52003a299
-    engine: gotpl
     home: https://neuvector.com
     keywords:
     - neuvector
@@ -409,7 +483,7 @@ entries:
     version: 1.4.2
   - apiVersion: v1
     appVersion: 2.5.2
-    created: "2021-05-10T11:11:46.147958583Z"
+    created: "2021-11-08T12:04:59.900876036Z"
     description: NeuVector Container Security Platform includes layer 7 container
       firewall, end-to-end vulnerability scanning, and container process/file monitoring.
     digest: 551e3a35f3e4443e4b5e43a550023341385d995e049067dab1879a2ec6f01454
@@ -431,7 +505,7 @@ entries:
     version: 1.3.5
   - apiVersion: v1
     appVersion: 2.5.2
-    created: "2021-05-10T11:11:46.147295505Z"
+    created: "2021-11-08T12:04:59.899257342Z"
     description: NeuVector Container Security Platform includes layer 7 container
       firewall, end-to-end vulnerability scanning, and container process/file monitoring.
     digest: 1b98f8b7a7bf31560e957fc054105e4aeefb1d007f51a967aebc774c77db71a9
@@ -453,7 +527,7 @@ entries:
     version: 1.3.4
   - apiVersion: v1
     appVersion: 2.5.2
-    created: "2021-05-10T11:11:46.146600336Z"
+    created: "2021-11-08T12:04:59.898322906Z"
     description: NeuVector Container Security Platform includes layer 7 container
       firewall, end-to-end vulnerability scanning, and container process/file monitoring.
     digest: ace7d094132cd0e7c03b1d62a910975b90a0268318d0aa57441b226aa61d8527
@@ -475,10 +549,15 @@ entries:
     version: 1.3.3
   op-scim-bridge:
   - apiVersion: v1
-    appVersion: v1.4.3
-    created: "2021-05-10T11:11:46.161001547Z"
+    appVersion: v2.1.2
+    created: "2021-11-08T12:04:59.91517926Z"
+    dependencies:
+    - condition: redis.install
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 10.7.1
     description: The 1Password SCIM bridge
-    digest: b11d7739411e457398d20463032ccc385af043081db7093a8449d6346b2c065b
+    digest: 838ec41c11b61038839192c564d3b26723fd77fd036db8014365db393f7599b5
     home: https://github.com/honestica/lifen-charts
     icon: https://1password.com/img/logo-v1.svg
     keywords:
@@ -495,7 +574,12 @@ entries:
     version: 1.0.2
   - apiVersion: v1
     appVersion: v1.4.1
-    created: "2021-05-10T11:11:46.158608188Z"
+    created: "2021-11-08T12:04:59.912227936Z"
+    dependencies:
+    - condition: redis.install
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 10.7.1
     description: The 1Password SCIM bridge
     digest: f22ff45f3d119fb4a56cb45ae5da6c339bab9a829474f119b294a526ce9e9f43
     home: https://github.com/honestica/lifen-charts
@@ -515,9 +599,9 @@ entries:
   squid:
   - apiVersion: v1
     appVersion: v0.1.0
-    created: "2021-05-10T11:11:46.163101487Z"
+    created: "2021-11-08T12:04:59.91822265Z"
     description: Squid proxy helm chart
-    digest: a0911c6b76741a4e3590710020ff8ff2b51e8cab31c724d4d59a02923602bdaa
+    digest: 41ba1b6b0d02c70d13273968bf8f60af6d51da5eff0155744d3e12a7a0b1f136
     home: https://github.com/honestica/lifen-charts
     keywords:
     - squid
@@ -535,7 +619,7 @@ entries:
     version: 0.3.0
   - apiVersion: v1
     appVersion: v0.1.0
-    created: "2021-05-10T11:11:46.162771814Z"
+    created: "2021-11-08T12:04:59.91775566Z"
     description: A Helm chart for Kubernetes
     digest: eaaa33b6ef15ed039d1bbf7ebcf191bbe9209ecec41dfafb9a1b06e64d4098b4
     home: https://github.com/honestica/lifen-charts
@@ -553,7 +637,7 @@ entries:
     version: 0.2.3
   - apiVersion: v1
     appVersion: v0.1.0
-    created: "2021-05-10T11:11:46.162469343Z"
+    created: "2021-11-08T12:04:59.917289796Z"
     description: A Helm chart for Kubernetes
     digest: fe04eb0d8465316d1aff2935a7bf3b35719e489ebeab1c69389e2f630dd34382
     home: https://github.com/honestica/lifen-charts
@@ -571,7 +655,7 @@ entries:
     version: 0.2.2
   - apiVersion: v1
     appVersion: v0.1.0
-    created: "2021-05-10T11:11:46.162163477Z"
+    created: "2021-11-08T12:04:59.916853769Z"
     description: A Helm chart for Kubernetes
     digest: 220b2ff20a580bbdf14096a62f14da911c1fb7dc56a387adb43299e570ec96b8
     home: https://github.com/honestica/lifen-charts
@@ -589,7 +673,7 @@ entries:
     version: 0.2.1
   - apiVersion: v1
     appVersion: v0.1.0
-    created: "2021-05-10T11:11:46.161869246Z"
+    created: "2021-11-08T12:04:59.916411114Z"
     description: A Helm chart for Kubernetes
     digest: d7fc947e81b6a327c7fadb004b5ccc1990541a08df95e8d16d79b77449c531a0
     home: https://github.com/honestica/lifen-charts
@@ -607,7 +691,7 @@ entries:
     version: 0.2.0
   - apiVersion: v1
     appVersion: v0.1.0
-    created: "2021-05-10T11:11:46.161577286Z"
+    created: "2021-11-08T12:04:59.915971879Z"
     description: A Helm chart for Kubernetes
     digest: 8bcb87df1cfc7bdaf3f49138d86682a7853ad3b9de53eac3d1f8d2bdd4593de6
     home: https://github.com/honestica/lifen-charts
@@ -625,7 +709,7 @@ entries:
     version: 0.1.1
   - apiVersion: v1
     appVersion: v0.1.0
-    created: "2021-05-10T11:11:46.161306065Z"
+    created: "2021-11-08T12:04:59.915574409Z"
     description: A Helm chart for Kubernetes
     digest: c93fc07019e29c78833eb5992d844c4b9d09dfd9b96d0c1403865c1a10a0538b
     home: https://github.com/honestica/lifen-charts
@@ -643,25 +727,23 @@ entries:
     version: 0.1.0
   teleport:
   - apiVersion: v1
-    created: "2021-05-10T11:11:46.163849707Z"
+    created: "2021-11-08T12:04:59.920419987Z"
     description: Teleport Enterprise
     digest: 66e40c96394f0acb0eef28b3bb710874d14579564e8dd3a75754d1d81673598e
     keywords:
     - Teleport Enterprise
     name: teleport
-    tillerVersion: '>=2.12.0'
     urls:
     - https://honestica.github.io/lifen-charts/packages/teleport-0.1.1.tgz
     version: 0.1.1
   - apiVersion: v1
-    created: "2021-05-10T11:11:46.163462866Z"
+    created: "2021-11-08T12:04:59.918942763Z"
     description: Teleport Enterprise
     digest: a3bc90abd58b384464c8ec12246243fa6e7ec0c80fbeb0220b51112b4803a2ea
     keywords:
     - Teleport Enterprise
     name: teleport
-    tillerVersion: '>=2.12.0'
     urls:
     - https://honestica.github.io/lifen-charts/packages/teleport-0.1.0.tgz
     version: 0.1.0
-generated: "2021-05-10T11:11:46.114681985Z"
+generated: "2021-11-08T12:04:59.859920951Z"

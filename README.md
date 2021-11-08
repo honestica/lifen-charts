@@ -1,4 +1,4 @@
-# Lifen Charts 
+# Lifen Charts
 
 Welcome to the repository of Helm charts maintained by Lifen.
 
@@ -21,7 +21,7 @@ Look at the Readme inside each directory :)
 
 Follow https://kubernetes.io/docs/tasks/tools/install-minikube/
 
-## Install kubectl 
+## Install kubectl
 
 Follow https://kubernetes.io/docs/tasks/tools/install-kubectl/
 
@@ -57,16 +57,7 @@ helm upgrade awx ./awx/ --install  --timeout 500 --wait -f examples/awx/values.y
 
 Start minikube tunnel
 
-Add in /etc/hosts 
+Add in /etc/hosts
 ```
 {{ external ip for private ingress }} http://awx.minikube
-```
-
-# Neuvector Chart
-
-
-Use your credentials before installing
-
-```
-kubectl create secret docker-registry dockerhub -n neuvector --docker-username=<your_user_name> --docker-password=<your-pword> 
 ```

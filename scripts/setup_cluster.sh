@@ -13,14 +13,5 @@ minikube addons enable ingress
 # Ensure we run on minikube
 kubectl config use-context minikube
 
-# Extract helm version
-HVER=$(helm version || true)
-
-if [[ $HVER == *"v2."* ]]; then # Helm 2
-  # Install tiller
-  helm init --wait --upgrade
-else
-  # Helm 3 comes without any repos
-  helm repo add stable https://charts.helm.sh/stable
-  helm repo update
-fi
+helm repo add stable https://charts.helm.sh/stable
+helm repo update

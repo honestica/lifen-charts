@@ -153,8 +153,6 @@ jobs:
             git checkout -b release
             git checkout gh-pages
             git merge release  --no-edit
-            helm init --client-only
-            helm dependency update op-scim-bridge
             helm package kube-iptables-tailer -d packages
             helm package awx -d packages
             helm package squid -d packages

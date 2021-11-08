@@ -2,5 +2,13 @@
 dependencies:
   - name: postgresql
     version: 8.5.0
-    repository: https://kubernetes-charts.storage.googleapis.com/
+    repository: https://charts.helm.sh/stable
     condition: postgresql.install
+  - name: memcached
+    version: 3.2.2
+    repository: https://charts.helm.sh/stable
+    condition: memcached.install
+  - name: rabbitmq
+    version: 6.18.1
+    repository: https://charts.helm.sh/stable
+    condition: rabbitmq.install

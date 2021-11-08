@@ -2,4 +2,6 @@
 *.swp
 
 # Artifacts
-*/charts/*.tgz
+# keep .gz for now
+# TODO release should be improved to download these automatically
+# */charts/*.tgz

@@ -63,7 +63,7 @@ spec:
           - name: cache
             mountPath: /var/cache/squid
         {{- if .Values.configSecret }}
-          - name: config
+          - name: configSecret
             mountPath: /etc/squid/config
         {{- end }}
         # Load the configuration files for nginx
@@ -71,7 +71,7 @@ spec:
             tcpSocket:
               port: 3128
             initialDelaySeconds: 5
-            periodSeconds: 10 
+            periodSeconds: 10
           readinessProbe:
             tcpSocket:
               port: 3128
@@ -115,7 +115,7 @@ spec:
       - emptyDir: {}
         name: cache
     {{- if .Values.configSecret }}
-      - name: config
+      - name: configSecret
         secret:
           secretName: {{ .Values.configSecret }}
     {{- end }}

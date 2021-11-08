@@ -1,6 +1,6 @@
 image:
   repository: honestica/kube-iptables-tailer
-  tag: master-44
+  tag: master-56
   pullPolicy: IfNotPresent
 
 # Specify to use specific priorityClass for pods
@@ -14,6 +14,8 @@ fullnameOverride: ""
 
 # Only one of the next configuration should be enabled
 # iptablesLogPath: "/var/log/iptables.log"
+
+# If using EKS uncomment this line
 # journalDirectory: "/var/log/journal"
 
 iptablesLogPrefix: "calico-packet:"
@@ -54,3 +56,8 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+syslogSidecar:
+  enabled: false
+  image: rsyslog/syslog_appliance_alpine
+  tag: latest

@@ -57,6 +57,11 @@ spec:
           {{- if .Values.packetDropLogTimeLayout }}
             - name: "PACKET_DROP_LOG_TIME_LAYOUT"
               value: "{{ .Values.packetDropLogTimeLayout }}"
+          {{- else }}
+          {{- if .Values.syslogSidecar.enabled }}
+            - name: "PACKET_DROP_LOG_TIME_LAYOUT"
+              value: "2006-01-02T15:04:05Z07:00"
+          {{- end }}
           {{- end }}
           {{- if .Values.logTimeRegex }}
             - name: "LOG_TIME_REGEX"
@@ -70,11 +75,42 @@ spec:
               mountPath: "/my-service-logs"
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+        {{- if .Values.syslogSidecar.enabled }}
+        - name: syslog
+          image: {{ .Values.syslogSidecar.image }}:{{ .Values.syslogSidecar.tag }}
+          env:
+          - name: RSYSLOG_CONF
+            value: /rsyslog-conf/rsyslog.conf
+          securityContext:
+            capabilities:
+              add: ["SYSLOG"]
+          volumeMounts:
+          - name: config
+            mountPath: /config
+          - name: rsyslog-conf
+            mountPath: /rsyslog-conf
+          - name: "iptables-logs"
+            mountPath: /logs
+          - name: work
+            mountPath: /work
+        {{- end }}
       volumes:
+        {{- if not .Values.syslogSidecar.enabled }}
         - name: "iptables-logs"
           hostPath:
             # absolute path of the directory containing iptables log file on your host
             path: "/var/log"
+        {{- else }}
+        - name: rsyslog-conf
+          configMap:
+            name: {{ include "kube-iptables-tailer.fullname" . }}
+        - name: config
+          emptyDir: {}
+        - name: iptables-logs
+          emptyDir: {}
+        - name: work
+          emptyDir: {}
+        {{- end }}
         - name: "service-logs"
           emptyDir: {}
       {{- with .Values.nodeSelector }}

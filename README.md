@@ -2,6 +2,16 @@
 
 Welcome to the repository of Helm charts maintained by Lifen.
 
+## List of Charts
+
+* [awx](awx)
+* [kube-iptables-tailer](kube-iptables-tailer)
+* [op-scim-bridge](op-scim-bridge)
+* [squid](squid)
+* [DEPRECATED] teleport : use official one from https://github.com/gravitational/teleport/tree/master/examples/chart/teleport
+* [DEPRECATED] neuvector : use official one from https://github.com/neuvector/neuvector-helm
+
+
 ## Add the repo
 
 ```
@@ -50,8 +60,6 @@ Follow INSTALLING THE HELM CLIENT
 from https://helm.sh/docs/using_helm/#installing-helm
 
 # AWX chart
-
-(imported from https://github.com/arthur-c/ansible-awx-helm-chart )
 
 helm upgrade awx ./awx/ --install  --timeout 500 --wait -f examples/awx/values.yaml --kube-context minikube --namespace awx
 

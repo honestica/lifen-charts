@@ -1,6 +1,6 @@
 image:
   repository: honestica/kube-iptables-tailer
-  tag: master-1
+  tag: master-44
   pullPolicy: IfNotPresent
 
 nameOverride: ""
@@ -39,3 +39,8 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+syslogSidecar:
+  enabled: false
+  image: rsyslog/syslog_appliance_alpine
+  tag: latest

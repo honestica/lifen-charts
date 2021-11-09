@@ -9,6 +9,7 @@ image:
 # Pods to make scheduling of the pending Pod possible.
 priorityClassName: ""
 
+imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 

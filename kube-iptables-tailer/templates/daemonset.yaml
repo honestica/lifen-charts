@@ -8,8 +8,10 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
+  {{- with .Values.updateStrategy }}
   updateStrategy:
-    type: RollingUpdate
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "kube-iptables-tailer.name" . }}
@@ -24,6 +26,10 @@ spec:
 {{ toYaml . | indent 10 }}
 {{- end }}
     spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       serviceAccountName: {{ template "kube-iptables-tailer.serviceAccountName" . }}
       {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName | quote }}

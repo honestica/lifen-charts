@@ -164,7 +164,7 @@ jobs:
       - run:
           name: Push to repo
           command: |
-            git add packages index.yaml
+            git add packages index.yaml artifacthub-repo.yml
             git commit -m "relase version"
             git push origin gh-pages
 

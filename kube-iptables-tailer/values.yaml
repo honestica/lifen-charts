@@ -13,6 +13,9 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
+updateStrategy:
+  type: RollingUpdate
+
 # Only one of the next configuration should be enabled
 # iptablesLogPath: "/var/log/iptables.log"
 

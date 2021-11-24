@@ -44,8 +44,9 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
             - "/kube-iptables-tailer"
-            - "--log_dir=/my-service-logs" # change the output directory of service logs
-            - "--v=4" # enable V-leveled logging at this level
+            {{- with .Values.extraArgs }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
           env:
           {{- if .Values.iptablesLogPath }}
             - name: "IPTABLES_LOG_PATH"
@@ -77,28 +78,32 @@ spec:
             - name: "iptables-logs"
               mountPath: "/var/log"
               readOnly: true
-            - name: "service-logs"
-              mountPath: "/my-service-logs"
+            {{- if .Values.extraVolumeMounts }}
+            {{- toYaml .Values.extraVolumeMounts | nindent 12 }}
+            {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
         {{- if .Values.syslogSidecar.enabled }}
         - name: syslog
           image: {{ .Values.syslogSidecar.image }}:{{ .Values.syslogSidecar.tag }}
           env:
-          - name: RSYSLOG_CONF
-            value: /rsyslog-conf/rsyslog.conf
+            - name: RSYSLOG_CONF
+              value: /rsyslog-conf/rsyslog.conf
           securityContext:
             capabilities:
               add: ["SYSLOG"]
           volumeMounts:
-          - name: config
-            mountPath: /config
-          - name: rsyslog-conf
-            mountPath: /rsyslog-conf
-          - name: "iptables-logs"
-            mountPath: /logs
-          - name: work
-            mountPath: /work
+            - name: config
+              mountPath: /config
+            - name: rsyslog-conf
+              mountPath: /rsyslog-conf
+            - name: "iptables-logs"
+              mountPath: /logs
+            - name: work
+              mountPath: /work
+            {{- if .Values.extraVolumeMounts }}
+            {{- toYaml .Values.extraVolumeMounts | nindent 12 }}
+            {{- end }}
         {{- end }}
       volumes:
         {{- if not .Values.syslogSidecar.enabled }}
@@ -117,8 +122,9 @@ spec:
         - name: work
           emptyDir: {}
         {{- end }}
-        - name: "service-logs"
-          emptyDir: {}
+        {{- if .Values.extraVolumes }}
+        {{- toYaml .Values.extraVolumes | nindent 8 }}
+        {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

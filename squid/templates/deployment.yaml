@@ -63,7 +63,7 @@ spec:
           - name: cache
             mountPath: /var/cache/squid
         {{- if .Values.configSecret }}
-          - name: configSecret
+          - name: config-secret
             mountPath: /etc/squid/config
         {{- end }}
         # Load the configuration files for nginx
@@ -115,7 +115,7 @@ spec:
       - emptyDir: {}
         name: cache
     {{- if .Values.configSecret }}
-      - name: configSecret
+      - name: config-secret
         secret:
           secretName: {{ .Values.configSecret }}
     {{- end }}

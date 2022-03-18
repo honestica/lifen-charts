@@ -1,11 +1,8 @@
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "squid.fullname" . -}}
 {{- $ingressPath := .Values.ingress.path -}}
-{{- if (semverCompare ">=1.14-0" (substr 1 -1 .Capabilities.KubeVersion.GitVersion)) }}
-apiVersion: networking.k8s.io/v1beta1
-{{- else }}
-apiVersion: extensions/v1beta1
-{{- end }}
+{{- $ingressPathType := .Values.ingress.pathType -}}
+apiVersion: {{ include "squid.ingress.apiVersion" $ }}
 kind: Ingress
 metadata:
   name: {{ $fullName }}
@@ -35,8 +32,18 @@ spec:
       http:
         paths:
           - path: {{ $ingressPath }}
+            {{- if eq (include "squid.ingress.apiVersion" $) "networking.k8s.io/v1" }}
+            pathType: {{ $ingressPathType }}
+            {{- end }}
             backend:
+            {{- if eq (include "squid.ingress.apiVersion" $) "networking.k8s.io/v1" }}
+              service:
+                name: {{ $fullName }}
+                port:
+                  name: http
+            {{- else }}
               serviceName: {{ $fullName }}
               servicePort: http
+            {{- end }}
   {{- end }}
 {{- end }}

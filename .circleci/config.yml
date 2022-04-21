@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   test:
     machine:
-      image: ubuntu-2004:202107-02
+      image: ubuntu-2004:current
     environment:
       HELM_VERSION: 3.8.2
       KUBEVAL_VERSION: v0.16.1

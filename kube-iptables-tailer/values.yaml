@@ -41,6 +41,7 @@ serviceAccount:
 calico:
   loggingEnable: true
   # check your apiversion with `kubectl api-versions`
+  # when using calico tigera operator, this should be "projectcalico.org/v1"
   apiVersion: projectcalico.org/v3
 
 resources: {}

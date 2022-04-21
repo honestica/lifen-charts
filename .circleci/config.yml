@@ -3,15 +3,15 @@ version: 2.1
 jobs:
   test:
     machine:
-      image: ubuntu-2004:202107-02
+      image: ubuntu-2004:current
     environment:
-      HELM_VERSION: 3.7.1
+      HELM_VERSION: 3.8.2
       KUBEVAL_VERSION: v0.16.1
       CONFTEST_VERSION: 0.27.0
-      K8S_VERSIONS: 1.21.4 1.20.10 1.19.13
-      KUBECTL_VERSION: v1.21.4
+      K8S_VERSIONS: 1.22.9 1.21.4 1.20.10
+      KUBECTL_VERSION: v1.22.8
       KUBECONFIG: /home/circleci/.kube/config
-      MINIKUBE_VERSION: v1.23.0
+      MINIKUBE_VERSION: v1.25.2
       MINIKUBE_HOME: /home/circleci
       K8S_SCHEMAS: https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master
     steps:
@@ -49,6 +49,7 @@ jobs:
             helm lint ./kube-iptables-tailer -f examples/kube-iptables-tailer/values.yaml
             helm lint ./squid -f examples/squid/values.yaml
             helm lint ./looker -f examples/looker/values.yaml
+            helm lint ./looker -f examples/op-scim-bridge/values.yaml
       - run:
           name: Execute helm template
           command: |
@@ -56,6 +57,7 @@ jobs:
             helm template ./kube-iptables-tailer -f examples/kube-iptables-tailer/values.yaml > kube-iptables-tailer.yaml
             helm template ./squid -f examples/squid/values.yaml > squid.yaml
             helm template ./looker -f examples/looker/values.yaml > looker.yaml
+            helm template ./op-scim-bridge -f examples/op-scim-bridge/values.yaml > op-scim-bridge.yaml
       - run:
           name: Run kubeval on the charts to ensure kubernetes compability
           command: |
@@ -65,6 +67,7 @@ jobs:
               kubeval -v $kv --strict kube-iptables-tailer.yaml --schema-location ${K8S_SCHEMAS}
               kubeval -v $kv --strict squid.yaml --schema-location ${K8S_SCHEMAS}
               kubeval -v $kv --strict looker.yaml --schema-location ${K8S_SCHEMAS}
+              kubeval -v $kv --strict op-scim-bridge.yaml --schema-location ${K8S_SCHEMAS}
             done
       - run:
           name: Run deprek8
@@ -73,6 +76,7 @@ jobs:
             conftest test -p deprek8.rego kube-iptables-tailer.yaml
             conftest test -p deprek8.rego squid.yaml
             conftest test -p deprek8.rego looker.yaml
+            conftest test -p deprek8.rego op-scim-bridge.yaml
       - run:
           name: start minikube
           command: |
@@ -132,7 +136,7 @@ jobs:
 
   release:
     environment:
-      HELM_VERSION: 3.7.1
+      HELM_VERSION: 3.8.2
     docker:
       - image: circleci/python:3
     steps:

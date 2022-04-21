@@ -4,6 +4,10 @@
 
 replicaCount: 1
 
+apiVersionOverrides: {}
+## Override ingress api auto detection:
+#  ingress: networking.k8s.io/v1
+
 image:
   repository: honestica/squid
   tag: 4-ff434982-c47b-47c3-b705-b2adb2730978
@@ -25,6 +29,7 @@ ingress:
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   path: /
+  pathType: Prefix
   hosts:
     - chart-example.local
   tls: []

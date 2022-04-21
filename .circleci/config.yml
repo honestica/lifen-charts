@@ -9,7 +9,7 @@ jobs:
       KUBEVAL_VERSION: v0.16.1
       CONFTEST_VERSION: 0.27.0
       K8S_VERSIONS: 1.22.9 1.21.4 1.20.10
-      KUBECTL_VERSION: v1.22.9
+      KUBECTL_VERSION: v1.22.8
       KUBECONFIG: /home/circleci/.kube/config
       MINIKUBE_VERSION: v1.25.2
       MINIKUBE_HOME: /home/circleci

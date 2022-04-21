@@ -1,6 +1,6 @@
 image:
   repository: honestica/kube-iptables-tailer
-  tag: master-56
+  tag: master-91
   pullPolicy: IfNotPresent
 
 # Specify to use specific priorityClass for pods

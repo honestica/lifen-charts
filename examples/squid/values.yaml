@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: honestica/squid
-  tag: 4-ff434982-c47b-47c3-b705-b2adb2730978
+  tag: 4-04f05ba7-26aa-46dd-8ba0-a44cda1fef64
   pullPolicy: IfNotPresent
   # imagePullSecrets:
 

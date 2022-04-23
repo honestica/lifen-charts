@@ -111,5 +111,5 @@ metrics:
     resources: {}
     image:
       repository: boynux/squid-exporter
-      tag: v1.8
+      tag: v1.9
       pullPolicy: IfNotPresent

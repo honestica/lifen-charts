@@ -9,6 +9,8 @@ apiVersionOverrides: {}
 #  ingress: networking.k8s.io/v1
 
 image:
+  # registry is not used, just for testing renovate
+  registry: docker.io
   repository: honestica/squid
   tag: 4-ff434982-c47b-47c3-b705-b2adb2730978
   pullPolicy: IfNotPresent

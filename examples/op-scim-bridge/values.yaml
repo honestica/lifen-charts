@@ -3,8 +3,85 @@
 # Declare variables to be passed into your templates.
 ---
 
-replicaCount: 1
-accountdomain: lifen.fr
+nameOverride: ""
+fullnameOverride: ""
 
-# Empty json object
-sessionData: "{}"
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+replicaCount: 1
+
+image:
+  repository: 1password/scim
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+accountDomain: lifen.fr
+
+# An scim-session secret needs to be defined in the same namespace as this chart.
+# It has to contain the scimsession key containing the scim session data.
+# Optional session data (scim session file content)
+sessionData: "abcdefg"
+
+service:
+  internalPort: 8080
+  externalPort: 80
+
+# annotations adds additional annotations
+annotations: {}
+
+# podAnnotations adds additional annotations for the SCIM bridge pod
+podAnnotations: #{}
+  prometheus.io/path: "/metrics"
+  prometheus.io/port: '8080'
+  prometheus.io/scrape: 'true'
+
+# nodeSelector schedules the SCIM bridge pod onto nodes that have each of the labels you specify.
+nodeSelector: {}
+
+# tolerations sets the tolerations for the SCIM bridge pod
+tolerations: #[]
+- key: "key1"
+  operator: "Equal"
+  value: "value1"
+  effect: "NoSchedule"
+
+ingress:
+  enabled: true
+  # Used to create an Ingress record.
+  hosts:
+    - scim.example.com
+  annotations: 
+    kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  tls: []
+    # Secrets must be manually created in the namespace.
+    # - secretName: chart-example-tls
+    #   hosts:
+    #     - chart-example.local
+
+resources: #{}
+  requests:
+    cpu: 125m
+    memory: 256M
+  limits:
+    cpu: 250m
+    memory: 512M
+
+livenessProbe: #{}
+  enabled: true
+  path: "/ping"
+
+# Dependencies
+redis:
+  enabled: true
+  usePassword: false
+  cluster:
+    enabled: true
+    slaveCount: 1
+

@@ -1,6 +1,7 @@
 # Vim
 *.swp
-
+*/manifests/*.yaml
+*.rego
 # Artifacts
 # keep .gz for now
 # TODO release should be improved to download these automatically

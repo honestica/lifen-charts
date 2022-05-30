@@ -1,15 +1,16 @@
 {{- if $.Values.ingress.enabled -}}
+{{- $fullName := include "op-scim-bridge.fullname" . -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ $.Release.Name }}-ingress
+  name: {{ $fullName }}
+  namespace: {{ .Release.Namespace }}
   labels:
-    app.kubernetes.io/name: {{ $.Release.Name }}
-    app.kubernetes.io/component: op-scim-bridge
-{{- with $.Values.ingress.annotations }}
+    {{- include "op-scim-bridge.labels" . | nindent 4 }}
+  {{- with .Values.ingress.annotations }}
   annotations:
-{{ toYaml . | indent 4 }}
-{{- end }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
 {{- if $.Values.ingress.tls }}
   tls:
@@ -30,7 +31,7 @@ spec:
         pathType: ImplementationSpecific
         backend:
           service:
-            name: {{ $.Release.Name }}-bridge-svc
+            name: {{ $fullName }}
             port: 
               number: {{ $.Values.service.externalPort }}
   {{- end }}

@@ -2,34 +2,41 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: op-scim-bridge
-  labels: &ScimDeploymentLabels
-    app.kubernetes.io/name: {{ $.Release.Name }}
-    app.kubernetes.io/component: op-scim-bridge
+  name: {{ include "op-scim-bridge.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+  {{- include "op-scim-bridge.labels" . | nindent 4 }}
+  {{- with .Values.annotations }}
   annotations:
-    {{- range $key, $value := $.Values.deployment.annotations }}
-      {{ $key }}: {{ $value | quote }}
-    {{- end }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   selector:
-    matchLabels: *ScimDeploymentLabels
-  replicas: {{ $.Values.replicaCount }}
+    matchLabels:
+      {{- include "op-scim-bridge.selectorLabels" . | nindent 6 }}
+  replicas: {{ .Values.replicaCount }}
   strategy:
     type: Recreate
   template:
     metadata:
-      labels: *ScimDeploymentLabels
+      labels:
+        {{- include "op-scim-bridge.selectorLabels" . | nindent 8 }}
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
     spec:
-    {{- if $.Values.nodeSelector }}
-      nodeSelector:
-{{ toYaml $.Values.nodeSelector | indent 8 }}
-    {{- end }}
+      serviceAccountName: {{ include "op-scim-bridge.serviceAccountName" . }}
       containers:
-      - name: op-scim-bridge
-        image: "1password/scim:{{ .Chart.AppVersion }}"
-        imagePullPolicy: Always
+      - name: {{ .Chart.Name }}
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         command: ["/op-scim/op-scim"]
-        args: ["--redis-host={{ .Release.Name }}-redis-master", "--session=/secret/scimsession", "--port={{ .Values.service.internalPort }}", "--letsencrypt-domain={{ .Values.accountDomain }}"]
+        args: ["--redis-host={{ .Release.Name }}-redis-master", "--session=/secret/scimsession", "--ping-server={{ .Values.livenessProbe.enabled }}", "--port={{ .Values.service.internalPort }}", "--letsencrypt-domain={{ .Values.accountDomain }}"]
+        securityContext:
+          runAsUser: 999
+          runAsGroup: 999
+          allowPrivilegeEscalation: false
         env:
         - name: "update"
           value: "1"
@@ -39,6 +46,20 @@ spec:
           value: "true"
         ports:
         - containerPort: {{ $.Values.service.internalPort }}
+        {{- with .Values.resources }}
+        resources:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        {{- if .Values.livenessProbe.enabled }}
+        livenessProbe:
+          httpGet:
+            path: {{ .Values.livenessProbe.path }}
+            scheme: HTTP
+            port: {{ .Values.service.internalPort }}
+          failureThreshold: 3
+          periodSeconds: 30
+          initialDelaySeconds: 15
+        {{- end }}
         volumeMounts:
         - name: {{ $.Release.Name }}-scimsession
           mountPath: "/secret"
@@ -47,3 +68,11 @@ spec:
       - name: {{ $.Release.Name }}-scimsession
         secret:
           secretName: {{ $.Release.Name }}-scimsession
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

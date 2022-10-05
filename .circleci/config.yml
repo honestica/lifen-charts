@@ -80,7 +80,7 @@ jobs:
       - run:
           name: start minikube
           command: |
-            minikube start --vm-driver=docker --cpus 2 --memory 5096 --network-plugin=cni --cni=calico --kubernetes-version=${KUBECTL_VERSION} &> $HOME/minikube.log 2>&1 < /dev/null
+            minikube start --vm-driver=docker --cpus 2 --memory 4000 --network-plugin=cni --cni=calico --kubernetes-version=${KUBECTL_VERSION} &> $HOME/minikube.log 2>&1 < /dev/null
       - run:
           name: debug node
           command: |

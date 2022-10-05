@@ -48,6 +48,33 @@ spec:
             - |
               ln -s /opt/looker/looker-dependencies.jar /home/looker/looker-dependencies.jar
               ln -s /opt/looker/looker.jar /home/looker/looker.jar
+        {{- if .Values.migrateEncryption }}
+        - name: migrate-encryption
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          workingDir: /home/looker
+          env:
+{{- if .Values.extraEnvs }}
+{{ toYaml .Values.extraEnvs | indent 10 }}
+{{- end }}
+          volumeMounts:
+          - mountPath: /data
+            name: {{ template "looker.fullname" . }}-shared-data-dir
+          - mountPath: /home/looker
+            name: looker-home
+{{- if or .Values.databaseConfigFile .Values.databaseConfigSecretName }}
+          - mountPath: /home/looker/looker-db.yml
+            name: db-secret
+            subPath: looker-db.yml
+{{- end }}
+          command:
+            - /bin/sh
+            - -c
+          args:
+            - assume_role_exec java $JAVAJVMARGS $JAVAARGS -jar $LOOKER_DIR/looker.jar migrate_encryption $LOOKERARGS $LOOKEREXTRAARGS
+        {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -55,6 +82,10 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           workingDir: /home/looker
+          lifecycle:
+            postStart:
+              exec:
+                command: ["/bin/sh", "-c", "rm -rf /home/looker/.tmp/jruby* /home/looker/.tmp/looker-tmp*"]
           env:
 {{- if .Values.extraEnvs }}
 {{ toYaml .Values.extraEnvs | indent 10 }}
@@ -68,9 +99,9 @@ spec:
               protocol: TCP
           livenessProbe:
             failureThreshold: 10
-            initialDelaySeconds: 300
+            initialDelaySeconds: 600
             httpGet:
-              path: /alive
+              path: /availability?mode=pod-liveness
               port: https
               scheme: HTTPS
           readinessProbe:
@@ -83,8 +114,8 @@ spec:
               path: /alive
               port: https
               scheme: HTTPS
-            failureThreshold: 50
-            periodSeconds: 10
+            failureThreshold: 30
+            periodSeconds: 30
           terminationMessagePolicy: FallbackToLogsOnError
           volumeMounts:
           - mountPath: /data

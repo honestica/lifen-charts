@@ -8,10 +8,10 @@ jobs:
       HELM_VERSION: 3.8.2
       KUBEVAL_VERSION: v0.16.1
       CONFTEST_VERSION: 0.27.0
-      K8S_VERSIONS: 1.22.10 1.21.4 1.20.10
+      K8S_VERSIONS: 1.22.10 1.23.7
       KUBECTL_VERSION: v1.22.10
       KUBECONFIG: /home/circleci/.kube/config
-      MINIKUBE_VERSION: v1.25.2
+      MINIKUBE_VERSION: v1.22.10
       MINIKUBE_HOME: /home/circleci
       K8S_SCHEMAS: https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master
     steps:

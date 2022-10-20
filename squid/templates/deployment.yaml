@@ -39,6 +39,10 @@ spec:
             subPath: squid.conf
           - name: cache
             mountPath: /var/cache/squid
+          {{- if .Values.configSecret }}
+          - name: config-secret
+            mountPath: /etc/squid/config
+          {{- end }}
           command:
             - /bin/sh
             - -c

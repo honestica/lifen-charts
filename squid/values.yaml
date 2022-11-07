@@ -97,6 +97,16 @@ resources: {}
   #  cpu: 100m
   #  memory: 128Mi
 
+## Additional labels to add to the pod container metadata
+## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+podLabels: {}
+#  key: value
+
+## Additional annotations to add to the pod container metadata
+## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+podAnnotations: {}
+#  key: value
+
 nodeSelector: {}
 
 tolerations: []

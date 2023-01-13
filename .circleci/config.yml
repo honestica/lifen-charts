@@ -11,7 +11,7 @@ jobs:
       K8S_VERSIONS: 1.22.10 1.23.7
       KUBECTL_VERSION: v1.22.10
       KUBECONFIG: /home/circleci/.kube/config
-      MINIKUBE_VERSION: v1.22.10
+      MINIKUBE_VERSION: v1.25.2
       MINIKUBE_HOME: /home/circleci
       K8S_SCHEMAS: https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master
     steps:

@@ -57,6 +57,7 @@ jobs:
             helm template ./kube-iptables-tailer -f examples/kube-iptables-tailer/values.yaml > kube-iptables-tailer.yaml
             helm template ./squid -f examples/squid/values.yaml > squid.yaml
             helm template ./looker -f examples/looker/values.yaml > looker.yaml
+            helm dependency update ./op-scim-bridge/
             helm template ./op-scim-bridge -f examples/op-scim-bridge/values.yaml > op-scim-bridge.yaml
       - run:
           name: Run kubeval on the charts to ensure kubernetes compability

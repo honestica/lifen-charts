@@ -11,7 +11,7 @@ jobs:
       K8S_VERSIONS: 1.22.10 1.23.7
       KUBECTL_VERSION: v1.22.10
       KUBECONFIG: /home/circleci/.kube/config
-      MINIKUBE_VERSION: v1.22.10
+      MINIKUBE_VERSION: v1.25.2
       MINIKUBE_HOME: /home/circleci
       K8S_SCHEMAS: https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master
     steps:
@@ -57,6 +57,7 @@ jobs:
             helm template ./kube-iptables-tailer -f examples/kube-iptables-tailer/values.yaml > kube-iptables-tailer.yaml
             helm template ./squid -f examples/squid/values.yaml > squid.yaml
             helm template ./looker -f examples/looker/values.yaml > looker.yaml
+            helm dependency update ./op-scim-bridge/
             helm template ./op-scim-bridge -f examples/op-scim-bridge/values.yaml > op-scim-bridge.yaml
       - run:
           name: Run kubeval on the charts to ensure kubernetes compability
@@ -121,7 +122,7 @@ jobs:
           name: Test looker installation
           command: |
             kubectl create namespace looker || true
-            kubectl create secret docker-registry dockerhub -n looker --docker-username=$DOCKERHUB_USERNAME --docker-password=$DOCKERHUB_PASSWORD
+            kubectl create secret docker-registry dockerhub -n looker --docker-username=$DOCKERHUB_READ_USERNAME --docker-password=$DOCKERHUB_READ_PASSWORD
             helm upgrade looker ./looker/ --install  --timeout 500s --wait --kube-context minikube --namespace looker -f ./examples/looker/values.yaml
       - run:
           name: Debug on failures

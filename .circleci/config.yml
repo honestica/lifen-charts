@@ -148,7 +148,7 @@ jobs:
             curl -SL https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz | tar xvz -C /tmp && sudo chmod +x /tmp/linux-amd64/* && sudo mv /tmp/linux-amd64/* /usr/local/bin/
       - add_ssh_keys:
           fingerprints:
-            - "31:d4:50:ae:e8:c3:3b:3e:f4:66:48:47:7d:a0:18:a8"
+            - "96:6f:38:13:f5:a6:18:05:d4:0f:b4:0f:f5:62:e5:2b"
       - run:
           name: Package and index doc
           command: |

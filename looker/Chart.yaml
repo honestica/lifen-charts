@@ -4,7 +4,7 @@ home: https://github.com/honestica/lifen-charts
 description: A Looker Helm chart for Kubernetes.
 icon: https://looker.com/assets/img/images/logos/looker.svg
 # type: application
-version: 0.1.3
+version: 0.2.0
 keywords:
 - looker
 - google

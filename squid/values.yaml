@@ -12,7 +12,7 @@ image:
   # registry is not used, just for testing renovate
   registry: docker.io
   repository: honestica/squid
-  tag: 4.69
+  tag: 4.71
   pullPolicy: IfNotPresent
   # imagePullSecrets:
 

@@ -1,0 +1,11 @@
+apiVersion: v2
+name: alert2jira
+description: A Helm chart for alert2jira
+type: application
+version: 0.1.0
+appVersion: "0.5.0"
+maintainers:
+- email: romain.boutinaud@lifen.fr
+  name: hosade
+sources:
+- https://github.com/honestica/lifen-charts/tree/master/alert2jira

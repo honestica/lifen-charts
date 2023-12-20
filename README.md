@@ -4,6 +4,7 @@ Welcome to the repository of Helm charts maintained by Lifen.
 
 ## List of Charts
 
+* [alert2jira](alert2jira)
 * [awx](awx)
 * [kube-iptables-tailer](kube-iptables-tailer)
 * [op-scim-bridge](op-scim-bridge)

@@ -1,0 +1,9 @@
+name: Stale worklow
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 23 */2 * *' # Every 2 day at 23h
+
+jobs:
+  build:
+    uses: honestica/.github/.github/workflows/stale.yml@master

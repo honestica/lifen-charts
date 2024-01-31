@@ -9,7 +9,6 @@ apiVersionOverrides: {}
 #  ingress: networking.k8s.io/v1
 
 image:
-  # registry is not used, just for testing renovate
   registry: docker.io
   repository: honestica/squid
   tag: 4.69
@@ -96,6 +95,16 @@ resources: {}
   # requests:
   #  cpu: 100m
   #  memory: 128Mi
+
+## Additional labels to add to the pod container metadata
+## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+podLabels: {}
+#  key: value
+
+## Additional annotations to add to the pod container metadata
+## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+podAnnotations: {}
+#  key: value
 
 nodeSelector: {}
 

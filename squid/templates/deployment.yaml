@@ -35,7 +35,11 @@ spec:
         # if there is a line in config map that starts with `cache_dir`
         # run `squid -z` which will create the cache structure on the filesystem
         - name: create-cache-dir
+        {{- if eq .Values.image.registry "docker.io" }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        {{- else }}
           image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        {{- end }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
@@ -56,7 +60,11 @@ spec:
               squid -z --foreground 2>&1
       containers:
         - name: {{ .Chart.Name }}
+        {{- if eq .Values.image.registry "docker.io" }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        {{- else }}
           image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        {{- end }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
           - name: http

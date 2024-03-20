@@ -1,5 +1,5 @@
 dependencies:
   - name: redis
-    version: 17.8.6
+    version: 19.0.1
     repository: https://charts.bitnami.com/bitnami
     condition: redis.install

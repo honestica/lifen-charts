@@ -1,4 +1,4 @@
-# Looker
+# Lookerr
 
 Looker is a cloud-based business intelligence (BI) platform designed to explore and analyze data.
 

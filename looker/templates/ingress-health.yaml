@@ -1,26 +1,19 @@
-{{- if .Values.ingressApi.enabled -}}
+{{- if .Values.ingressHealthcheck.enabled -}}
 {{- $fullName := include "looker.fullname" . -}}
-{{- range $ingress := .Values.ingressApi.hosts }}
----
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-{{- if .name }}
-  name: {{ $fullName }}-api-{{ .name }}
-{{- else }}
-  name: {{ $fullName }}-api
-{{- end }}
+  name: {{ $fullName }}-healthcheck
   labels:
-    {{- include "looker.labels" $ | nindent 4 }}
-  {{- with $.Values.ingressApi.annotations }}
+    {{- include "looker.labels" . | nindent 4 }}
+  {{- with .Values.ingressHealthcheck.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
-    kubernetes.io/ingress.class: {{ .class }}
 spec:
-  {{- if .tls }}
+  {{- if .Values.ingressHealthcheck.tls }}
   tls:
-    {{- range .tls }}
+    {{- range .Values.ingressHealthcheck.tls }}
     - hosts:
         {{- range .hosts }}
         - {{ . | quote }}
@@ -29,17 +22,16 @@ spec:
     {{- end }}
   {{- end }}
   rules:
-    {{- range .hosts }}
-    - host: {{ . | quote }}
+    {{- range .Values.ingressHealthcheck.hosts }}
+    - host: {{ .host | quote }}
       http:
         paths:
-          - path: "/"
+          - path: /alive
             pathType: Prefix
             backend:
               service:
                 name: {{ $fullName }}
                 port:
-                  number: 19999
+                  number: 9999
     {{- end }}
-{{- end }}
-{{- end }}
+  {{- end }}

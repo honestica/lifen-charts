@@ -7,11 +7,11 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: 443
-      targetPort: https
+    - port: 9999
+      targetPort: web
       protocol: TCP
-      name: https
-    - port: 19443
+      name: web
+    - port: 19999
       targetPort: api
       protocol: TCP
       name: api

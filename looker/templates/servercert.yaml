@@ -1,0 +1,10 @@
+{{- if .Values.database.ssl.enabled -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "looker.fullname" . }}-certs
+  labels:
+    {{- include "looker.labels" . | nindent 4 }}
+data:
+  db_server_cert.pem: | {{ .Values.database.ssl.serverCert | nindent 4 }}
+{{ end }}

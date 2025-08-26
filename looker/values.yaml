@@ -1,21 +1,68 @@
-# Default values for looker.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
 
+# -- pod replicas count
 replicaCount: 1
 
+# -- container image config
 image:
+  # -- container image repository
   repository: honestica/looker
+  # -- container
   pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
+  # -- overrides the image tag whose default is the chart appVersion.
   tag: ""
 
+# -- image pull secret
 imagePullSecrets: []
+
+# -- name override
 nameOverride: ""
+# -- full name override
 fullnameOverride: ""
 
-# This will be appended to the current 'env:' key. You can use any of the kubernetes env
-# syntax here
+# -- common additional labels
+additionalLabels: {}
+
+# -- health probes config
+probes:
+  # -- liveness probe config
+  livenessProbe:
+    # -- liveness probe failure threshold
+    failureThreshold: 10
+    # -- liveness probe initial delay seconds before start to evaluate
+    initialDelaySeconds: 600
+    # -- liveness probe http get checked
+    httpGet:
+      # path
+      path: /alive
+      # port
+      port: web
+      # scheme
+      scheme: HTTPS
+  # -- readiness probe config
+  readinessProbe:
+    httpGet:
+      # -- path
+      path: /alive
+      # -- port
+      port: web
+      # -- scheme
+      scheme: HTTPS
+  # -- startup probe config
+  startupProbe:
+    # -- startup probe failure threshold
+    failureThreshold: 30
+    # -- startup probe period seconds
+    periodSeconds: 30
+    # -- startup probe http get data
+    httpGet:
+      # -- path
+      path: /alive
+      # -- port
+      port: web
+      # -- scheme
+      scheme: HTTPS
+
+# -- this will be appended to the current 'env:' key. You can use any of the kubernetes env syntax here
 extraEnvs:
   # --shared-storage-dir=/data/: share storage for a standalone instance
   # /home/looker/looker-db.yml: specify where db credentials are stored
@@ -30,33 +77,45 @@ extraEnvs:
 #  - name: PROTOCOL
 #    value: https
 
+
+# -- database config. "-d /home/looker/looker-db.yml" must be added in LOOKEREXTRAARGS
 # by default a in-memory database is created
+database:
+  # -- database engine dialect
+  dialect: mysql
+  # -- database hosts
+  host: ""
+  # -- database username
+  username: ""
+  # -- AWS Secret Store arn on which the database secret has to be retrieved
+  secret_store_key_arn: ""
+  # -- database password
+  password: ""
+  # -- database db name
+  database: ""
+  # -- database port
+  port: 3306
+  ssl:
+    enabled: false
+    serverCert: ''
 
-# -d /home/looker/looker-db.yml must be added in LOOKEREXTRAARGS
-# databaseConfigFile:|-
-  # dialect: mysql
-  # host: YOUR_HOSTNAME
-  # username: YOUR_USERNAME
-  # password: YOUR_PASSWORD
-  # database: YOUR_DBNAME
-  # port: YOUR_PORT
-
-# -d /home/looker/looker-db.yml must be added in LOOKEREXTRAARGS
 # You can provide it as an already existing secret with the key looker-db.yml: contain the whole file
 # databaseConfigSecretName: looker-db-secret
 
+# -- service account config
 serviceAccount:
-  # Specifies whether a service account should be created
+  # -- specifies whether a service account should be created
   create: true
-  # Annotations to add to the service account
+  # -- annotations to add to the service account
   annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
+  # -- the name of the service account to use. If not set and create is true, a name is generated using the fullname template
   name: ""
 
-# If not ennabled /data will be stored in memory and lost at each restart
+# -- if not ennabled /data will be stored in memory and lost at each restart
 persistence:
+  # -- is persistence enabled ?
   enabled: false
+  # -- access mode
   accessMode: ReadWriteOnce
   ## If defined, storageClass: <storageClass>
   ## If set to "-", storageClass: "", which disables dynamic provisioning
@@ -73,52 +132,127 @@ persistence:
   # pdName: teleport-data-disk
   # fsType: ext4
 
+  # -- pod annotations
 podAnnotations: {}
 
+# -- pod security context
 podSecurityContext:
+  # -- file system group ID
   fsGroup: 2000
 
+# -- security context config
 securityContext:
+  # -- linux capabilities added/removed
   capabilities:
+    # -- dropped linux capabilities
     drop:
     - ALL
+  # -- should allow privilege escalation ?
   allowPrivilegeEscalation: false
+  # -- is read only file system ?
   readOnlyRootFilesystem: true
+  # -- run as non root ?
   runAsNonRoot: true
+  # -- run with user ID
   runAsUser: 1000
+  # -- run with group ID
   runAsGroup: 2000
 
+# -- service config
 service:
+  # -- service type
   type: ClusterIP
 
+# -- ingress config
 ingress:
+  # -- is ingress enabled ?
   enabled: false
+  # -- ingress annotations
   annotations: {}
     # nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
+  # -- ingress hosts
   hosts:
     - host: chart-example.local
       paths: []
+  # -- ingress tls config
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
 
+# -- additional ingresses
+additionalIngresses: {}
+# some-name:
+#   annotations: {}
+#     nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+#     kubernetes.io/ingress.class: nginx
+#     kubernetes.io/tls-acme: "true"
+#   hosts:
+#     - host: chart-example.local
+#       paths: []
+#   tls: []
+#     - secretName: chart-example-tls
+#       hosts:
+#         - chart-example.local
+
+# -- ingress api config
 ingressApi:
+  # -- is ingress API enabled ?
   enabled: false
+  # -- ingress api annotations
   annotations: {}
     # nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
+  # -- ingress api hosts
   hosts:
     - host: chart-example-api.local
       paths: []
+  # -- ingress api tls config
   tls: []
   #  - secretName: chart-example-api-tls
   #    hosts:
   #      - chart-example-api.local
 
+# -- ingress healthcheck
+ingressHealthcheck:
+  # -- ingress healthcheck enabled ?
+  enabled: false
+  # -- ingress healthcheck annotations
+  annotations: {}
+    # nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  # -- ingress healthcheck hosts
+  hosts:
+    - host: chart-example-healthcheck.local
+  # -- ingress healthcheck tls config
+  tls: []
+  #  - secretName: chart-example-api-tls
+  #    hosts:
+  #      - chart-example-api.local
+
+# -- network policies config
+networkPolicies:
+  # -- is network policies enabled ?
+  enabled: false
+  # -- network policies db ranges
+  dbRanges:
+    # -- mysql
+    mysql: []
+    # -- postgres
+    postgres: []
+    # -- redshift
+    redshift: []
+
+# -- backup config
+backup:
+  # -- is backup enablec ?
+  enabled: false
+
+# -- allocated resources config
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
@@ -131,15 +265,23 @@ resources: {}
   #   cpu: 100m
   #   memory: 128Mi
 
+# -- autoscaling config
 autoscaling:
+  # -- is autoscaling enabled ?
   enabled: false
+  # -- autoscaling min replicas
   minReplicas: 1
+  # -- autoscaling max replicas
   maxReplicas: 100
+  # -- autoscaling target CPU utilization
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
 
+# -- node selector
 nodeSelector: {}
 
+# -- pods tolerations
 tolerations: []
 
+# -- affinity
 affinity: {}

@@ -6,6 +6,9 @@ metadata:
   name: {{ $fullName }}-data
   labels:
     {{- include "looker.labels" . | nindent 4 }}
+{{- if .Values.backup.enabled }}
+    backup: "enabled"
+{{- end }}
 {{- if .Values.persistence.annotations }}
   annotations:
 {{ toYaml .Values.persistence.annotations | indent 4 }}

@@ -4,6 +4,9 @@ metadata:
   name: {{ include "looker.fullname" . }}
   labels:
     {{- include "looker.labels" . | nindent 4 }}
+    {{- if .Values.additionalLabels }}
+    {{- toYaml .Values.additionalLabels | nindent 4 }}
+    {{- end }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
@@ -17,10 +20,14 @@ spec:
     metadata:
       {{- with .Values.podAnnotations }}
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "false"
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
         {{- include "looker.selectorLabels" . | nindent 8 }}
+        {{- if .Values.additionalLabels }}
+        {{- toYaml .Values.additionalLabels | nindent 8 }}
+        {{- end }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -55,47 +62,42 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           workingDir: /home/looker
+          lifecycle:
+            postStart:
+              exec:
+                command: ["/bin/sh", "-c", "rm -rf /home/looker/.tmp/jruby* /home/looker/.tmp/looker-tmp*"]
           env:
 {{- if .Values.extraEnvs }}
 {{ toYaml .Values.extraEnvs | indent 10 }}
 {{- end }}
           ports:
-            - name: https
+            - name: web
               containerPort: 9999
               protocol: TCP
             - name: api
               containerPort: 19999
               protocol: TCP
           livenessProbe:
-            failureThreshold: 10
-            initialDelaySeconds: 300
-            httpGet:
-              path: /alive
-              port: https
-              scheme: HTTPS
+{{ toYaml .Values.probes.livenessProbe | indent 12 }}
           readinessProbe:
-            httpGet:
-              path: /alive
-              port: https
-              scheme: HTTPS
+{{ toYaml .Values.probes.readinessProbe | indent 12 }}
           startupProbe:
-            httpGet:
-              path: /alive
-              port: https
-              scheme: HTTPS
-            failureThreshold: 50
-            periodSeconds: 10
+{{ toYaml .Values.probes.startupProbe | indent 12 }}
           terminationMessagePolicy: FallbackToLogsOnError
           volumeMounts:
           - mountPath: /data
             name: {{ template "looker.fullname" . }}-shared-data-dir
           - mountPath: /home/looker
             name: looker-home
-{{- if or .Values.databaseConfigFile .Values.databaseConfigSecretName }}
           - mountPath: /home/looker/looker-db.yml
             name: db-secret
             subPath: looker-db.yml
-{{- end }}
+          {{- if .Values.database.ssl.enabled }}
+          - mountPath: /certs
+            name: certs
+          {{- end }}
+          - mountPath: /tmp
+            name: tmp-volume
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
@@ -125,11 +127,14 @@ spec:
       - name: looker-home
         emptyDir:
           medium: "Memory"
-{{- if .Values.databaseConfigFile }}
       - name: db-secret
         secret:
           secretName: {{ include "looker.fullname" . }}
-{{- end }}
+      {{- if .Values.database.ssl.enabled }}
+      - name: certs
+        configMap:
+          name: {{ include "looker.fullname" . }}-certs
+      {{- end }}
 {{- if .Values.databaseConfigSecretName }}
       - name: db-secret
         secret:

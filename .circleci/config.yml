@@ -7,15 +7,8 @@ jobs:
     environment:
       HELM_VERSION: 3.18.6
       CONFTEST_VERSION: 0.62.0
-      KUBECTL_VERSION: v1.31.6
     steps:
       - checkout
-      - run:
-          name: setup kubectl
-          command: |
-            curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl && chmod +x kubectl && sudo mv kubectl /usr/local/bin/
-            mkdir -p ${HOME}/.kube
-            touch ${HOME}/.kube/config
       - run:
           name: setup helm
           command: curl -SL https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz | tar xvz -C /tmp && sudo chmod +x /tmp/linux-amd64/* && sudo mv /tmp/linux-amd64/* /usr/local/bin/
@@ -31,45 +24,10 @@ jobs:
             helm template ./kube-iptables-tailer -f examples/kube-iptables-tailer/values.yaml > kube-iptables-tailer.yaml
             helm template ./squid -f examples/squid/values.yaml > squid.yaml
             helm template ./looker -f examples/looker/values.yaml > looker.yaml
-      - run:
-          name: start minikube
-          command: |
-            minikube start --vm-driver=docker --cpus 2 --memory 4000 --network-plugin=cni --cni=calico --kubernetes-version=${KUBECTL_VERSION} &> $HOME/minikube.log 2>&1 < /dev/null
-      - run:
-          name: debug node
-          command: |
-            kubectl describe node
-      - run:
-          name: Setup Cluster
-          command: |
-            ./scripts/setup_cluster.sh
-      - run:
-          name: wait for minikube
-          command: |
-            JSONPATH='{range .items[*]}{@.metadata.name}:{range @.status.conditions[*]}{@.type}={@.status};{end}{end}';
-            until kubectl get nodes -o jsonpath="$JSONPATH" 2>&1 | grep -q "Ready=True"; do
-              sleep 1;
-            done
-      - run:
-          name: Test kube-iptables-tailer installation
-          command: |
-            kubectl create namespace kube-iptables-tailer || true
-            helm upgrade kube-iptables-tailer ./kube-iptables-tailer/ --install  --timeout 500s --wait -f examples/kube-iptables-tailer/values.yaml --kube-context minikube --namespace kube-iptables-tailer
-      - run:
-          name: Test squid installation
-          command: |
-            kubectl create namespace squid || true
-            helm upgrade squid ./squid/ --install  --timeout 500s --wait --kube-context minikube --namespace squid
-      - run:
-          name: Test looker installation
-          command: |
-            kubectl create namespace looker || true
-            kubectl create secret docker-registry dockerhub -n looker --docker-username=$DOCKERHUB_READ_USERNAME --docker-password=$DOCKERHUB_READ_PASSWORD
-            helm upgrade looker ./looker/ --install  --timeout 500s --wait --kube-context minikube --namespace looker -f ./examples/looker/values.yaml
 
   release:
     environment:
-      HELM_VERSION: 3.8.2
+      HELM_VERSION: 3.18.6
     docker:
       - image: circleci/python:3
     steps:

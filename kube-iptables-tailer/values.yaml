@@ -1,25 +1,13 @@
 image:
   repository: honestica/kube-iptables-tailer
-  tag: master-91
+  tag: master-19
   pullPolicy: IfNotPresent
 
-# Specify to use specific priorityClass for pods
-# ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
-# If a Pod cannot be scheduled, the scheduler tries to preempt (evict) lower priority
-# Pods to make scheduling of the pending Pod possible.
-priorityClassName: ""
-
-imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
-updateStrategy:
-  type: RollingUpdate
-
 # Only one of the next configuration should be enabled
 # iptablesLogPath: "/var/log/iptables.log"
-
-# If using EKS uncomment this line
 # journalDirectory: "/var/log/journal"
 
 iptablesLogPrefix: "calico-packet:"
@@ -31,7 +19,6 @@ podAnnotations: {}
 
 rbac:
   create: true
-  pspEnabled: true
 
 serviceAccount:
   create: true
@@ -41,7 +28,6 @@ serviceAccount:
 calico:
   loggingEnable: true
   # check your apiversion with `kubectl api-versions`
-  # when using calico tigera operator, this should be "projectcalico.org/v1"
   apiVersion: projectcalico.org/v3
 
 resources: {}
@@ -61,18 +47,3 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
-
-extraArgs: []
-
-syslogSidecar:
-  enabled: false
-  image: rsyslog/syslog_appliance_alpine
-  tag: latest
-
-# extraVolumes and extraVolumeMounts allows you to mount other volumes
-extraVolumes: []
-#  - name: service-logs
-#    emptyDir: {}
-extraVolumeMounts: []
-#  - name: service-logs
-#    mountPath: /my-service-logs

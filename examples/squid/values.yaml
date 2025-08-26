@@ -6,18 +6,21 @@ replicaCount: 1
 
 image:
   repository: honestica/squid
-  tag: 4-04f05ba7-26aa-46dd-8ba0-a44cda1fef64
+  tag: 4-f9839050-1344-48d2-981a-b73e4541e193
   pullPolicy: IfNotPresent
-  # imagePullSecrets:
+  # -- imagePullSecrets:
 
+# -- service config
 service:
   type: ClusterIP
-  #  Specify IP to whitelist if needed
+  # -- specify IP to whitelist if needed
   #loadBalancerSourceRanges: ""
-  # Specify external IP if needed
+  # -- specify external IP if needed
   #loadBalancerIP: ""
+  # -- service listen port
   port: 80
-  # annotations: {}
+  # -- service annotations
+  annotations: {}
 
 ingress:
   enabled: false

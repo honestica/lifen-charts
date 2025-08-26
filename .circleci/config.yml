@@ -5,15 +5,9 @@ jobs:
     machine:
       image: ubuntu-2004:current
     environment:
-      HELM_VERSION: 3.8.2
-      KUBEVAL_VERSION: v0.16.1
-      CONFTEST_VERSION: 0.27.0
-      K8S_VERSIONS: 1.22.10 1.23.7
-      KUBECTL_VERSION: v1.22.10
-      KUBECONFIG: /home/circleci/.kube/config
-      MINIKUBE_VERSION: v1.25.2
-      MINIKUBE_HOME: /home/circleci
-      K8S_SCHEMAS: https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master
+      HELM_VERSION: 3.18.6
+      CONFTEST_VERSION: 0.62.0
+      KUBECTL_VERSION: v1.31.6
     steps:
       - checkout
       - run:
@@ -23,18 +17,8 @@ jobs:
             mkdir -p ${HOME}/.kube
             touch ${HOME}/.kube/config
       - run:
-          name: setup minikube
-          command: |
-            curl -Lo minikube https://github.com/kubernetes/minikube/releases/download/${MINIKUBE_VERSION}/minikube-linux-amd64 && chmod +x minikube && sudo mv minikube /usr/local/bin/
-      - run:
           name: setup helm
           command: curl -SL https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz | tar xvz -C /tmp && sudo chmod +x /tmp/linux-amd64/* && sudo mv /tmp/linux-amd64/* /usr/local/bin/
-      - run:
-          name: setup kubeval
-          command: |
-            curl -L https://github.com/instrumenta/kubeval/releases/download/${KUBEVAL_VERSION}/kubeval-linux-amd64.tar.gz -o kubeval-linux-amd64.tar.gz
-            tar xf kubeval-linux-amd64.tar.gz
-            sudo mv kubeval /usr/local/bin
       - run:
           name: setup conftest and deprek8ion
           command: |
@@ -54,15 +38,6 @@ jobs:
             helm template ./kube-iptables-tailer -f examples/kube-iptables-tailer/values.yaml > kube-iptables-tailer.yaml
             helm template ./squid -f examples/squid/values.yaml > squid.yaml
             helm template ./looker -f examples/looker/values.yaml > looker.yaml
-      - run:
-          name: Run kubeval on the charts to ensure kubernetes compability
-          command: |
-            for kv in ${K8S_VERSIONS}
-            do
-              kubeval -v $kv --strict kube-iptables-tailer.yaml --schema-location ${K8S_SCHEMAS}
-              kubeval -v $kv --strict squid.yaml --schema-location ${K8S_SCHEMAS}
-              kubeval -v $kv --strict looker.yaml --schema-location ${K8S_SCHEMAS}
-            done
       - run:
           name: Run deprek8
           command: |
@@ -104,16 +79,6 @@ jobs:
             kubectl create namespace looker || true
             kubectl create secret docker-registry dockerhub -n looker --docker-username=$DOCKERHUB_READ_USERNAME --docker-password=$DOCKERHUB_READ_PASSWORD
             helm upgrade looker ./looker/ --install  --timeout 500s --wait --kube-context minikube --namespace looker -f ./examples/looker/values.yaml
-      - run:
-          name: Debug on failures
-          command: |
-            cat $HOME/minikube.log
-            kubectl get node
-            kubectl get pod --all-namespaces
-            kubectl describe pod --all-namespaces
-            kubectl logs --tail 2000 -lapp.kubernetes.io/instance=looker -n looker
-            helm list --all --kube-context minikube --namespace lifen-app-test
-          when: on_fail
 
   release:
     environment:

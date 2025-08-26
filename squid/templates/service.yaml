@@ -9,10 +9,7 @@ metadata:
   {{- end }}
 {{- end }}
   labels:
-    app: {{ template "squid.name" . }}
-    chart: {{ template "squid.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    {{- include "squid.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   loadBalancerSourceRanges:
@@ -26,12 +23,28 @@ spec:
       targetPort: http
       protocol: TCP
       name: http
+  selector:
+    app: {{ template "squid.name" . }}
+    release: {{ .Release.Name }}
 {{- if .Values.metrics.enabled }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "squid.fullname" . }}-exporter
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "{{ .Values.metrics.exporter.port }}"
+  labels:
+    {{- include "squid.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
     - port: {{ .Values.metrics.exporter.port }}
       targetPort: metrics
       protocol: TCP
       name: metrics
-{{- end }}
   selector:
     app: {{ template "squid.name" . }}
     release: {{ .Release.Name }}
+{{- end }}

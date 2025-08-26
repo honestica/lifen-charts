@@ -32,16 +32,13 @@ Create chart name and version as used by the chart label.
 {{- end -}}
 
 {{/*
-Return the appropriate apiVersion for ingress
+Common labels
 */}}
-{{- define "squid.ingress.apiVersion" -}}
-{{- if .Values.apiVersionOverrides.ingress -}}
-{{- print .Values.apiVersionOverrides.ingress -}}
-{{- else if semverCompare "<1.14-0" (substr 1 -1 .Capabilities.KubeVersion.GitVersion) -}}
-{{- print "extensions/v1beta1" -}}
-{{- else if semverCompare "<1.19-0" (substr 1 -1 .Capabilities.KubeVersion.GitVersion) -}}
-{{- print "networking.k8s.io/v1beta1" -}}
-{{- else -}}
-{{- print "networking.k8s.io/v1" -}}
-{{- end -}}
-{{- end -}}
+{{- define "squid.labels" -}}
+helm.sh/chart: {{ include "squid.chart" . }}
+app: {{ template "squid.name" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}

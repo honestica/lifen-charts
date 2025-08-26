@@ -2,43 +2,53 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+# -- replica count
 replicaCount: 1
 
-apiVersionOverrides: {}
-## Override ingress api auto detection:
-#  ingress: networking.k8s.io/v1
-
+# -- image config
 image:
-  # registry is not used, just for testing renovate
-  registry: docker.io
+  # -- image repository
   repository: honestica/squid
-  tag: 4.69
+  # -- image tag
+  tag: 4-f9839050-1344-48d2-981a-b73e4541e193
+  # -- image pull policy
   pullPolicy: IfNotPresent
-  # imagePullSecrets:
+  # -- image pull secrets
+  # imagePullSecrets: ""
 
+# -- service config
 service:
+  # -- service type
   type: ClusterIP
-  #  Specify IP to whitelist if needed
+  # -- specify IP to whitelist if needed
   #loadBalancerSourceRanges: ""
-  # Specify external IP if needed
+  # -- specify external IP if needed
   #loadBalancerIP: ""
+  # -- service listen port
   port: 80
-  # annotations: {}
+  # -- service annotations
+  annotations: {}
 
+# -- ingress config
 ingress:
+  # -- is ingress enabled ?
   enabled: false
+  # -- ingress annotations
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
+  # -- ingress path
   path: /
-  pathType: Prefix
+  # -- ingress hosts
   hosts:
     - chart-example.local
+  # -- ingress tls config
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
 
+# -- squid config
 config: |
   acl SSL_ports port 443
   acl Safe_ports port 80		# http
@@ -82,9 +92,8 @@ config: |
   # Do not display squid version
   httpd_suppress_version_string on
 
-# Optionally specify a secret whose contents will be mounted into /etc/squid/config.
-# configSecret: config-example
 
+# -- pod resources
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
@@ -97,21 +106,35 @@ resources: {}
   #  cpu: 100m
   #  memory: 128Mi
 
+# -- node selector
 nodeSelector: {}
 
+# -- tolerations
 tolerations: []
 
+# -- affinity
 affinity: {}
 
+# -- release anti antiaffinity
 releaseAntiAffinity: true
 
+# -- metrics config
 metrics:
+  # -- are metrics enabled ?
   enabled: false
+  # -- is service monitor enabled ?
   serviceMonitor: false
+  # -- metrics exporter config
   exporter:
+    # -- metrics exporter port
     port: 9301
+    # -- metrics exporter allocated resources
     resources: {}
+    # -- metrics exporter image config
     image:
+      # -- metrics exporter image repository
       repository: boynux/squid-exporter
-      tag: v1.9
+      # -- metrics exporter image tag
+      tag: v1.8
+      # -- metrics exporter image pull policy
       pullPolicy: IfNotPresent

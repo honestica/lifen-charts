@@ -35,16 +35,30 @@ extraEnvs:
 
 # by default a in-memory database is created
 
-# databaseConfigFile:|-
-  # dialect: mysql
-  # host: YOUR_HOSTNAME
-  # username: YOUR_USERNAME
-  # password: YOUR_PASSWORD
-  # database: YOUR_DBNAME
-  # port: YOUR_PORT
+# Example 1: Inline database configuration (quick testing / simple setups)
+# Uncomment and set these values to use an external database instead of the in-memory DB
+database:
+  dialect: mysql
+  host: mydb.cluster.local
+  username: looker
+  password: s3cr3t
+  database: looker
+  port: 3306
+  ssl:
+    enabled: false
+    serverCert: ''
 
-# You can provide it as an already existing secret with the key looker-db.yml: contain the whole file
+# Example 2: Provide a Kubernetes secret that contains a full looker-db.yml file
+# Create the secret and set the name below. The chart will mount or reference it as configured.
 # databaseConfigSecretName: looker-db-secret
+
+# Example 3: Use AWS Secrets Manager via ExternalSecret
+# Set `database.secret_store_key_arn` to the ARN/key of your secret in Secrets Manager.
+# The chart's templates/externalsecret.yaml will create an ExternalSecret that reads
+# the remote secret and builds the local `looker-db.yml` secret. This requires the
+# External Secrets Operator to be installed and a ClusterSecretStore configured.
+# database:
+#   secret_store_key_arn: "arn:aws:secretsmanager:eu-west-1:123456789012:secret:my-looker-db-ABC123"
 
 serviceAccount:
   # Specifies whether a service account should be created

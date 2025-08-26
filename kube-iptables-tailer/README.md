@@ -1,42 +1,59 @@
 # Kube-iptables-tailer
-[Kube-iptables-tailer](https://github.com/box/kube-iptables-tailer) is a service for better visibility on networking issues in Kubernetes clusters. 
+[Kube-iptables-tailer](https://github.com/box/kube-iptables-tailer) is a service for better visibility on networking issues in Kubernetes clusters.
 
 ## Prerequisites
--   Kubernetes with networkpolicy
--   Logs of iptable must be activated (handled by the chart in case of Calico)
--   Logs of iptable should be written to a specific file
--   Logs of iptable must be written using rfc3339 for the timestamp
+- Kubernetes cluster with network policy support (optional but recommended).
+- IPtables logging enabled on nodes. When using Calico the chart can enable the required logging rule.
+- iptables logs must be written to a predictable file path and use RFC3339 timestamps for correct parsing.
 
 ## Add the repo
 
-```
-$ helm repo add lifen-charts http://honestica.github.io/lifen-charts/
+```bash
+helm repo add lifen-charts http://honestica.github.io/lifen-charts/
 ```
 
 ## Usage on AWS EKS with managed nodes
 
-We suppose you followed the EKS tutorial to install calico. https://docs.aws.amazon.com/eks/latest/userguide/calico.html
+We suppose you followed the EKS tutorial to install Calico: https://docs.aws.amazon.com/eks/latest/userguide/calico.html
 
-Use the provided `values-eks.yaml`
+Use the provided `values-eks.yaml` when targeting EKS.
 
-## Customization
-The following options are supported.  See [values.yaml](values.yaml) for more detailed documentation and examples:
+## Examples
+- Basic install using the example values shipped with the chart:
 
-| Parameter                                   | Description                                                                                                                                                                                                                                                                                               | Default |
-|---------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------|
-| `calico.loggingEnable`                     | Whether to enable global logging of iptable dropped packet with Calico.                                                                                                                                                                                                        | `true`  |
-| `calico.apiVersion`                     | Version of calico crds. Check yours with `kubectl api-versions`.                                                                                                                                                                                                        | `projectcalico.org/v3`  |
-| `serviceAccount.create`                     | Whether to create a Kubernetes ServiceAccount if no account matching `serviceAccount.name` exists.                                                                                                                                                                                                        | `true`  |
-| `serviceAccount.name`                       | Name of the Kubernetes ServiceAccount under which Kube-iptables-tailer should run. If no value is specified and `serviceAccount.create` is `true`, Kube-iptables-tailer will be run under a ServiceAccount whose name is the FullName of the Helm chart's instance, else Kube-iptables-tailer will be run under the `default` ServiceAccount. | n/a     |
-| `iptablesLogPath`                       | Absolute path to your iptables log file including the full file name. Should be "/var/log/kern.log" if your are not redirecting logs to a specific file. | "/var/log/iptables.log"     |
-| `journalDirectory`                       | Absolute path to the folder of the journal directory. | "/var/log/journal"     |
-| `iptablesLogPrefix`                       |  Log prefix defined in your iptables chains. The service will only handle the logs matching this log prefix exactly. | "calico-packet:"     |
-| `kubeApiServicer`                       | Address of the Kubernetes API server. By default, the discovery of the API server is handled by kube-proxy. If kube-proxy is not set up, the API server address must be specified with this environment variable. Authentication to the API server is handled by service account tokens. See Accessing the Cluster for more info. | "https://kubernetes.default:443"    |
+```bash
+helm install kube-iptables-tailer ./kube-iptables-tailer -n kube-system -f examples/kube-iptables-tailer/values.yaml
+```
 
+## Configuration reference
+See `values.yaml` for inline comments and more advanced options. The table below lists the values present in the chart's `values.yaml` and their defaults.
 
-# On the VM ask rsyslog to forward the logs to /var/log/iptables.log
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `image.repository` | string | `honestica/kube-iptables-tailer` | Container image repository |
+| `image.tag` | string | `master-19` | Image tag used by the chart |
+| `image.pullPolicy` | string | `IfNotPresent` | Image pull policy |
+| `nameOverride` | string | `""` | Override chart name template |
+| `fullnameOverride` | string | `""` | Override full resource names |
+| `iptablesLogPrefix` | string | `calico-packet:` | Log prefix the tailer will filter for |
+| `kubeApiServicer` | string | `https://kubernetes.default:443` | Address of the Kubernetes API server (used when kube-proxy discovery is not available) |
+| `podAnnotations` | object | `{}` | Annotations applied to the pod (e.g., prometheus scrape) |
+| `rbac.create` | bool | `true` | Create RBAC roles and bindings required by the chart |
+| `serviceAccount.create` | bool | `true` | Create a ServiceAccount for the pod |
+| `serviceAccount.name` | string | (empty) | Use an existing ServiceAccount name if provided |
+| `calico.loggingEnable` | bool | `true` | When true the chart applies Calico rules to log dropped packets |
+| `calico.apiVersion` | string | `projectcalico.org/v3` | Calico CRD API version to use for rule configuration (check your cluster with `kubectl api-versions`) |
+| `resources` | object | `{}` | CPU/memory requests and limits for the container |
+| `nodeSelector` | object | `{}` | Node selector for scheduling the pod |
+| `tolerations` | list | `[]` | Pod tolerations for node taints |
+| `affinity` | object | `{}` | Pod affinity/anti-affinity rules |
 
-Add a .conf in /etc/rsyslog.d/ like the following:
+Notes:
+- `iptablesLogPath` and `journalDirectory` are intentionally commented in `values.yaml`; enable exactly one of the file-based or journal-based logging options depending on how node logs are exposed.
+- This chart no longer includes an embedded syslog sidecar in `values.yaml`; if you need syslog forwarding, either add a sidecar manually in `templates` or use a DaemonSet on the host to forward kernel logs into the expected file.
+
+## On-node rsyslog configuration
+If you use a host-level rsyslog to redirect kernel messages into a specific file (recommended when not adding a sidecar), add a `.conf` in `/etc/rsyslog.d/` like the following:
 
 ```
 $template TemplateIptables,"%TIMESTAMP:::date-rfc3339% %hostname% %msg%\n"
@@ -44,3 +61,9 @@ $template TemplateIptables,"%TIMESTAMP:::date-rfc3339% %hostname% %msg%\n"
 :msg, contains, "calico-packet:" -/var/log/iptables.log;TemplateIptables
 & ~
 ```
+
+This routes messages containing the configured `iptablesLogPrefix` into `/var/log/iptables.log` using RFC3339 timestamps.
+
+## Notes
+- The example `examples/kube-iptables-tailer/values.yaml` is the canonical example for this chart. Adjust values to match your environment before installing.
+- When enabling Calico logging, verify the `calico.apiVersion` matches the CRD version installed on your cluster.

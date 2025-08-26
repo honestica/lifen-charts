@@ -1,14 +1,21 @@
 image:
   repository: honestica/kube-iptables-tailer
-  tag: master-56
+  tag: master-19
   pullPolicy: IfNotPresent
 
 nameOverride: ""
 fullnameOverride: ""
 
-iptablesLogPath: "/var/log/iptables.log"
+# Only one of the next configuration should be enabled
+# iptablesLogPath: "/var/log/iptables.log"
+# journalDirectory: "/var/log/journal"
+
 iptablesLogPrefix: "calico-packet:"
 kubeApiServicer: "https://kubernetes.default:443"
+
+podAnnotations: {}
+  # prometheus.io/scrape: "true"
+  # prometheus.io/port: "9090"
 
 rbac:
   create: true
@@ -17,10 +24,11 @@ serviceAccount:
   create: true
   name:
 
+# Should alway enabled or you have to do manual iptable configuration on each host
 calico:
-  loggingEnable: false
+  loggingEnable: true
   # check your apiversion with `kubectl api-versions`
-  apiVersion: crd.projectcalico.org/v1
+  apiVersion: projectcalico.org/v3
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -39,8 +47,3 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
-
-syslogSidecar:
-  enabled: false
-  image: rsyslog/syslog_appliance_alpine
-  tag: latest
